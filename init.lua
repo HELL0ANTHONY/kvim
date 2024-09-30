@@ -638,6 +638,12 @@ require('lazy').setup({
   },
 
   {
+    'sindrets/diffview.nvim',
+    -- event = 'VeryLazy',
+    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
+  },
+
+  {
     'phaazon/hop.nvim',
     branch = 'v2',
     keys = function()
