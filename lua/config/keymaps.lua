@@ -2,7 +2,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- ==================================== LSP ====================================
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-vim.keymap.set('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Float error' })
+vim.keymap.set('n', '<C-k>', '<cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Float error' })
 
 -- ==================================== BUFFERS ==============================
 -- Close all buffers except one
