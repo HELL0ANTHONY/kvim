@@ -20,8 +20,8 @@ function plugin.config()
   }
 end
 
-vim.keymap.set('n', '<leader>o', function()
+vim.keymap.set('n', '<leader>os', function()
   require('nvim-navbuddy').open()
-end, { desc = 'Symbols navigation' })
+end, { desc = '[o]pen [s]ymbols navigation' })
 
 return plugin

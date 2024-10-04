@@ -1,13 +1,14 @@
 local fn = require 'config.custom_functions'
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-vim.keymap.set('n', '<leader>;c', function()
+
+vim.keymap.set('n', '<leader>;r', function()
   fn.remove_comments()
-end, { desc = 'Remove inline comments' })
+end, { desc = '[r]emove inline comments' })
 
 -- ==================================== LSP ====================================
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-vim.keymap.set('n', '<C-k>', '<cmd>lua vim.diagnostic.open_float()<CR>', { desc = 'Float error' })
+vim.keymap.set('n', '<leader>oq', vim.diagnostic.setloclist, { desc = '[o]pen diagnostic [q]uickfix list' })
+vim.keymap.set('n', '<leader>od', '<cmd>lua vim.diagnostic.open_float()<CR>', { desc = '[o]pen [d]iagnostic float' })
 
 -- ==================================== BUFFERS ==============================
 -- Close all buffers except one
@@ -17,7 +18,7 @@ function CloseBuffers()
   vim.fn.setpos('.', cursor_pos)
 end
 
-vim.keymap.set('n', '<leader>;Q', '<cmd>lua CloseBuffers()<CR>', { desc = 'Close all buffers' })
+vim.keymap.set('n', '<leader>;C', '<cmd>lua CloseBuffers()<CR>', { desc = '[C]lose all buffers' })
 
 -- ==================================== TERMINAL ==============================
 -- https://stackoverflow.com/questions/1236563/how-do-i-run-a-terminal-inside-of-vim
@@ -27,7 +28,7 @@ function _G.OpenTerminal()
   vim.cmd 'split term://zsh'
   vim.cmd 'resize 12'
 end
-vim.api.nvim_set_keymap('n', '<leader>;T', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = 'Open zsh Terminal' })
+vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = '[o]pen zsh [t]erminal' })
 
 -- ==================================== OPEN NETRW ===========================
 function _G.toggle_netrw()
@@ -41,4 +42,4 @@ function _G.toggle_netrw()
   vim.cmd 'Lexplore %:p:h'
 end
 
-vim.api.nvim_set_keymap('n', '<leader>e', ':lua toggle_netrw()<CR>', { noremap = true, silent = true, desc = 'Open Netrw explore' })
+vim.api.nvim_set_keymap('n', '<leader>oe', ':lua toggle_netrw()<CR>', { noremap = true, silent = true, desc = '[o]pen Netrw [e]xplore' })

@@ -4,18 +4,18 @@ return {
   keys = function()
     return {
       {
-        '\\',
+        '<leader>jw',
         function()
           require('hop').hint_words()
         end,
-        desc = 'Jump to word',
+        desc = '[j]ump to [w]ord',
       },
       {
-        'L',
+        '<leader>jl',
         function()
           require('hop').hint_lines()
         end,
-        desc = 'Jump to line',
+        desc = '[j]ump to [l]ine',
       },
     }
   end,
