@@ -4,22 +4,22 @@ return {
   keys = function()
     return {
       {
-        '<leader>jw',
+        '<leader>ww',
         function()
           require('hop').hint_words()
         end,
-        desc = '[j]ump to [w]ord',
+        desc = '[w]orkspace: jump to [w]ord',
       },
       {
-        '<leader>jl',
+        '<leader>wl',
         function()
           require('hop').hint_lines()
         end,
-        desc = '[j]ump to [l]ine',
+        desc = '[w]orkspace jump to [l]ine',
       },
     }
   end,
-  config = function()
-    require('hop').setup { keys = 'etovxqpdygfblzhckisuran' }
-  end,
+  opts = {
+    keys = 'etovxqpdygfblzhckisuran',
+  },
 }
