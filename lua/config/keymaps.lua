@@ -8,7 +8,7 @@ end, { desc = '[r]emove inline comments' })
 
 -- ==================================== LSP ====================================
 vim.keymap.set('n', '<leader>oq', vim.diagnostic.setloclist, { desc = '[o]pen diagnostic [q]uickfix list' })
-vim.keymap.set('n', '<leader>od', '<cmd>lua vim.diagnostic.open_float()<CR>', { desc = '[o]pen [d]iagnostic float' })
+vim.keymap.set('n', '<leader>ce', '<cmd>lua vim.diagnostic.open_float()<CR>', { desc = '[c]ode [e]rror diagnostic float' })
 
 -- ==================================== BUFFERS ==============================
 -- Close all buffers except one
