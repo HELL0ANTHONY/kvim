@@ -3,7 +3,7 @@ return {
   cmd = { 'DiffviewOpen' },
   keys = function()
     return {
-      { '<leader>od', '<cmd>:DiffviewOpen<CR>', desc = '[o]pen [d]iff' },
+      { '<leader>oD', '<cmd>:DiffviewOpen<CR>', desc = '[o]pen [D]iff' },
       { '<leader>dc', '<cmd>:DiffviewClose<CR>', desc = '[d]iff [c]lose' },
       { '<leader>dt', '<cmd>:DiffviewToggleFiles<CR>', desc = '[d]iff [t]oggle' },
     }
