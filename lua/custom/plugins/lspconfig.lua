@@ -1,5 +1,6 @@
 -- https://github.com/exosyphon/nvim/blob/main/lua/plugins/lsp.lua
 -- https://lsp-zero.netlify.app/docs/getting-started.html
+
 return {
   'VonHeikemen/lsp-zero.nvim',
   branch = 'v4.x',
@@ -8,118 +9,37 @@ return {
     {
       'williamboman/mason.nvim',
       build = function()
-        pcall(vim.cmd, 'MasonUpdate')
+        vim.cmd 'MasonUpdate'
       end,
     },
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     { 'williamboman/mason-lspconfig.nvim' },
     { 'hrsh7th/nvim-cmp' },
     { 'hrsh7th/cmp-nvim-lsp' },
-    { 'rafamadriz/friendly-snippets' },
   },
 
   config = function()
     local lsp = require 'lsp-zero'
 
     lsp.on_attach(function(_, bufnr)
-      local map = function(keys, rhs, opts, mode)
-        opts = vim.tbl_deep_extend('force', { noremap = true, silent = true }, opts or {})
-        mode = mode or 'n'
-        vim.keymap.set(mode, keys, rhs, opts)
+      local function map(keys, rhs, desc, mode)
+        vim.keymap.set(mode or 'n', keys, rhs, { noremap = true, silent = true, buffer = bufnr, desc = desc })
       end
 
-      local opts = { buffer = bufnr, remap = false }
+      map('gd', vim.lsp.buf.definition, 'LSP: [g]oto [d]efinition')
+      map('gI', require('telescope.builtin').lsp_implementations, 'LSP: [g]oto [I]mplementation')
+      map('gD', vim.lsp.buf.declaration, 'LSP: [g]oto [D]eclaration')
+      map('gr', require('telescope.builtin').lsp_references, 'LSP: [g]oto [r]eferences')
+      map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'LSP: Type [D]efinition')
+      map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'LSP: [w]orkspace [s]ymbols')
+      map('<leader>ca', vim.lsp.buf.code_action, 'LSP: [c]ode [a]ction')
+      map('<leader>rn', vim.lsp.buf.rename, 'LSP: [r]e[n]ame')
+      map('<leader>oe', vim.diagnostic.open_float, 'LSP: [o]pen [e]rror diagnostic')
+      map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')
+      map('<leader>ow', vim.diagnostic.setqflist, 'LSP: [o]pen workspace [w]ide diagnostics')
+      map('K', vim.lsp.buf.hover, 'LSP: Hover')
 
-      -- map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-      -- map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-
-      map('<leader>D', function()
-        require('telescope.builtin').lsp_type_definitions()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: Type [D]efinition' }))
-
-      map('gI', function()
-        require('telescope.builtin').lsp_implementations()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [g]oto [I]mplementation' }))
-
-      map('gd', function()
-        vim.lsp.buf.definition()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [g]oto [d]efinition' }))
-
-      map('gD', function()
-        vim.lsp.buf.declaration()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [g]oto [d]eclaration' }))
-
-      map('gr', function()
-        -- vim.lsp.buf.references()
-        require('telescope.builtin').lsp_references()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [g]oto [r]eferences' }))
-
-      map('<leader>ws', function()
-        require('telescope.builtin').lsp_dynamic_workspace_symbols()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [w]okspace [s]ymbols' }))
-
-      map('K', function()
-        vim.lsp.buf.hover()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: hover' }))
-
-      map('<leader>ca', function()
-        vim.lsp.buf.code_action()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [c]ode [a]ction' }))
-
-      map('<leader>rn', function()
-        vim.lsp.buf.rename()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [r]e[n]ame' }))
-
-      map('<leader>oe', function()
-        vim.diagnostic.open_float()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [o]pen [e]rror diagnostic' }))
-
-      map('<leader>od', function()
-        vim.diagnostic.setloclist()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [o]pen [d]iagnostics' }))
-
-      map('<leader>ow', function()
-        vim.diagnostic.setqflist()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: [o]pen workspace [w]ide diagnostics' }))
-
-      vim.keymap.set('i', '<C-h>', function()
-        vim.lsp.buf.signature_help()
-      end, vim.tbl_deep_extend('force', opts, { desc = 'LSP: Signature Help' }))
-
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
-        callback = function(event)
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
-            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.document_highlight,
-            })
-
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.clear_references,
-            })
-
-            vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-              callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-              end,
-            })
-          end
-
-          -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-          --   map('<leader>th', function()
-          --     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-          --   end, '[t]oggle inlay [h]ints')
-          -- end
-        end,
-      })
+      vim.keymap.set('i', '<C-h>', vim.lsp.buf.signature_help, { noremap = true, silent = true, buffer = bufnr, desc = 'LSP: Signature Help' })
     end)
 
     local servers = {
@@ -140,8 +60,7 @@ return {
 
     require('mason').setup {}
 
-    local ensure_installed = vim.tbl_keys(servers or {})
-    vim.list_extend(ensure_installed, {
+    local ensure_installed = vim.list_extend(vim.tbl_keys(servers), {
       'stylua',
       'eslint_d',
       'tflint',
@@ -151,6 +70,7 @@ return {
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+
     require('mason-lspconfig').setup {
       handlers = {
         lsp.default_setup,
@@ -159,11 +79,32 @@ return {
           require('lspconfig').lua_ls.setup(lua_opts)
         end,
         function(server_name)
-          local server = servers[server_name] or {}
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
+          local server_opts = servers[server_name] or {}
+          server_opts.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_opts.capabilities or {})
+          require('lspconfig')[server_name].setup(server_opts)
         end,
       },
     }
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+      group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+      callback = function(event)
+        local client = vim.lsp.get_client_by_id(event.data.client_id)
+        if client and client.supports_method 'textDocument/documentHighlight' then
+          local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+          vim.api.nvim_clear_autocmds { group = highlight_augroup, buffer = event.buf }
+          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+            buffer = event.buf,
+            group = highlight_augroup,
+            callback = vim.lsp.buf.document_highlight,
+          })
+          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+            buffer = event.buf,
+            group = highlight_augroup,
+            callback = vim.lsp.buf.clear_references,
+          })
+        end
+      end,
+    })
   end,
 }
