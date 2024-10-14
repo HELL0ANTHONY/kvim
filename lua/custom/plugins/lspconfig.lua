@@ -16,12 +16,23 @@ return {
     { 'williamboman/mason-lspconfig.nvim' },
     { 'hrsh7th/nvim-cmp' },
     { 'hrsh7th/cmp-nvim-lsp' },
+    { 'j-hui/fidget.nvim', opts = {} },
   },
 
   config = function()
     local lsp = require 'lsp-zero'
 
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+
+    local lsp_highlight_group = vim.api.nvim_create_augroup('LspHighlight', { clear = true })
+
     lsp.on_attach(function(_, bufnr)
+      if vim.b[bufnr].lsp_keymaps_set then
+        return
+      end
+      vim.b[bufnr].lsp_keymaps_set = true
+
       local function map(keys, rhs, desc, mode)
         vim.keymap.set(mode or 'n', keys, rhs, { noremap = true, silent = true, buffer = bufnr, desc = desc })
       end
@@ -38,7 +49,6 @@ return {
       map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')
       map('<leader>ow', vim.diagnostic.setqflist, 'LSP: [o]pen workspace [w]ide diagnostics')
       map('K', vim.lsp.buf.hover, 'LSP: Hover')
-
       vim.keymap.set('i', '<C-h>', vim.lsp.buf.signature_help, { noremap = true, silent = true, buffer = bufnr, desc = 'LSP: Signature Help' })
     end)
 
@@ -58,6 +68,12 @@ return {
       },
     }
 
+    local function setup_server(server_name, _)
+      local server_opts = servers[server_name] or {}
+      server_opts.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_opts.capabilities or {})
+      require('lspconfig')[server_name].setup(server_opts)
+    end
+
     require('mason').setup {}
 
     local ensure_installed = vim.list_extend(vim.tbl_keys(servers), {
@@ -68,9 +84,6 @@ return {
 
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-
     require('mason-lspconfig').setup {
       handlers = {
         lsp.default_setup,
@@ -78,16 +91,12 @@ return {
           local lua_opts = lsp.nvim_lua_ls()
           require('lspconfig').lua_ls.setup(lua_opts)
         end,
-        function(server_name)
-          local server_opts = servers[server_name] or {}
-          server_opts.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_opts.capabilities or {})
-          require('lspconfig')[server_name].setup(server_opts)
-        end,
+        setup_server,
       },
     }
 
     vim.api.nvim_create_autocmd('LspAttach', {
-      group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+      group = lsp_highlight_group,
       callback = function(event)
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client and client.supports_method 'textDocument/documentHighlight' then
