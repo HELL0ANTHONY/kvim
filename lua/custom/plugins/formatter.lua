@@ -1,3 +1,27 @@
+local js_ts_formatters = { 'prettierd', 'prettier', stop_after_first = true }
+
+local function formatter_exists(formatter)
+  return vim.fn.executable(formatter) == 1
+end
+
+local function get_timeout(filetype)
+  if filetype == 'terraform' or filetype == 'hcl' then
+    return 5000
+  end
+  return 1000
+end
+
+local function format_on_save(bufnr)
+  local disable_filetypes = { c = true, cpp = true }
+  local filetype = vim.bo[bufnr].filetype
+  local lsp_format_opt = disable_filetypes[filetype] and 'never' or 'fallback'
+
+  return {
+    timeout_ms = get_timeout(filetype),
+    lsp_format = lsp_format_opt,
+  }
+end
+
 return {
   'stevearc/conform.nvim',
   event = { 'BufWritePre' },
@@ -13,36 +37,22 @@ return {
     },
   },
   opts = {
-    notify_on_error = false,
-    format_on_save = function(bufnr)
-      -- Disable "format_on_save lsp_fallback" for languages that don't
-      -- have a well standardized coding style. You can add additional
-      -- languages here or re-enable it for the disabled ones.
-      local disable_filetypes = { c = true, cpp = true }
-      local lsp_format_opt
-      if disable_filetypes[vim.bo[bufnr].filetype] then
-        lsp_format_opt = 'never'
-      else
-        lsp_format_opt = 'fallback'
+    notify_on_error = true,
+    error_handler = function(err)
+      if err then
+        vim.notify('Formateo fallido: ' .. err, vim.log.levels.ERROR)
       end
-      return {
-        timeout_ms = 5000,
-        lsp_format = lsp_format_opt,
-      }
     end,
+    format_on_save = format_on_save,
     formatters_by_ft = {
       lua = { 'stylua' },
-      json = { 'prettierd' },
+      json = formatter_exists 'prettierd' and { 'prettierd' } or { 'json-tool' },
       json5 = { 'prettierd' },
       jsonc = { 'prettierd' },
-      -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
-      --
-      -- You can use 'stop_after_first' to run the first available formatter from the list
-      javascript = { 'prettierd', 'prettier', stop_after_first = true },
-      javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-      typescript = { 'prettierd', 'prettier', stop_after_first = true },
-      typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+      javascript = js_ts_formatters,
+      javascriptreact = js_ts_formatters,
+      typescript = js_ts_formatters,
+      typescriptreact = js_ts_formatters,
       ['terraform-vars'] = { 'terraform_fmt' },
       hcl = { 'terraform_fmt' },
       terraform = { 'terraform_fmt' },
