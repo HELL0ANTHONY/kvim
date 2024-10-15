@@ -63,15 +63,6 @@ require('lazy').setup({
   },
 
   {
-    'folke/todo-comments.nvim',
-    event = 'VimEnter',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    },
-    opts = { signs = false },
-  },
-
-  {
     'ThePrimeagen/harpoon',
     dependencies = { 'nvim-lua/plenary.nvim' },
     branch = 'harpoon2',

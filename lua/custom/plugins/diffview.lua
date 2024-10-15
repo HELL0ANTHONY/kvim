@@ -3,9 +3,9 @@ return {
   cmd = { 'DiffviewOpen' },
   keys = function()
     return {
-      { '<leader>oD', '<cmd>:DiffviewOpen<CR>', desc = '[o]pen [D]iff' },
-      { '<leader>dc', '<cmd>:DiffviewClose<CR>', desc = '[d]iff [c]lose' },
-      { '<leader>dt', '<cmd>:DiffviewToggleFiles<CR>', desc = '[d]iff [t]oggle' },
+      { '<leader>gd', '<cmd>:DiffviewOpen<CR>', desc = '[g]it [d]iffview' },
+      { '<leader>gq', '<cmd>:DiffviewClose<CR>', desc = '[g]it diffview [q]uit' },
+      { '<leader>gf', '<cmd>:DiffviewToggleFiles<CR>', desc = '[g]it diff [f]iles' },
     }
   end,
   config = function()
@@ -41,4 +41,6 @@ return {
     • `<leader>ca`: Choose all versions of the conflict (effectively
       just deletes the markers, leaving all the content).
     • `dx`: Choose none of the versions of the conflict (delete the conflict region).
+    [x previous conflict
+    ]x next conflict
 ]]
