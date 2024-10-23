@@ -5,6 +5,14 @@
 local H = {}
 local MiniStatusline = require 'mini.statusline'
 
+vim.api.nvim_set_hl(0, 'MiniStatuslineInactive', { bg = '#98971a' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineDevinfo', { bg = '#98971a' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineDirectory', { bg = '#98971a' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineFileinfo', { bg = '#98971a' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineModeNormal', { bg = '#98971a' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineModeInsert', { bg = '#98971a' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineModeVisual', { bg = '#98971a' })
+
 MiniStatusline.setup {
   use_icons = true,
   content = {
@@ -24,19 +32,19 @@ MiniStatusline.setup {
       local filesize_info = H.get_filesize_info()
 
       return MiniStatusline.combine_groups {
-        { hl = mode_hl, strings = { git_info } },
+        { hl = 'MiniStatuslineDevinfo', strings = { git_info } },
         { hl = 'MiniStatuslineDevinfo', strings = { diff_info } },
-        '%<', -- Mark general truncate point
+        '%<', -- Punto general de truncamiento
         { hl = 'MiniStatuslineDirectory', strings = { H.get_pathname { trunc_width = 100 } } },
-        '%=', -- End left alignment
+        '%=', -- Fin de la alineación izquierda
         { hl = 'MiniStatuslineFileinfo', strings = { filetype_info, diagnostics_info } },
-        { hl = mode_hl, strings = { search_info .. filesize_info .. location_info } },
+        { hl = 'MiniStatuslineDevinfo', strings = { search_info .. filesize_info .. location_info } },
       }
     end,
   },
 }
 
--- Utility functions
+-- Funciones utilitarias
 H.isnt_normal_buffer = function()
   return vim.bo.buftype ~= ''
 end
