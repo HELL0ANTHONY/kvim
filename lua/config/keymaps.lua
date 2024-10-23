@@ -38,4 +38,4 @@ function _G.toggle_netrw()
   vim.cmd 'Lexplore %:p:h'
 end
 
-vim.api.nvim_set_keymap('n', '<leader>te', ':lua toggle_netrw()<CR>', { noremap = true, silent = true, desc = '[t]oggle Netrw [e]xplore' })
+vim.api.nvim_set_keymap('n', '<leader>te', ':lua toggle_netrw()<CR><C-w>r', { noremap = true, silent = true, desc = '[t]oggle Netrw [e]xplore' })

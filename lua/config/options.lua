@@ -119,8 +119,10 @@ vim.g.netrw_liststyle = 3
 -- Configura que Netrw abra la ventana en un nuevo split en la derecha
 vim.g.netrw_browse_split = 4
 
--- Establece el tamaño de la ventana de Netrw (20% del espacio disponible)
-vim.g.netrw_winsize = 20
+-- Establece el tamaño de la ventana de Netrw (30% del espacio disponible)
+vim.g.netrw_winsize = 30
+
+vim.g.netrw_keepdir = 0
 
 vim.cmd [[
   function! OpenToRight()
