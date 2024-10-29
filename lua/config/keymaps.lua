@@ -6,6 +6,9 @@ vim.keymap.set('n', '<leader>;r', function()
   fn.remove_comments()
 end, { desc = '[r]emove inline comments' })
 
+-- ==================================== SIDEBAR ==============================
+vim.keymap.set('n', '-', '<CMD>Oil --float<CR>', { desc = 'Open parent directory' })
+
 -- ==================================== BUFFERS ==============================
 -- Close all buffers except one
 function CloseBuffers()
