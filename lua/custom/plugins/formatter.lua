@@ -57,6 +57,7 @@ return {
       hcl = { 'terraform_fmt' },
       terraform = { 'terraform_fmt' },
       tf = { 'terraform_fmt' },
+      go = { 'goimports-reviser', 'gofumpt', 'golines' },
     },
   },
 }

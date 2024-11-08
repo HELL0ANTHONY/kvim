@@ -126,7 +126,10 @@ return {
 
     local ensure_installed = vim.list_extend(vim.tbl_keys(servers), {
       'eslint_d',
+      'gofumpt',
+      'goimports-reviser',
       'golangci_lint_ls',
+      'golines',
       'prettierd',
       'stylua',
       'tflint',

@@ -5,13 +5,13 @@
 local H = {}
 local MiniStatusline = require 'mini.statusline'
 
-vim.api.nvim_set_hl(0, 'MiniStatuslineInactive', { bg = '#98971a' })
-vim.api.nvim_set_hl(0, 'MiniStatuslineDevinfo', { bg = '#98971a' })
-vim.api.nvim_set_hl(0, 'MiniStatuslineDirectory', { bg = '#98971a' })
-vim.api.nvim_set_hl(0, 'MiniStatuslineFileinfo', { bg = '#98971a' })
-vim.api.nvim_set_hl(0, 'MiniStatuslineModeNormal', { bg = '#98971a' })
-vim.api.nvim_set_hl(0, 'MiniStatuslineModeInsert', { bg = '#98971a' })
-vim.api.nvim_set_hl(0, 'MiniStatuslineModeVisual', { bg = '#98971a' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineInactive', { bg = '#3c3836' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineDevinfo', { bg = '#3c3836' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineDirectory', { bg = '#3c3836' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineFileinfo', { bg = '#3c3836' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineModeNormal', { bg = '#3c3836' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineModeInsert', { bg = '#3c3836' })
+vim.api.nvim_set_hl(0, 'MiniStatuslineModeVisual', { bg = '#3c3836' })
 
 MiniStatusline.setup {
   use_icons = true,
