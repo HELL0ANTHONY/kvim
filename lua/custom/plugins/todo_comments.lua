@@ -2,6 +2,7 @@ local icons = {
   FIX = ' ',
   TODO = ' ',
   HACK = ' ',
+  IMPORTANT = ' ',
   WARN = ' ',
   PERF = ' ',
   NOTE = ' ',
@@ -12,6 +13,7 @@ local colors = {
   error = { 'DiagnosticVirtualTextError', 'ErrorMsg', '#fb4934' },
   warning = { 'DiagnosticVirtualTextWarn', 'WarningMsg', '#fabd2f' },
   info = { 'DiagnosticVirtualTextInfo', '#83a598' },
+  important = { 'ImportantTextInfo', '#fe8019' },
   hint = { 'DiagnosticVirtualTextHint', '#8ec07c' },
   default = { 'Identifier', '#d3869b' },
   test = { 'Identifier', '#b16286' },
@@ -29,6 +31,7 @@ return {
     keywords = {
       FIX = { icon = icons.FIX, color = 'error', alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' } },
       TODO = { icon = icons.TODO, color = 'info' },
+      IMPORTANT = { icon = icons.IMPORTANT, color = 'important' },
       HACK = { icon = icons.HACK, color = 'warning' },
       WARN = { icon = icons.WARN, color = 'warning', alt = { 'WARNING', 'XXX' } },
       PERF = { icon = icons.PERF, alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
