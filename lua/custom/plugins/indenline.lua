@@ -4,6 +4,9 @@ return {
   ft = {
     'yaml',
     'python',
+    'tf',
+    'hcl',
+    'tpl',
   },
   config = function()
     local highlight = {
