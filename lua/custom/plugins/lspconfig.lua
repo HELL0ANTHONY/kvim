@@ -23,11 +23,10 @@ return {
     local lsp = require 'lsp-zero'
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
-
-    local lsp_highlight_group = vim.api.nvim_create_augroup('LspHighlight', { clear = true })
+    capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
     lsp.on_attach(function(_, bufnr)
+      -- Configurar solo una vez por buffer
       if vim.b[bufnr].lsp_keymaps_set then
         return
       end
@@ -37,74 +36,34 @@ return {
         vim.keymap.set(mode or 'n', keys, rhs, { noremap = true, silent = true, buffer = bufnr, desc = desc })
       end
 
+      -- Keymaps personalizados
       map('gd', vim.lsp.buf.definition, 'LSP: [g]oto [d]efinition')
       map('gI', require('telescope.builtin').lsp_implementations, 'LSP: [g]oto [I]mplementation')
       map('gD', vim.lsp.buf.declaration, 'LSP: [g]oto [D]eclaration')
       map('gr', require('telescope.builtin').lsp_references, 'LSP: [g]oto [r]eferences')
       map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'LSP: Type [D]efinition')
-      map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'LSP: [w]orkspace [s]ymbols')
       map('<leader>ca', vim.lsp.buf.code_action, 'LSP: [c]ode [a]ction')
       map('<leader>rn', vim.lsp.buf.rename, 'LSP: [r]e[n]ame')
       map('<leader>oe', vim.diagnostic.open_float, 'LSP: [o]pen [e]rror diagnostic')
-      map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')
-      map('<leader>ow', vim.diagnostic.setqflist, 'LSP: [o]pen workspace [w]ide diagnostics')
       map('K', vim.lsp.buf.hover, 'LSP: Hover')
       vim.keymap.set('i', '<C-h>', vim.lsp.buf.signature_help, { noremap = true, silent = true, buffer = bufnr, desc = 'LSP: Signature Help' })
     end)
 
+    -- Servidores configurados
     local servers = {
       gopls = {
-        cmd = { 'gopls' },
-        filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
         settings = {
           gopls = {
-            experimentalPostfixCompletions = true,
             gofumpt = true,
             completeUnimported = true,
             staticcheck = true,
-            -- usePlaceholders = true,
-            linksInHover = true,
-            directoryFilters = {
-              '-.git',
-              '-.vscode',
-              '-.idea',
-              '-.vscode-test',
-              '-node_modules',
-            },
-            semanticTokens = true,
             hints = {
               assignVariableTypes = true,
-              compositeLiteralFields = true,
-              compositeLiteralTypes = true,
-              constantValues = true,
-              functionTypeParameters = true,
               parameterNames = true,
-              rangeVariableTypes = true,
-            },
-
-            codelenses = {
-              gc_details = false,
-              generate = true,
-              regenerate_cgo = true,
-              run_govulncheck = true,
-              test = true,
-              tidy = true,
-              upgrade_dependency = true,
-              vendor = true,
-            },
-            analyses = {
-              fieldalignment = true,
-              nilness = true,
-              unusedparams = true,
-              unusedwrite = true,
-              useany = true,
             },
           },
         },
       },
-      rust_analyzer = {},
-      terraformls = {},
-      ts_ls = {},
       lua_ls = {
         settings = {
           Lua = {
@@ -114,55 +73,54 @@ return {
           },
         },
       },
+      terraformls = {},
+      rust_analyzer = {},
     }
 
-    local function setup_server(server_name, _)
-      local server_opts = servers[server_name] or {}
-      server_opts.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_opts.capabilities or {})
-      require('lspconfig')[server_name].setup(server_opts)
-    end
-
+    -- Configuración de Mason
     require('mason').setup {}
 
-    local ensure_installed = vim.list_extend(vim.tbl_keys(servers), {
-      'eslint_d',
-      'gofumpt',
-      'goimports-reviser',
-      'golangci_lint_ls',
-      'golines',
-      'prettierd',
-      'stylua',
-      'tflint',
-    })
-
-    require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-    require('mason-lspconfig').setup {
-      handlers = {
-        lsp.default_setup,
-        lua_ls = function()
-          local lua_opts = lsp.nvim_lua_ls()
-          require('lspconfig').lua_ls.setup(lua_opts)
-        end,
-        setup_server,
+    -- Asegurar herramientas instaladas
+    require('mason-tool-installer').setup {
+      ensure_installed = {
+        'gopls',
+        'lua_ls',
+        'rust_analyzer',
+        'terraformls',
+        'prettierd',
+        'stylua',
+        'golangci_lint_ls',
       },
     }
 
+    -- Configuración de mason-lspconfig
+    require('mason-lspconfig').setup {
+      ensure_installed = vim.tbl_keys(servers),
+    }
+
+    require('mason-lspconfig').setup_handlers {
+      function(server_name)
+        local opts = servers[server_name] or {}
+        opts.capabilities = capabilities
+        require('lspconfig')[server_name].setup(opts)
+      end,
+    }
+
+    -- Highlight para referencias de LSP
     vim.api.nvim_create_autocmd('LspAttach', {
-      group = lsp_highlight_group,
       callback = function(event)
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if client and client.supports_method 'textDocument/documentHighlight' then
-          local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-          vim.api.nvim_clear_autocmds { group = highlight_augroup, buffer = event.buf }
+          local group = vim.api.nvim_create_augroup('LspDocumentHighlight', { clear = false })
+          vim.api.nvim_clear_autocmds { group = group, buffer = event.buf }
           vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+            group = group,
             buffer = event.buf,
-            group = highlight_augroup,
             callback = vim.lsp.buf.document_highlight,
           })
           vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+            group = group,
             buffer = event.buf,
-            group = highlight_augroup,
             callback = vim.lsp.buf.clear_references,
           })
         end
