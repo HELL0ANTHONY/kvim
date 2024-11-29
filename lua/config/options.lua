@@ -3,6 +3,13 @@
 
 -- See `:help vim.opt`
 
+-- Cursor configuration
+vim.cmd [[
+  let &t_SI = "\e[5 q"
+  let &t_SR = "\e[3 q"
+  let &t_EI = "\e[1 q"
+]]
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -207,26 +214,4 @@ vim.cmd [[
   " To open Netrw from the beginning change the value to 0 
   let g:NetrwIsOpen=1
   nnoremap <leader>r :call OpenToRight()<CR>
-]]
-
--- Cursor configuration
-
-vim.cmd [[
-  if $TERM == "xterm-kitty"
-    " set mouse=a
-    try
-        " undercurl support
-        let &t_Cs = "\e[4:3m"
-        let &t_Ce = "\e[4:0m"
-    catch
-    endtry
-    " Change the cursor in different modes
-    let &t_SI = "\e[5 q"
-    let &t_SR = "\e[3 q"
-    let &t_EI = "\e[1 q"
-    " vim hardcodes background color erase even if the terminfo file does
-    " not contain bce. This causes incorrect background rendering when
-    " using a color theme with a background color.
-    let &t_ut=''
-  endif
 ]]

@@ -46,6 +46,8 @@ return {
       map('<leader>rn', vim.lsp.buf.rename, 'LSP: [r]e[n]ame')
       map('<leader>oe', vim.diagnostic.open_float, 'LSP: [o]pen [e]rror diagnostic')
       map('K', vim.lsp.buf.hover, 'LSP: Hover')
+      map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')
+      map('<leader>ow', vim.diagnostic.setqflist, 'LSP: [o]pen workspace [w]ide diagnostics')
       vim.keymap.set('i', '<C-h>', vim.lsp.buf.signature_help, { noremap = true, silent = true, buffer = bufnr, desc = 'LSP: Signature Help' })
     end)
 
