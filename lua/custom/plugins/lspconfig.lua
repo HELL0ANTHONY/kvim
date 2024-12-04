@@ -43,7 +43,7 @@ return {
       map('gr', require('telescope.builtin').lsp_references, 'LSP: [g]oto [r]eferences')
       map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'LSP: Type [D]efinition')
       map('<leader>ca', vim.lsp.buf.code_action, 'LSP: [c]ode [a]ction')
-      map('<leader>rn', vim.lsp.buf.rename, 'LSP: [r]e[n]ame')
+      map('<leader>lr', vim.lsp.buf.rename, '[L]SP: [r]ename')
       map('<leader>oe', vim.diagnostic.open_float, 'LSP: [o]pen [e]rror diagnostic')
       map('K', vim.lsp.buf.hover, 'LSP: Hover')
       map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')

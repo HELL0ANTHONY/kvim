@@ -3,13 +3,6 @@
 
 -- See `:help vim.opt`
 
--- Cursor configuration
-vim.cmd [[
-  let &t_SI = "\e[5 q"
-  let &t_SR = "\e[3 q"
-  let &t_EI = "\e[1 q"
-]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
