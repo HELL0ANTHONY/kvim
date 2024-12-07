@@ -92,8 +92,9 @@ vim.opt.tabstop = 2
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
--- Ctrl + V seguido de u2022 (unicode)
-vim.opt.listchars = { tab = '⇥ ', trail = '+', eol = '﬋', space = '·', nbsp = '␣' }
+-- Ctrl + V seguido de u2022 (unicode) u2ba0 ⮠
+-- https://symbl.cc/es/unicode-table/#miscellaneous-symbols-and-arrows
+vim.opt.listchars = { tab = '⇥ ', trail = '+', eol = '⮠', space = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'

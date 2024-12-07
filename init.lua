@@ -154,6 +154,13 @@ require('lazy').setup({
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    config = function()
+      if vim.fn.has 'win32' == 1 then
+        local install = require 'nvim-treesitter.install'
+        install.compilers = { 'clang' } -- or gcc
+        install.prefer_git = false
+      end
+    end,
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
