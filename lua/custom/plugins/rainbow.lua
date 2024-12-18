@@ -9,16 +9,22 @@ local plugin = {
 function plugin.config()
   local rainbow_delimiters = require 'rainbow-delimiters'
 
-  vim.cmd [[
-      highlight link RainbowDelimiterBlue Blue
-      highlight link RainbowDelimiterCyan Cyan
-      highlight link RainbowDelimiterGreen Green
-      highlight link RainbowDelimiterOrange  Orange
-      highlight link RainbowDelimiterRed Red
-      highlight link RainbowDelimiterViolet Violet
-      highlight link RainbowDelimiterYellow Yellow
-    ]]
+  -- Definir colores de manera programática
+  local colors = {
+    Blue = 'Blue',
+    Cyan = 'Cyan',
+    Green = 'Green',
+    Orange = 'Orange',
+    Red = 'Red',
+    Violet = 'Violet',
+    Yellow = 'Yellow',
+  }
 
+  for name, link in pairs(colors) do
+    vim.cmd(('highlight link RainbowDelimiter%s %s'):format(name, link))
+  end
+
+  -- Configuración de estrategias y queries
   vim.g.rainbow_delimiters = {
     strategy = {
       [''] = rainbow_delimiters.strategy['global'],
@@ -34,16 +40,9 @@ function plugin.config()
       tsx = 'rainbow-parens',
       jsx = 'rainbow-parens',
       html = 'rainbow-parens',
+      go = 'rainbow-parens',
     },
-    highlight = {
-      'RainbowDelimiterBlue',
-      'RainbowDelimiterCyan',
-      'RainbowDelimiterGreen',
-      'RainbowDelimiterOrange',
-      'RainbowDelimiterRed',
-      'RainbowDelimiterViolet',
-      'RainbowDelimiterYellow',
-    },
+    highlight = vim.tbl_keys(colors),
   }
 end
 
