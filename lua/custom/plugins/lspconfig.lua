@@ -77,6 +77,9 @@ return {
       },
       terraformls = {},
       rust_analyzer = {},
+      powershell_es = {
+        codeFormatting = { Preset = 'OTBS' },
+      },
     }
 
     -- Configuración de Mason
@@ -85,13 +88,14 @@ return {
     -- Asegurar herramientas instaladas
     require('mason-tool-installer').setup {
       ensure_installed = {
+        'golangci_lint_ls',
         'gopls',
         'lua_ls',
-        'rust_analyzer',
-        'terraformls',
+        'powershell_es',
         'prettierd',
+        'rust_analyzer',
         'stylua',
-        'golangci_lint_ls',
+        'terraformls',
       },
     }
 
