@@ -96,6 +96,7 @@ return {
         'rust_analyzer',
         'stylua',
         'terraformls',
+        'taplo',
       },
     }
 

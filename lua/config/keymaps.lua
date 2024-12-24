@@ -24,10 +24,25 @@ vim.keymap.set('n', '<leader>;C', '<cmd>lua CloseBuffers()<CR>', { desc = '[C]lo
 
 -- Define the function globally
 function _G.OpenTerminal()
-  vim.cmd 'split term://zsh'
+  local os_name = vim.loop.os_uname().sysname
+
+  if os_name == 'Windows_NT' then
+    vim.cmd 'split term://powershell'
+  else
+    vim.cmd 'split term://zsh'
+  end
+
   vim.cmd 'resize 12'
 end
-vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = '[o]pen zsh [t]erminal' })
+
+vim.cmd [[
+  augroup TerminalAutoClose
+    autocmd!
+    autocmd TermClose * if !v:event.status | exe 'silent! bdelete!' | endif
+  augroup END
+]]
+
+vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = '[o]pen terminal' })
 
 -- ==================================== OPEN NETRW ===========================
 function _G.toggle_netrw()

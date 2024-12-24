@@ -58,6 +58,7 @@ return {
       terraform = { 'terraform_fmt' },
       tf = { 'terraform_fmt' },
       go = { 'goimports-reviser', 'gofumpt', 'golines' },
+      powershell = { 'psscriptanalyzer' },
     },
   },
 }
