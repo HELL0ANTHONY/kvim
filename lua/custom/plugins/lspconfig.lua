@@ -78,8 +78,21 @@ return {
       terraformls = {},
       rust_analyzer = {},
       powershell_es = {
-        codeFormatting = { Preset = 'OTBS' },
+        settings = {
+          powershell = {
+            codeFormatting = {
+              Preset = 'Allman', -- O usa "Allman" si prefieres ese estilo
+              IndentationSize = 2, -- Tamaño de indentación (4 espacios)
+              PipelineIndentationStyle = 'IncreaseIndentationForFirstPipeline', -- Ajusta el estilo de pipeline
+              scriptAnalyzer = {
+                settingsPath = 'C:/Users/georg/AppData/Local/nvim/PSScriptAnalyzerSettings.psd1',
+              },
+            },
+          },
+        },
       },
+      jsonls = {},
+      html = {},
     }
 
     -- Configuración de Mason
@@ -88,6 +101,7 @@ return {
     -- Asegurar herramientas instaladas
     require('mason-tool-installer').setup {
       ensure_installed = {
+        'html',
         'golangci_lint_ls',
         'gopls',
         'lua_ls',
@@ -95,8 +109,8 @@ return {
         'prettierd',
         'rust_analyzer',
         'stylua',
-        'terraformls',
         'taplo',
+        'terraformls',
       },
     }
 

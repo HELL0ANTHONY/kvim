@@ -49,6 +49,9 @@ return {
       json = formatter_exists 'prettierd' and { 'prettierd' } or { 'json-tool' },
       json5 = { 'prettierd' },
       jsonc = { 'prettierd' },
+      html = { 'prettierd' },
+      powershell = { 'prettierd' },
+      markdown = { 'prettierd' },
       javascript = js_ts_formatters,
       javascriptreact = js_ts_formatters,
       typescript = js_ts_formatters,
@@ -58,7 +61,6 @@ return {
       terraform = { 'terraform_fmt' },
       tf = { 'terraform_fmt' },
       go = { 'goimports-reviser', 'gofumpt', 'golines' },
-      powershell = { 'psscriptanalyzer' },
     },
   },
 }

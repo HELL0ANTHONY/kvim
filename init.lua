@@ -60,7 +60,8 @@ require('lazy').setup({
       -- vim.cmd [[let g:gruvbox_material_diagnostic_line_highlight = 1]]
     end,
     init = function()
-      vim.cmd.colorscheme 'gruvbox-material'
+      vim.cmd.colorscheme 'kanagawa-paper'
+      -- vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
 
@@ -154,7 +155,22 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'terraform', 'hcl' },
+      ensure_installed = {
+        'powershell',
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'terraform',
+        'hcl',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {

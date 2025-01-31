@@ -27,7 +27,7 @@ function _G.OpenTerminal()
   local os_name = vim.loop.os_uname().sysname
 
   if os_name == 'Windows_NT' then
-    vim.cmd 'split term://powershell'
+    vim.cmd 'split term://pwsh'
   else
     vim.cmd 'split term://zsh'
   end
