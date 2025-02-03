@@ -8,7 +8,7 @@ local function get_timeout(filetype)
   if filetype == 'terraform' or filetype == 'hcl' then
     return 5000
   end
-  return 1000
+  return 3000
 end
 
 local function format_on_save(bufnr)

@@ -52,8 +52,8 @@ require('lazy').setup({
     priority = 1000,
     config = function()
       vim.cmd [[let g:gruvbox_material_enable_bold = 1]]
-      vim.cmd [[let g:gruvbox_material_foreground = 'material']] -- 'material'`, `'mix'`, `'original'
-      vim.cmd [[let g:gruvbox_material_background = 'hard']] -- Availablecolored values: 'hard', 'medium'(default), 'soft'
+      vim.cmd [[let g:gruvbox_material_foreground = 'mix']] -- 'material'`, `'mix'`, `'original'
+      vim.cmd [[let g:gruvbox_material_background = 'medium']] -- Availablecolored values: 'hard', 'medium'(default), 'soft'
       vim.cmd [[let g:gruvbox_material_diagnostic_virtual_text = "highlighted"]] -- `'grey'`, `'colored'`, `'highlighted'`
       vim.cmd [[let g:gruvbox_material_better_performance = 1 ]]
       -- vim.cmd [[let g:gruvbox_material_diagnostic_text_highlight = 1]]
