@@ -6,8 +6,18 @@ vim.keymap.set('n', '<leader>;r', function()
   fn.remove_comments()
 end, { desc = '[r]emove inline comments' })
 
+-- ==================================== MARKS ==============================
+-- :RecallMark - Mark the current line.
+-- :RecallUnmark - Unmark the current line.
+-- :RecallToggle - Mark or unmark the current line.
+-- :RecallNext/:RecallPrevious - Navigate through marks linearly, respecting the sequence A-Z and wrapping accordingly.
+-- :RecallClear - Clear all global marks.
+vim.keymap.set('n', '<leader>M', '<CMD>RecallMark<CR>', { desc = '󰃅 Add a new [M]ark' })
+vim.keymap.set('n', '<leader>`', '<CMD>RecallClear<CR>', { desc = '󰃆 Clear all Mark' })
+vim.keymap.set('n', '<leader>m`', '<CMD>Telescope recall<CR>', { desc = '󰸕 Show [m]arks' })
+
 -- ==================================== SIDEBAR ==============================
-vim.keymap.set('n', '-', '<CMD>Oil --float<CR>', { desc = 'Open parent directory' })
+vim.keymap.set('n', '-', '<CMD>Oil --float<CR>', { desc = ' Open parent directory' })
 
 -- ==================================== BUFFERS ==============================
 -- Close all buffers except one
@@ -17,7 +27,7 @@ function CloseBuffers()
   vim.fn.setpos('.', cursor_pos)
 end
 
-vim.keymap.set('n', '<leader>;C', '<cmd>lua CloseBuffers()<CR>', { desc = '[C]lose all buffers' })
+vim.keymap.set('n', '<leader>;C', '<cmd>lua CloseBuffers()<CR>', { desc = ' [C]lose all buffers' })
 
 -- ==================================== TERMINAL ==============================
 -- https://stackoverflow.com/questions/1236563/how-do-i-run-a-terminal-inside-of-vim
@@ -27,7 +37,7 @@ function _G.OpenTerminal()
   vim.cmd 'split term://zsh'
   vim.cmd 'resize 12'
 end
-vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = '[o]pen zsh [t]erminal' })
+vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = ' [o]pen zsh [t]erminal' })
 
 -- ==================================== OPEN NETRW ===========================
 function _G.toggle_netrw()
