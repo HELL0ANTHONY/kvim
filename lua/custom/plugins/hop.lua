@@ -15,7 +15,14 @@ return {
         function()
           require('hop').hint_lines()
         end,
-        desc = '[w]orkspace jump to [l]ine',
+        desc = '[w]orkspace: jump to [l]ine',
+      },
+      {
+        '<leader>wW',
+        function()
+          require('hop').hint_words { multi_windows = true }
+        end,
+        desc = '[w]orkspace: jump to [W]ord (multi-window)',
       },
     }
   end,
