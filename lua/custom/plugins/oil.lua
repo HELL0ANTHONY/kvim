@@ -22,7 +22,7 @@ return {
     default_file_explorer = true,
     win_options = { signcolumn = 'number' },
     view_options = { show_hidden = true },
-    float = { max_height = 10, max_width = 60 },
+    float = { max_height = 12, max_width = 60 },
     keymaps = {
       ['g?'] = { 'actions.show_help', mode = 'n' },
       ['<CR>'] = 'actions.select',
