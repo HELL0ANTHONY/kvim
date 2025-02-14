@@ -1,7 +1,7 @@
 return {
   'stevearc/oil.nvim',
   keys = {
-    {
+    -- {
     --   '-',
     --   function()
     --     require('oil').open()
