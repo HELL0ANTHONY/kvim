@@ -4,15 +4,21 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local lint = require 'lint'
-      lint.linters_by_ft = {
-        -- markdown = { 'markdownlint' },
 
-        go = { 'golangcilint' }, -- "revive"
+      if lint.linters.golangcilint then
+        lint.linters.golangcilint.cmd = '/usr/local/bin/golangci-lint'
+      else
+        vim.notify('golangcilint no está registrado en nvim-lint', vim.log.levels.WARN)
+      end
+
+      -- markdown = { 'markdownlint' },
+      lint.linters_by_ft = {
+        -- go = { 'golangcilint' },
         javascript = { 'eslint_d' },
-        typescript = { 'eslint_d' },
         javascriptreact = { 'eslint_d' },
-        typescriptreact = { 'eslint_d' },
         terraform = { 'tflint' },
+        typescript = { 'eslint_d' },
+        typescriptreact = { 'eslint_d' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,

@@ -18,8 +18,13 @@ return {
   config = function()
     local actions = require 'telescope.actions'
     require('telescope').setup {
+      defaults = {
+        prompt_prefix = '   ',
+        selection_caret = '❯ ',
+      },
       pickers = {
         buffers = {
+          ignore_current_buffer = true,
           theme = 'dropdown',
           previewer = false,
           initial_mode = 'normal',

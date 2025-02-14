@@ -17,7 +17,6 @@ vim.keymap.set('n', '<leader>`', '<CMD>RecallClear<CR>', { desc = '󰃆 Clear al
 vim.keymap.set('n', '<leader>m`', '<CMD>Telescope recall<CR>', { desc = '󰸕 Show [m]arks' })
 
 -- ==================================== SIDEBAR ==============================
-vim.keymap.set('n', '-', '<CMD>Oil --float<CR>', { desc = ' Open parent directory' })
 
 -- ==================================== BUFFERS ==============================
 -- Close all buffers except one
