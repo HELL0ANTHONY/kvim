@@ -1,8 +1,36 @@
 return {
   'stevearc/oil.nvim',
-  -- dependencies = { 'nvim-tree/nvim-web-devicons' },
+  dependencies = {
+    'nvim-tree/nvim-web-devicons',
+    {
+      'SirZenith/oil-vcs-status',
+      config = function()
+        local status_const = require 'oil-vcs-status.constant.status'
+        local StatusType = status_const.StatusType
+
+        require('oil-vcs-status').setup {
+          status_symbol = {
+            [StatusType.Added] = '',
+            [StatusType.Copied] = '󰆏',
+            [StatusType.Deleted] = '',
+            [StatusType.Ignored] = '',
+            [StatusType.Modified] = '',
+            [StatusType.Renamed] = '',
+            [StatusType.TypeChanged] = '󰉺',
+            [StatusType.Unmodified] = ' ',
+            [StatusType.Unmerged] = '',
+            [StatusType.Untracked] = '',
+            [StatusType.External] = '',
+          },
+        }
+      end,
+    },
+  },
   opts = {
     default_file_explorer = false,
+    win_options = {
+      signcolumn = 'yes:2',
+    },
     float = {
       max_height = 20,
       max_width = 60,
@@ -14,7 +42,7 @@ return {
       ['<C-x>'] = { 'actions.select', opts = { horizontal = true } },
       ['<C-t>'] = { 'actions.select', opts = { tab = true } },
       ['<C-p>'] = 'actions.preview',
-      ['<C-c>'] = { 'actions.close', mode = 'n' },
+      ['q'] = { 'actions.close', mode = 'n' },
       ['<C-l>'] = 'actions.refresh',
       ['-'] = { 'actions.parent', mode = 'n' },
       ['_'] = { 'actions.open_cwd', mode = 'n' },
