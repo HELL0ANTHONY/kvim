@@ -56,6 +56,7 @@ require('lazy').setup({
       vim.g.gruvbox_material_foreground = 'material' -- original, mix, material
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_sign_column_background = 'none'
+      vim.g.gruvbox_material_diagnostic_virtual_text = 'colored' -- 'grey'`, `'colored'`, `'highlighted'
 
       local grpid = vim.api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {})
       vim.api.nvim_create_autocmd('ColorScheme', {
@@ -126,7 +127,8 @@ require('lazy').setup({
     end,
     opts = {
       menu = {
-        width = vim.api.nvim_win_get_width(0) - 4,
+        -- width = vim.api.nvim_win_get_width(0) - 4,
+        width = math.floor(vim.api.nvim_win_get_width(0) * 0.5),
       },
       settings = {
         save_on_toggle = true,
