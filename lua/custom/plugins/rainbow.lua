@@ -1,15 +1,18 @@
 -- https://gitlab.com/HiPhish/rainbow-delimiters.nvim
 -- https://gitlab.com/HiPhish/rainbow-delimiters.nvim/-/blob/master/doc/rainbow-delimiters.txt
 -- https://gitlab.com/HiPhish/rainbow-delimiters.nvim
+
 local plugin = {
   'HiPhish/rainbow-delimiters.nvim',
   event = { 'BufReadPre', 'BufNewFile' },
 }
 
 function plugin.config()
-  local rainbow_delimiters = require 'rainbow-delimiters'
+  local ok, rainbow_delimiters = pcall(require, 'rainbow-delimiters')
+  if not ok then
+    return
+  end
 
-  -- Definir colores de manera programática
   local colors = {
     Blue = 'Blue',
     Cyan = 'Cyan',
@@ -24,7 +27,8 @@ function plugin.config()
     vim.cmd(('highlight link RainbowDelimiter%s %s'):format(name, link))
   end
 
-  -- Configuración de estrategias y queries
+  local rainbow_parens = 'rainbow-parens'
+
   vim.g.rainbow_delimiters = {
     strategy = {
       [''] = rainbow_delimiters.strategy['global'],
@@ -42,6 +46,7 @@ function plugin.config()
       html = 'rainbow-parens',
       go = 'rainbow-parens',
     },
+    
     highlight = vim.tbl_keys(colors),
   }
 end

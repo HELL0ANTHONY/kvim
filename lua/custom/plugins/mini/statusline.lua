@@ -72,7 +72,7 @@ H.get_git_info = function()
 end
 
 H.get_diagnostics_info = function()
-  local diag_signs = { ERROR = ' ', WARN = ' ', INFO = ' ', HINT = ' ' }
+  local diag_signs = { ERROR = ' ', WARN = ' ', INFO = ' ', HINT = '󱐋 ' }
   return MiniStatusline.section_diagnostics { trunc_width = 60, signs = diag_signs }
 end
 

@@ -49,6 +49,7 @@ require('lazy').setup({
 
   {
     'sainnhe/gruvbox-material',
+    lazy = false,
     priority = 1000,
     lazy = false,
     config = function()
@@ -57,6 +58,7 @@ require('lazy').setup({
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_sign_column_background = 'none'
       vim.g.gruvbox_material_diagnostic_virtual_text = 'colored' -- 'grey'`, `'colored'`, `'highlighted'
+
 
       local grpid = vim.api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {})
       vim.api.nvim_create_autocmd('ColorScheme', {
@@ -88,6 +90,7 @@ require('lazy').setup({
       })
     end,
     init = function()
+      -- vim.cmd.colorscheme 'kanagawa'
       vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
@@ -98,7 +101,6 @@ require('lazy').setup({
     branch = 'harpoon2',
     config = function()
       local harpoon = require 'harpoon'
-
       harpoon:setup {
         settings = {
           save_on_toggle = true,
@@ -187,31 +189,6 @@ require('lazy').setup({
       require 'custom.plugins.mini.icons'
       -- require 'custom.plugins.mini.diff'
     end,
-  },
-  { -- Highlight, edit, and navigate code
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'terraform', 'hcl' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    -- There are additional nvim-treesitter modules that you can use to interact
-    -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
