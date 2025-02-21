@@ -25,12 +25,37 @@ return {
       defaults = {
         prompt_prefix = '   ',
         selection_caret = '❯ ',
+
+        path_display = {
+          filename_first = {
+            reverse_directories = false,
+          },
+        },
+
+        borderchars = {
+          prompt = { '━', '┃', '━', '┃', '┏', '┓', '┛', '┗' },
+          -- preview = {"━", "┃", "━", "┃", "┏", "┓", "┛", "┗"},
+          -- results = {"━", "┃", "━", "┃", "┏", "┓", "┛", "┗"},
+          -- prompt = {" ", " ", " ", " ", " ", " ", " ", " "},
+          preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+          results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+        },
+
+        vimgrep_arguments = {
+          'rg',
+          '--color=never',
+          '--no-heading',
+          '--with-filename',
+          '--line-number',
+          '--column',
+          '--smart-case',
+        },
       },
       pickers = {
 
         buffers = {
-          ignore_current_buffer = true,
           theme = 'dropdown',
+          sort_mru = true,
           layout_config = {
             prompt_position = 'top', -- Separa el prompt de los resultados
           },
