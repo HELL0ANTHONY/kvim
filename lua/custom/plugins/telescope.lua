@@ -29,6 +29,7 @@ return {
       pickers = {
 
         buffers = {
+          ignore_current_buffer = true,
           theme = 'dropdown',
           layout_config = {
             prompt_position = 'top', -- Separa el prompt de los resultados

@@ -37,15 +37,16 @@ function plugin.config()
     query = {
       [''] = 'rainbow-delimiters',
       lua = 'rainbow-blocks',
-      go = rainbow_parens,
-      html = rainbow_parens,
-      typescript = rainbow_parens,
-      javascript = rainbow_parens,
-      typescriptreact = rainbow_parens,
-      javascriptreact = rainbow_parens,
-      tsx = rainbow_parens,
-      jsx = rainbow_parens,
+      typescript = 'rainbow-parens',
+      javascript = 'rainbow-parens',
+      typescriptreact = 'rainbow-parens',
+      javascriptreact = 'rainbow-parens',
+      tsx = 'rainbow-parens',
+      jsx = 'rainbow-parens',
+      html = 'rainbow-parens',
+      go = 'rainbow-parens',
     },
+    
     highlight = vim.tbl_keys(colors),
   }
 end

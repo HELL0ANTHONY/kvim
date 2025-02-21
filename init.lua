@@ -51,11 +51,14 @@ require('lazy').setup({
     'sainnhe/gruvbox-material',
     lazy = false,
     priority = 1000,
+    lazy = false,
     config = function()
       vim.g.gruvbox_material_background = 'medium' -- hard, soft, medium
       vim.g.gruvbox_material_foreground = 'material' -- original, mix, material
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_sign_column_background = 'none'
+      vim.g.gruvbox_material_diagnostic_virtual_text = 'colored' -- 'grey'`, `'colored'`, `'highlighted'
+
 
       local grpid = vim.api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {})
       vim.api.nvim_create_autocmd('ColorScheme', {
@@ -85,7 +88,6 @@ require('lazy').setup({
           .. 'hi CodewindowBorder                   guifg=#ea6962 |'
           .. 'hi TabLine                            guibg=#282828 |',
       })
-      vim.cmd 'colorscheme gruvbox-material'
     end,
     init = function()
       -- vim.cmd.colorscheme 'kanagawa'
@@ -99,6 +101,16 @@ require('lazy').setup({
     branch = 'harpoon2',
     config = function()
       local harpoon = require 'harpoon'
+      harpoon:setup {
+        settings = {
+          save_on_toggle = true,
+          sync_on_ui_close = true,
+          -- key = function()
+          --   return vim.loop.cwd()
+          -- end,
+        },
+      }
+
       harpoon:extend {
         UI_CREATE = function(cx)
           vim.keymap.set('n', '<C-v>', function()
@@ -117,7 +129,8 @@ require('lazy').setup({
     end,
     opts = {
       menu = {
-        width = vim.api.nvim_win_get_width(0) - 4,
+        -- width = vim.api.nvim_win_get_width(0) - 4,
+        width = math.floor(vim.api.nvim_win_get_width(0) * 0.5),
       },
       settings = {
         save_on_toggle = true,
