@@ -100,6 +100,9 @@ return {
       lua_ls = {
         settings = {
           Lua = {
+            diagnostics = {
+              globals = { 'vim' },
+            },
             completion = {
               callSnippet = 'Replace',
             },
@@ -151,6 +154,7 @@ return {
     -- Configuración de mason-lspconfig
     require('mason-lspconfig').setup {
       ensure_installed = vim.tbl_keys(servers),
+      automatic_installation = true,
     }
 
     require('mason-lspconfig').setup_handlers {
