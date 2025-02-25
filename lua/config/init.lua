@@ -9,7 +9,7 @@ vim.fn.sign_define('DiagnosticSignInfo', { text = '', hl = 'DiagnosticSignInf
 vim.fn.sign_define('DiagnosticSignHint', { text = '', hl = 'DiagnosticSignHint', texthl = 'DiagnosticSignHint', culhl = 'DiagnosticSignHintLine' })
 
 vim.diagnostic.config {
-  -- virtual_text = true,
+  virtual_text = true,
   -- update_in_insert = false,
   -- underline = true,
   -- severity_sort = true,
