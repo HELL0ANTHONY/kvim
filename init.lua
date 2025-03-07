@@ -49,16 +49,15 @@ require('lazy').setup({
 
   {
     'sainnhe/gruvbox-material',
-    lazy = false,
     priority = 1000,
     lazy = false,
     config = function()
       vim.g.gruvbox_material_background = 'medium' -- hard, soft, medium
       vim.g.gruvbox_material_foreground = 'material' -- original, mix, material
       vim.g.gruvbox_material_enable_italic = 1
+      vim.g.gruvbox_material_enable_bold = 1
       vim.g.gruvbox_material_sign_column_background = 'none'
       vim.g.gruvbox_material_diagnostic_virtual_text = 'colored' -- 'grey'`, `'colored'`, `'highlighted'
-
 
       local grpid = vim.api.nvim_create_augroup('custom_highlights_gruvboxmaterial', {})
       vim.api.nvim_create_autocmd('ColorScheme', {
@@ -213,6 +212,9 @@ require('lazy').setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
 }, {
+  change_detection = {
+    notify = false,
+  },
   ui = {
     icons = {},
   },

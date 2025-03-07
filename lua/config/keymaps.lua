@@ -13,7 +13,7 @@ end, { desc = '[r]emove inline comments' })
 -- :RecallNext/:RecallPrevious - Navigate through marks linearly, respecting the sequence A-Z and wrapping accordingly.
 -- :RecallClear - Clear all global marks.
 vim.keymap.set('n', '<leader>M', '<CMD>RecallMark<CR>', { desc = '󰃅 Add a new [M]ark' })
-vim.keymap.set('n', '<leader>`', '<CMD>RecallClear<CR>', { desc = '󰃆 Clear all Mark' })
+vim.keymap.set('n', '<leader>`', '<CMD>RecallUnmark<CR>', { desc = '󰃆 Clear current Mark' })
 vim.keymap.set('n', '<leader>m`', '<CMD>Telescope recall<CR>', { desc = '󰸕 Show [m]arks' })
 
 -- ==================================== SIDEBAR ==============================
