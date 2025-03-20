@@ -13,7 +13,7 @@ function plugin.config()
 
   navbuddy.setup {
     window = {
-      border = 'rounded',
+      border = 'single',
     },
     --- icons = require("george.icons").kind,
     lsp = { auto_attach = true },
