@@ -7,6 +7,7 @@ local icons = {
   PERF = ' ',
   NOTE = ' ',
   TEST = '󰙨 ',
+  QUESTION = ' ',
 }
 
 local colors = {
@@ -36,6 +37,7 @@ return {
       WARN = { icon = icons.WARN, color = 'warning', alt = { 'WARNING', 'XXX' } },
       PERF = { icon = icons.PERF, alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
       NOTE = { icon = icons.NOTE, color = 'hint', alt = { 'INFO' } },
+      QUESTION = { icon = icons.QUESTION, color = 'hint', alt = { 'Q' } },
       TEST = { icon = icons.TEST, color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
     },
 
