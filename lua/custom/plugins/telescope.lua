@@ -20,27 +20,16 @@ return {
     local builtin = require 'telescope.builtin'
     local themes = require 'telescope.themes'
 
-    -- Configuración de Telescope
     telescope.setup {
       defaults = {
         prompt_prefix = '   ',
         selection_caret = '❯ ',
-
-        path_display = {
-          filename_first = {
-            reverse_directories = false,
-          },
-        },
-
+        path_display = { 'truncate' },
         borderchars = {
           prompt = { '━', '┃', '━', '┃', '┏', '┓', '┛', '┗' },
-          -- preview = {"━", "┃", "━", "┃", "┏", "┓", "┛", "┗"},
-          -- results = {"━", "┃", "━", "┃", "┏", "┓", "┛", "┗"},
-          -- prompt = {" ", " ", " ", " ", " ", " ", " ", " "},
           preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
           results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
         },
-
         vimgrep_arguments = {
           'rg',
           '--color=never',
@@ -50,15 +39,21 @@ return {
           '--column',
           '--smart-case',
         },
+        mappings = {
+          i = {
+            ['<C-u>'] = false,
+            ['<C-d>'] = false,
+          },
+          n = {
+            ['q'] = actions.close,
+          },
+        },
       },
       pickers = {
-
         buffers = {
           theme = 'dropdown',
           sort_mru = true,
-          layout_config = {
-            prompt_position = 'top', -- Separa el prompt de los resultados
-          },
+          layout_config = { prompt_position = 'top' },
           previewer = false,
           ignore_current_buffer = true,
           initial_mode = 'normal',
@@ -73,12 +68,11 @@ return {
       },
     }
 
-    -- Cargar extensiones de forma más limpia
     for _, ext in ipairs { 'fzf', 'ui-select' } do
       pcall(telescope.load_extension, ext)
     end
 
-    -- Mapeos de teclas
+    -- **Mapeos universales y representativos**
     local keymaps = {
       { '<leader>sh', builtin.help_tags, '[S]earch [H]elp' },
       { '<leader>sk', builtin.keymaps, '[S]earch [K]eymaps' },
@@ -88,7 +82,7 @@ return {
       { '<leader>sg', builtin.live_grep, '[S]earch by [G]rep' },
       { '<leader>sd', builtin.diagnostics, '[S]earch [D]iagnostics' },
       { '<leader>sr', builtin.resume, '[S]earch [R]esume' },
-      { '<leader>s.', builtin.oldfiles, '[S]earch Recent Files ("." for repeat)' },
+      { '<leader>s.', builtin.oldfiles, '[S]earch Recent Files' },
       { '<leader><leader>', builtin.buffers, 'Find existing buffers' },
       {
         '<leader>/',
@@ -110,6 +104,23 @@ return {
           builtin.find_files { cwd = vim.fn.stdpath 'config' }
         end,
         '[S]earch [N]eovim files',
+      },
+    }
+
+    -- **Configuración de selección unificada (sin conflictos con Zellij ni Windows)**
+    telescope.setup {
+      defaults = {
+        mappings = {
+          i = {
+            ['<CR>'] = actions.select_default, -- Enter: Abre en la misma ventana
+          },
+          n = {
+            ['H'] = actions.select_default, -- Misma ventana
+            ['J'] = actions.select_vertical, -- División vertical
+            ['K'] = actions.select_horizontal, -- División horizontal
+            ['L'] = actions.select_tab, -- Nueva pestaña
+          },
+        },
       },
     }
 
