@@ -1,7 +1,6 @@
 local func = {}
 
--- run :Preview
--- vnew | Preview
+-- cmd :vnew | Preview
 -- Install ts-node for typescript
 local attach_to_buffer = function(output_bufnr, patterns_and_commands)
   vim.api.nvim_create_autocmd('BufWritePost', {

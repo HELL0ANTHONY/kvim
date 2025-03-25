@@ -25,7 +25,7 @@ sudo apt install make git ripgrep unzip xclip build-essential
 Paquetes instalados con `brew`:
 
 ```bash
-brew install go neovim rust bat gitui serie eza bottom
+brew install go neovim rust bat gitui serie eza bottom dust fd
 ```
 
 ### 4. Instalar herramientas adicionales
