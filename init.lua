@@ -1,5 +1,8 @@
 -- [marks]: https://vim.fandom.com/wiki/Using_marks
 
+-- Error: unknown flag: --out-format
+-- Failed executing command with error: unknown flag: --out-format
+
 require 'config'
 
 require('lazy').setup({
@@ -49,7 +52,6 @@ require('lazy').setup({
 
   {
     'sainnhe/gruvbox-material',
-    lazy = false,
     priority = 1000,
     lazy = false,
     config = function()
