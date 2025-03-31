@@ -1,8 +1,5 @@
 -- [marks]: https://vim.fandom.com/wiki/Using_marks
 
--- Error: unknown flag: --out-format
--- Failed executing command with error: unknown flag: --out-format
-
 require 'config'
 
 require('lazy').setup({
@@ -114,15 +111,15 @@ require('lazy').setup({
 
       harpoon:extend {
         UI_CREATE = function(cx)
-          vim.keymap.set('n', '<C-v>', function()
+          vim.keymap.set('n', 'J', function()
             harpoon.ui:select_menu_item { vsplit = true }
           end, { buffer = cx.bufnr })
 
-          vim.keymap.set('n', '<C-x>', function()
+          vim.keymap.set('n', 'K', function()
             harpoon.ui:select_menu_item { split = true }
           end, { buffer = cx.bufnr })
 
-          vim.keymap.set('n', '<C-t>', function()
+          vim.keymap.set('n', 'L', function()
             harpoon.ui:select_menu_item { tabedit = true }
           end, { buffer = cx.bufnr })
         end,
