@@ -1,23 +1,24 @@
 local icons = {
-  FIX = ' ',
-  TODO = ' ',
+  FIX = ' ',
   HACK = ' ',
-  IMPORTANT = ' ',
-  WARN = ' ',
-  PERF = ' ',
+  IMPORTANT = ' ',
   NOTE = ' ',
-  TEST = '󰙨 ',
-  QUESTION = ' ',
+  PERF = ' ',
+  QUESTION = ' ',
+  TEST = ' ',
+  TODO = ' ',
+  WARN = ' ',
 }
 
 local colors = {
-  error = { 'DiagnosticVirtualTextError', 'ErrorMsg', '#fb4934' },
-  warning = { 'DiagnosticVirtualTextWarn', 'WarningMsg', '#fabd2f' },
-  info = { 'DiagnosticVirtualTextInfo', '#83a598' },
-  important = { 'ImportantTextInfo', '#fe8019' },
-  hint = { 'DiagnosticVirtualTextHint', '#8ec07c' },
+  error = { 'DiagnosticError', 'ErrorMsg', '#fb4934' },
+  warning = { 'DiagnosticWarn', 'WarningMsg', '#fabd2f' },
+  info = { 'DiagnosticInfo', '#83a598' },
+  important = { 'DiagnosticSignHint', '#fe8019' },
+  hint = { 'DiagnosticHint', '#8ec07c' },
   default = { 'Identifier', '#d3869b' },
-  test = { 'Identifier', '#b16286' },
+  test = { 'Special', '#b16286' },
+  Orange = { 'Orange' },
 }
 
 return {
@@ -37,17 +38,17 @@ return {
       WARN = { icon = icons.WARN, color = 'warning', alt = { 'WARNING', 'XXX' } },
       PERF = { icon = icons.PERF, alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
       NOTE = { icon = icons.NOTE, color = 'hint', alt = { 'INFO' } },
-      QUESTION = { icon = icons.QUESTION, color = 'hint', alt = { 'Q' } },
       TEST = { icon = icons.TEST, color = 'test', alt = { 'TESTING', 'PASSED', 'FAILED' } },
+      QUESTION = { icon = icons.QUESTION, color = 'Orange', alt = { 'Q' } },
     },
 
     gui_style = { fg = 'NONE', bg = 'BOLD' },
     merge_keywords = true,
 
     highlight = {
-      multiline = false, -- Puedes cambiar esto a true si usas multilínea
+      multiline = false,
       multiline_pattern = '^.',
-      multiline_context = 5, -- Ajustado para menos contexto si no es necesario
+      multiline_context = 5,
       before = '',
       keyword = 'wide',
       after = 'fg',
@@ -56,7 +57,7 @@ return {
       max_line_len = 200,
     },
 
-    colors = colors, -- Usando la variable local para colores
+    colors = colors,
 
     search = {
       command = 'rg',
