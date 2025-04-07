@@ -4,6 +4,21 @@
 
 require 'config'
 
+vim.filetype.add {
+  extension = {
+    env = 'dotenv',
+    tpl = 'smarty',
+  },
+  filename = {
+    ['.env'] = 'dotenv',
+    ['index.tpl'] = 'smarty',
+  },
+  pattern = {
+    ['%.env%.[%w_.-]+'] = 'dotenv',
+    ['%.tpl$'] = 'smarty',
+  },
+}
+
 require('lazy').setup({
   'tpope/vim-sleuth',
 
@@ -221,6 +236,9 @@ require('lazy').setup({
     icons = {},
   },
 })
+
+vim.treesitter.language.register('bash', 'dotenv')
+-- vim.treesitter.language.register('html', 'smarty')
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

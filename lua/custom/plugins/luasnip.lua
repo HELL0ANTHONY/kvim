@@ -33,5 +33,19 @@ return {
         end),
       }),
     })
+
+    ls.add_snippets('typescript', {
+      s('plog', {
+        f(function()
+          local parent_dir = vim.fn.expand '%:h:t'
+          local filename = vim.fn.expand '%:t'
+          return "console.log('" .. parent_dir .. '/' .. filename .. "', { "
+        end),
+        i(1, 'variable'),
+        f(function()
+          return ' });'
+        end),
+      }),
+    })
   end,
 }
