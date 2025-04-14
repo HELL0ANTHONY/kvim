@@ -129,6 +129,11 @@ return {
       jsonls = {},
       html = {},
       ts_ls = {},
+      eslint = {
+        settings = {
+          workingDirectory = { mode = 'auto' },
+        },
+      },
     }
 
     -- Configuración de Mason
@@ -138,6 +143,7 @@ return {
     require('mason-tool-installer').setup {
       ensure_installed = {
         'html',
+        'eslint',
         'golangci_lint_ls',
         'gopls',
         'lua_ls',
