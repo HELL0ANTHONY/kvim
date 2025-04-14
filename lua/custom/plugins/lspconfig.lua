@@ -21,7 +21,6 @@ return {
 
   config = function()
     local lsp = require 'lsp-zero'
-
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
@@ -36,23 +35,38 @@ return {
         vim.keymap.set(mode or 'n', keys, rhs, { noremap = true, silent = true, buffer = bufnr, desc = desc })
       end
 
+      -- grn in Normal mode maps to vim.lsp.buf.rename()
+      -- grr in Normal mode maps to vim.lsp.buf.references()
+      -- gri in Normal mode maps to vim.lsp.buf.implementation()
+      -- gO in Normal mode maps to vim.lsp.buf.document_symbol()
+      -- gra in Normal and Visual mode maps to vim.lsp.buf.code_action()
+      -- CTRL-S in Insert and Select mode maps to vim.lsp.buf.signature_help()
+
       -- Keymaps personalizados
       map('gd', vim.lsp.buf.definition, 'LSP: [g]oto [d]efinition')
-      map('gI', require('telescope.builtin').lsp_implementations, 'LSP: [g]oto [I]mplementation')
       map('gD', vim.lsp.buf.declaration, 'LSP: [g]oto [D]eclaration')
-      map('gr', require('telescope.builtin').lsp_references, 'LSP: [g]oto [r]eferences')
+
       map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'LSP: Type [D]efinition')
-      map('<leader>ca', vim.lsp.buf.code_action, 'LSP: [c]ode [a]ction')
-      map('<leader>lr', vim.lsp.buf.rename, '[L]SP: [r]ename')
+
+      -- map('<leader>ca', vim.lsp.buf.code_action, 'LSP: [c]ode [a]ction')
+      -- map('gr', require('telescope.builtin').lsp_references, 'LSP: [g]oto [r]eferences')
+      -- map('gI', require('telescope.builtin').lsp_implementations, 'LSP: [g]oto [I]mplementation')
+      -- map('<leader>lr', vim.lsp.buf.rename, '[L]SP: [r]ename')
+      -- vim.keymap.set('i', '<C-h>', vim.lsp.buf.signature_help, { noremap = true, silent = true, buffer = bufnr, desc = 'LSP: Signature Help' })
       map('<leader>oe', vim.diagnostic.open_float, 'LSP: [o]pen [e]rror diagnostic')
-      map('K', vim.lsp.buf.hover, 'LSP: Hover')
       map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')
       map('<leader>ow', vim.diagnostic.setqflist, 'LSP: [o]pen workspace [w]ide diagnostics')
-      vim.keymap.set('i', '<C-h>', vim.lsp.buf.signature_help, { noremap = true, silent = true, buffer = bufnr, desc = 'LSP: Signature Help' })
+
+      map('K', function()
+        vim.lsp.buf.hover { border = 'single' }
+      end, 'LSP: Hover')
     end)
 
     -- Servidores configurados
     local servers = {
+      eslint = { settings = {
+        workingDirectory = { mode = 'auto' },
+      } },
       gopls = {
         settings = {
           gopls = {
@@ -134,9 +148,10 @@ return {
     -- Asegurar herramientas instaladas
     require('mason-tool-installer').setup {
       ensure_installed = {
-        'html',
+        'eslint',
         'golangci_lint_ls',
         'gopls',
+        'html',
         'lua_ls',
         'powershell_es',
         'prettierd',
@@ -182,5 +197,31 @@ return {
         end
       end,
     })
+
+    vim.diagnostic.config {
+      virtual_text = true,
+      float = {
+        focusable = true,
+        style = 'minimal',
+        border = 'single',
+        header = '',
+        prefix = '',
+      },
+
+      signs = {
+        text = {
+          [vim.diagnostic.severity.ERROR] = ' ',
+          [vim.diagnostic.severity.WARN] = ' ',
+          [vim.diagnostic.severity.INFO] = ' ',
+          [vim.diagnostic.severity.HINT] = '󰠠 ',
+        },
+        linehl = {
+          [vim.diagnostic.severity.ERROR] = 'Error',
+          [vim.diagnostic.severity.WARN] = 'Warn',
+          [vim.diagnostic.severity.INFO] = 'Info',
+          [vim.diagnostic.severity.HINT] = 'Hint',
+        },
+      },
+    }
   end,
 }

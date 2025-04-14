@@ -6,20 +6,14 @@ require('lazy').setup({
   'tpope/vim-sleuth',
 
   {
-    -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter',
     opts = {
       icons = {
-        -- set icon mappings to true if you have a Nerd Font
-        mappings = true, -- vim.g.have_nerd_font,
-
-        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-        -- default whick-key.nvim defined Nerd Font icons, otherwise define a string table
+        mappings = true,
         keys = {},
       },
 
-      -- Document existing key chains
       spec = {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
@@ -76,7 +70,7 @@ require('lazy').setup({
           .. 'hi TelescopeResultsBorder             guifg=#89b482 guibg=#282828 |'
           .. 'hi TelescopeMatching                  guifg=#d8a657 guibg=#282828 |'
           .. 'hi TelescopeSelection                 guifg=#ffffff guibg=#32302f |'
-          .. 'hi FloatBorder                        guifg=#ea6962 guibg=#282828 |'
+          .. 'hi FloatBorder                         guibg=#282828 |' ---guifg=#ea6962
           .. 'hi BqfPreviewBorder                   guifg=#ea6962 guibg=#282828 |'
           .. 'hi NormalFloat                        guibg=#282828 |'
           .. 'hi IndentBlanklineContextChar         guifg=#d3869b |'
@@ -88,7 +82,6 @@ require('lazy').setup({
       })
     end,
     init = function()
-      -- vim.cmd.colorscheme 'kanagawa'
       vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
@@ -166,7 +159,7 @@ require('lazy').setup({
     end,
   },
 
-  { -- Collection of various small independent plugins/modules
+  {
     'echasnovski/mini.nvim',
     config = function()
       -- Better Around/Inside textobjects
@@ -213,6 +206,12 @@ require('lazy').setup({
 }, {
   ui = {
     icons = {},
+  },
+  {
+    change_detection = {
+      enabled = true,
+      notify = false,
+    },
   },
 })
 
