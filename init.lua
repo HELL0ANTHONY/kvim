@@ -94,7 +94,7 @@ require('lazy').setup({
           .. 'hi TelescopeResultsBorder             guifg=#89b482 guibg=#282828 |'
           .. 'hi TelescopeMatching                  guifg=#d8a657 guibg=#282828 |'
           .. 'hi TelescopeSelection                 guifg=#ffffff guibg=#32302f |'
-          .. 'hi FloatBorder                        guifg=#ea6962 guibg=#282828 |'
+          .. 'hi FloatBorder                        guibg=#282828 |' -- guifg=#ea6962
           .. 'hi BqfPreviewBorder                   guifg=#ea6962 guibg=#282828 |'
           .. 'hi NormalFloat                        guibg=#282828 |'
           .. 'hi IndentBlanklineContextChar         guifg=#d3869b |'
