@@ -5,7 +5,10 @@ return {
   'VonHeikemen/lsp-zero.nvim',
   branch = 'v4.x',
   dependencies = {
-    { 'neovim/nvim-lspconfig' },
+    {
+      'neovim/nvim-lspconfig',
+      version = '*',
+    },
     {
       'williamboman/mason.nvim',
       build = function()
@@ -65,8 +68,13 @@ return {
     -- Servidores configurados
     local servers = {
       eslint = {
+        -- MasonInstall eslint-lsp@4.5.0
         settings = {
+          useFlatConfig = true,
           workingDirectory = { mode = 'auto' },
+          experimental = {
+            useFlatConfig = nil,
+          },
         },
       },
       gopls = {
