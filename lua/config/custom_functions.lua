@@ -3,16 +3,19 @@ local func = {}
 -- cmd :vnew | Preview
 -- Install ts-node for typescript
 local attach_to_buffer = function(output_bufnr, patterns_and_commands)
+  local group = vim.api.nvim_create_augroup('Preview', {}) -- No usamos clear=true para no borrar todo
+
   vim.api.nvim_create_autocmd('BufWritePost', {
-    group = vim.api.nvim_create_augroup('Preview', { clear = true }),
+    group = group,
+    buffer = output_bufnr, -- Solo aplica al buffer actual
     callback = function()
-      local filetype = vim.bo.filetype
+      local filetype = vim.bo[output_bufnr].filetype
       local pattern_command = patterns_and_commands[filetype]
 
       if pattern_command then
-        local command = pattern_command.command
+        local command = vim.deepcopy(pattern_command.command)
 
-        local file = vim.fn.expand '%:p'
+        local file = vim.fn.expand('%:p', false)
         if string.match(file, ' ') then
           file = string.format('"%s"', file)
         end
@@ -66,8 +69,12 @@ vim.api.nvim_create_user_command('Preview', function()
     -- Add more languages here as needed
   }
 
-  local bufnr = vim.api.nvim_get_current_buf()
-  attach_to_buffer(tonumber(bufnr), patterns_and_commands)
+  local current_bufnr = vim.api.nvim_get_current_buf()
+  local output_bufnr = vim.api.nvim_create_buf(false, true)
+  vim.cmd 'vnew'
+  vim.api.nvim_win_set_buf(0, output_bufnr)
+
+  attach_to_buffer(output_bufnr, patterns_and_commands)
 end, {})
 
 -- remove_comments Remove inline comments from one file

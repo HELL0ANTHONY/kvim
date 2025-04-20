@@ -64,9 +64,13 @@ return {
 
     -- Servidores configurados
     local servers = {
-      eslint = { settings = {
-        workingDirectory = { mode = 'auto' },
-      } },
+      eslint = {
+        settings = {
+          useFlatconfig = true,
+          workingDirectory = { mode = 'auto' },
+          experimetal = { useFlatconfig = nil },
+        },
+      },
       gopls = {
         settings = {
           gopls = {
