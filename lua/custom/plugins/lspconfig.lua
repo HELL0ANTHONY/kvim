@@ -179,7 +179,8 @@ return {
       automatic_installation = true,
     }
 
-    require('mason-lspconfig').setup_handlers {
+    -- require('mason-lspconfig').setup_handlers {
+    require('mason-lspconfig').setup {
       function(server_name)
         local opts = servers[server_name] or {}
         opts.capabilities = capabilities
