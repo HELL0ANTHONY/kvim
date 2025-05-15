@@ -61,7 +61,7 @@ return {
       tf = { 'terraform_fmt' },
       typescript = js_ts_formatters,
       typescriptreact = js_ts_formatters,
-      yaml = { 'prettierd' },
+      yaml = { 'yamlfmt' },
     },
   },
 }

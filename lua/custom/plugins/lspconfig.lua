@@ -180,6 +180,7 @@ return {
         'taplo',
         'terraformls',
         'ts_ls',
+        'yamlfmt',
         'yamllint',
       },
     }
