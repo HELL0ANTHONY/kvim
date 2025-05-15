@@ -67,6 +67,16 @@ return {
 
     -- Servidores configurados
     local servers = {
+      yamlls = {
+        settings = {
+          yaml = {
+            schemas = {
+              kubernetes = '*.k8s.yaml',
+              ['https://json.schemastore.org/github-workflow.json'] = '/.github/workflows/*',
+            },
+          },
+        },
+      },
       eslint = {
         -- MasonInstall eslint-lsp@4.5.0
         settings = {
@@ -170,6 +180,7 @@ return {
         'taplo',
         'terraformls',
         'ts_ls',
+        'yamllint',
       },
     }
 
