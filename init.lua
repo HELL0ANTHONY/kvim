@@ -137,7 +137,13 @@ require('lazy').setup({
             harpoon.ui:select_menu_item { split = true }
           end, { buffer = cx.bufnr })
 
+          -- Abrir en la ventana actual con Enter
           vim.keymap.set('n', '<CR>', function()
+            harpoon.ui:select_menu_item()
+          end, { buffer = cx.bufnr })
+
+          -- Abrir en una nueva pestaña con Ctrl+t
+          vim.keymap.set('n', '<C-t>', function()
             harpoon.ui:select_menu_item { tabedit = true }
           end, { buffer = cx.bufnr })
         end,
