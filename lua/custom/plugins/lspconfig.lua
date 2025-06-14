@@ -5,7 +5,10 @@ return {
   'VonHeikemen/lsp-zero.nvim',
   branch = 'v4.x',
   dependencies = {
-    { 'neovim/nvim-lspconfig' },
+    {
+      'neovim/nvim-lspconfig',
+      version = '*',
+    },
     {
       'williamboman/mason.nvim',
       build = function()
@@ -65,55 +68,58 @@ return {
     -- Servidores configurados
     local servers = {
       eslint = {
+        -- MasonInstall eslint-lsp@4.5.0
         settings = {
-          useFlatconfig = true,
+          useFlatConfig = true,
           workingDirectory = { mode = 'auto' },
-          experimetal = { useFlatconfig = nil },
+          experimental = {
+            useFlatConfig = nil,
+          },
         },
       },
       gopls = {
-        settings = {
-          gopls = {
-            experimentalPostfixCompletions = true,
-            gofumpt = true,
-            completeUnimported = true,
-            staticcheck = true,
-            linksInHover = true,
-            directoryFilters = {
-              '-.git',
-              '-.vscode',
-              '-.idea',
-              '-.vscode-test',
-              '-node_modules',
-            },
-            semanticTokens = true,
-            hints = {
-              assignVariableTypes = true,
-              compositeLiteralFields = true,
-              compositeLiteralTypes = true,
-              constantValues = true,
-              functionTypeParameters = true,
-              parameterNames = true,
-              rangeVariableTypes = true,
-            },
-            codelenses = {
-              gc_details = false,
-              generate = true,
-              regenerate_cgo = true,
-              run_govulncheck = true,
-              test = true,
-              tidy = true,
-              upgrade_dependency = true,
-              vendor = true,
-            },
-            analyses = {
-              nilness = true,
-              unusedparams = true,
-              unusedwrite = true,
-              useany = true,
-            },
-          },
-        },
+        -- settings = {
+        --   gopls = {
+        --     experimentalPostfixCompletions = true,
+        --     gofumpt = true,
+        --     completeUnimported = true,
+        --     staticcheck = true,
+        --     linksInHover = true,
+        --     directoryFilters = {
+        --       '-.git',
+        --       '-.vscode',
+        --       '-.idea',
+        --       '-.vscode-test',
+        --       '-node_modules',
+        --     },
+        --     semanticTokens = true,
+        --     hints = {
+        --       assignVariableTypes = true,
+        --       compositeLiteralFields = true,
+        --       compositeLiteralTypes = true,
+        --       constantValues = true,
+        --       functionTypeParameters = true,
+        --       parameterNames = true,
+        --       rangeVariableTypes = true,
+        --     },
+        --     codelenses = {
+        --       gc_details = false,
+        --       generate = true,
+        --       regenerate_cgo = true,
+        --       run_govulncheck = true,
+        --       test = true,
+        --       tidy = true,
+        --       upgrade_dependency = true,
+        --       vendor = true,
+        --     },
+        --     analyses = {
+        --       nilness = true,
+        --       unusedparams = true,
+        --       unusedwrite = true,
+        --       useany = true,
+        --     },
+        --   },
+        -- },
       },
       lua_ls = {
         settings = {
@@ -173,29 +179,25 @@ return {
       automatic_installation = true,
     }
 
-    require('mason-lspconfig').setup_handlers {
-      function(server_name)
-        local opts = servers[server_name] or {}
-        opts.capabilities = capabilities
-        require('lspconfig')[server_name].setup(opts)
-      end,
-    }
-
     -- Highlight para referencias de LSP
     vim.api.nvim_create_autocmd('LspAttach', {
       callback = function(event)
         local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client.supports_method 'textDocument/documentHighlight' then
+        local buff = event.buf
+
+        if client and client:supports_method('textDocument/documentHighlight', buff) then
           local group = vim.api.nvim_create_augroup('LspDocumentHighlight', { clear = false })
-          vim.api.nvim_clear_autocmds { group = group, buffer = event.buf }
+
+          vim.api.nvim_clear_autocmds { group = group, buffer = buff }
           vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
             group = group,
-            buffer = event.buf,
+            buffer = buff,
             callback = vim.lsp.buf.document_highlight,
           })
+
           vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
             group = group,
-            buffer = event.buf,
+            buffer = buff,
             callback = vim.lsp.buf.clear_references,
           })
         end

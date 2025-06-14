@@ -72,7 +72,7 @@ require('lazy').setup({
           .. 'hi TelescopeSelection                 guifg=#ffffff guibg=#32302f |'
           .. 'hi FloatBorder                         guibg=#282828 |' ---guifg=#ea6962
           .. 'hi BqfPreviewBorder                   guifg=#ea6962 guibg=#282828 |'
-          .. 'hi NormalFloat                        guibg=#282828 |'
+          --.. 'hi NormalFloat                        guibg=#282828 |'
           .. 'hi IndentBlanklineContextChar         guifg=#d3869b |'
           .. 'hi StatusColumnBorder                 guifg=#232323 |'
           .. 'hi StatusColumnBuffer                 guibg=#282828 |'

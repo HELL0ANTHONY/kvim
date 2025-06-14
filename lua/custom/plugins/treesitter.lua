@@ -5,20 +5,24 @@ return {
   opts = {
     ensure_installed = (function()
       return {
-        'powershell',
         'bash',
         'c',
         'diff',
+        'go',
+        'gomod',
+        'gosum',
+        'gowork',
+        'hcl',
         'html',
         'lua',
         'luadoc',
         'markdown',
         'markdown_inline',
+        'powershell',
         'query',
+        'terraform',
         'vim',
         'vimdoc',
-        'terraform',
-        'hcl',
       }
     end)(), -- Envuelto en una función anónima para evitar evaluar la tabla en cada carga
     auto_install = true,
@@ -31,9 +35,10 @@ return {
       disable = { 'ruby' },
     },
   },
-  config = function()
-    if vim.fn.has 'win32' == 1 then
-      require('nvim-treesitter.install').compilers = { 'clang' } -- Usar 'gcc' si clang no está disponible
-    end
-  end,
+
+  -- config = function()
+  --   if vim.fn.has 'win32' == 1 then
+  --     require('nvim-treesitter.install').compilers = { 'clang' } -- Usar 'gcc' si clang no está disponible
+  --   end
+  -- end,
 }
