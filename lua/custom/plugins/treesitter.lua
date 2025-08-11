@@ -4,7 +4,7 @@ return {
   main = 'nvim-treesitter.configs',
 
   opts = {
-    ensure_installed = { 'typoscript', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+    ensure_installed = { 'typoscript', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'query', 'vim', 'vimdoc' },
 
     auto_install = true,
     highlight = {
@@ -12,7 +12,7 @@ return {
 
       additional_vim_regex_highlighting = { 'ruby' },
     },
-    indent = { enable = true, disable = { 'ruby' } },
+    indent = { enable = true, disable = { 'ruby', 'markdown', 'markdown_inline' } },
   },
 
   -- config = function()
