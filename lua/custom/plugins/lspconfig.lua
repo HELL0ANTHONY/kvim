@@ -161,13 +161,13 @@ return {
       html = {},
       ts_ls = {},
 
-      golangci_lint_ls = {
-        settings = {
-          golangciLint = {
-            command = { 'golangci-lint', 'run', '--out-format', 'json' },
-          },
-        },
-      },
+      -- golangci_lint_ls = {
+      --   settings = {
+      --     golangciLint = {
+      --       command = { 'golangci-lint', 'run', '--out-format', 'json' },
+      --     },
+      --   },
+      -- },
     }
 
     -- Configuración de Mason
@@ -178,7 +178,7 @@ return {
       ensure_installed = {
         'eslint',
         'golangci-lint',
-        'golangci_lint_ls',
+        -- 'golangci_lint_ls',
         'gopls',
         'html',
         'lua_ls',
