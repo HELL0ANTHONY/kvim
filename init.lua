@@ -190,6 +190,160 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    event = 'VeryLazy',
+    opts = function()
+      local function is_vsplit()
+        -- Detecta si el layout superior es 'row' (ventanas lado a lado)
+        local function has_row(node)
+          if not node or type(node) ~= 'table' then
+            return false
+          end
+          if node[1] == 'row' then
+            return true
+          end
+          for i = 2, #node do
+            if has_row(node[i]) then
+              return true
+            end
+          end
+          return false
+        end
+        return has_row(vim.fn.winlayout())
+      end
+
+      local function win_is_narrow(w)
+        w = w or 0
+        return vim.api.nvim_win_get_width(w) < 60
+      end
+
+      local function file_icon()
+        local ok, dev = pcall(require, 'nvim-web-devicons')
+        if not ok then
+          return ''
+        end
+        local name, ext = vim.fn.expand '%:t', vim.fn.expand '%:e'
+        local icon = dev.get_icon(name, ext, { default = true })
+        return icon and (icon .. ' ') or ''
+      end
+
+      -- Nombre de archivo:
+      -- - En vsplit o ventana angosta => solo nombre
+      -- - Caso normal => ruta relativa (desde cwd)
+      local function smart_filename()
+        local name = ''
+        if is_vsplit() or win_is_narrow(0) then
+          name = vim.fn.expand '%:t'
+        else
+          -- relativo a cwd (si querés relativo a raíz git, se puede ajustar)
+          name = vim.fn.fnamemodify(vim.fn.expand '%:p', ':.')
+        end
+        if name == '' then
+          name = '[No Name]'
+        end
+
+        local modified = vim.bo.modified and ' [+]' or ''
+        return file_icon() .. name .. modified
+      end
+
+      -- Diagnósticos con íconos
+      local diagnostics = {
+        'diagnostics',
+        sources = { 'nvim_diagnostic' },
+        sections = { 'error', 'warn', 'info', 'hint' },
+        symbols = { error = ' ', warn = ' ', info = ' ', hint = '󱐋 ' },
+        colored = true,
+        update_in_insert = false,
+        always_visible = true,
+      }
+
+      -- Diff (usa gitsigns si está)
+      local diff = {
+        'diff',
+        symbols = { added = ' ', modified = ' ', removed = ' ' },
+        colored = true,
+        cond = function()
+          return not win_is_narrow(0)
+        end,
+      }
+
+      -- Línea/columna + total
+      local function cursor_and_total()
+        local l = vim.fn.line '.'
+        local c = vim.fn.col '.'
+        local total = vim.api.nvim_buf_line_count(0)
+        if win_is_narrow(0) then
+          return string.format('%d/%d', l, total)
+        end
+        return string.format('󰉸 %d│󱥖 %d  /%d', l, c, total)
+      end
+
+      -- reemplazá el componente de branch por este
+      local branch = {
+        'branch',
+        icon = '',
+        color = { gui = 'bold' },
+        -- oculta branch cuando hay vsplit
+        cond = function()
+          return not is_vsplit()
+        end,
+        -- (opcional) si NO hay vsplit, recorta nombres muy largos
+        -- fmt = function(head)
+        --   if not head then
+        --     return ''
+        --   end
+        --   return (#head > 24) and (head:sub(1, 21) .. '…') or head
+        -- end,
+      }
+
+      return {
+        options = {
+          theme = 'auto',
+          -- Por ventana para que en vsplit ambos lados muestren su info
+          globalstatus = false,
+          section_separators = '',
+          component_separators = '',
+          disabled_filetypes = { statusline = {} },
+          icons_enabled = true,
+        },
+        sections = {
+          -- sin modo
+          lualine_a = {},
+          -- Branch + Diff
+          lualine_b = {
+            -- { 'branch', icon = '', color = { gui = 'bold' } },
+            branch,
+            diff,
+          },
+          -- Nombre (path inteligente)
+          lualine_c = {
+            { smart_filename, padding = 1 },
+          },
+          -- Nada “ruidoso” en X
+          lualine_x = {
+            diagnostics, -- a la derecha pero visible en todas las ventanas
+          },
+          -- Posición + total líneas
+          lualine_y = {
+            { cursor_and_total, padding = 1 },
+          },
+          lualine_z = {},
+        },
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { { smart_filename } },
+          lualine_x = { diagnostics },
+          lualine_y = {},
+          lualine_z = {},
+        },
+        extensions = { 'quickfix', 'fugitive', 'man', 'nvim-tree', 'lazy' },
+      }
+    end,
+  },
+
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
@@ -207,8 +361,6 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-      require 'custom.plugins.mini.statusline'
-      require 'custom.plugins.mini.icons'
       -- require 'custom.plugins.mini.diff'
     end,
   },
