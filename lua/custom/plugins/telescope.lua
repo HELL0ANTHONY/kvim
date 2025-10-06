@@ -19,12 +19,25 @@ return {
     local actions = require 'telescope.actions'
     local builtin = require 'telescope.builtin'
     local themes = require 'telescope.themes'
+    local make_entry = require 'telescope.make_entry'
 
     telescope.setup {
       defaults = {
         prompt_prefix = '   ',
         selection_caret = '❯ ',
         path_display = { 'truncate' },
+
+        -- ▶︎ layout: preview grande / resultados angosto
+        layout_strategy = 'horizontal',
+        layout_config = {
+          width = 0.96,
+          height = 0.92,
+          horizontal = {
+            preview_width = 0.65, -- preview más ancho
+            results_width = 0.35, -- lista más angosta
+          },
+        },
+
         borderchars = {
           prompt = { '━', '┃', '━', '┃', '┏', '┓', '┛', '┗' },
           preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
@@ -40,16 +53,13 @@ return {
           '--smart-case',
         },
         mappings = {
-          i = {
-            ['<C-u>'] = false,
-            ['<C-d>'] = false,
-          },
-          n = {
-            ['q'] = actions.close,
-          },
+          i = { ['<C-u>'] = false, ['<C-d>'] = false },
+          n = { ['q'] = actions.close },
         },
       },
+
       pickers = {
+        -- buffers como ya lo tenías
         buffers = {
           theme = 'dropdown',
           sort_mru = true,
@@ -62,7 +72,37 @@ return {
             n = { ['dd'] = actions.delete_buffer },
           },
         },
+
+        -- ▶︎ live_grep: mostrar solo "path:line:col" en la lista (preview mantiene el contenido)
+        live_grep = {
+          layout_strategy = 'horizontal',
+          layout_config = {
+            width = 0.96,
+            height = 0.92,
+            horizontal = { preview_width = 0.72, results_width = 0.28 },
+          },
+          entry_maker = function(line)
+            -- partimos del maker por defecto para vimgrep
+            local e = make_entry.gen_from_vimgrep {}(line)
+            -- reemplazamos el texto mostrado en la lista
+            e.display = string.format('%s:%s:%s', e.filename, e.lnum, e.col)
+            -- lo usamos también para el ordenado/búsqueda interna
+            e.ordinal = e.display
+            return e
+          end,
+        },
+
+        -- opcional: find_files con mismo layout invertido
+        find_files = {
+          layout_strategy = 'horizontal',
+          layout_config = {
+            width = 0.96,
+            height = 0.92,
+            horizontal = { preview_width = 0.72, results_width = 0.28 },
+          },
+        },
       },
+
       extensions = {
         ['ui-select'] = themes.get_dropdown(),
       },
