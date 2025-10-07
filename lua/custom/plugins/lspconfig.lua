@@ -5,10 +5,7 @@ return {
   'VonHeikemen/lsp-zero.nvim',
   branch = 'v4.x',
   dependencies = {
-    {
-      'neovim/nvim-lspconfig',
-      version = '*',
-    },
+    { 'neovim/nvim-lspconfig', version = '*' },
     {
       'williamboman/mason.nvim',
       build = function()
@@ -17,18 +14,19 @@ return {
     },
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     { 'williamboman/mason-lspconfig.nvim' },
-    { 'hrsh7th/nvim-cmp' },
-    { 'hrsh7th/cmp-nvim-lsp' },
     { 'j-hui/fidget.nvim', opts = {} },
+    -- Nota: NO usamos nvim-cmp ni cmp-nvim-lsp (blink reemplaza eso)
   },
 
   config = function()
     local lsp = require 'lsp-zero'
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+    -- Capabilities: usamos blink si está disponible; si no, fallback seguro.
+    local ok_blink, blink = pcall(require, 'blink.cmp')
+    local capabilities = ok_blink and blink.get_lsp_capabilities() or vim.lsp.protocol.make_client_capabilities()
+
+    -- on_attach con tus keymaps
     lsp.on_attach(function(_, bufnr)
-      -- Configurar solo una vez por buffer
       if vim.b[bufnr].lsp_keymaps_set then
         return
       end
@@ -38,34 +36,18 @@ return {
         vim.keymap.set(mode or 'n', keys, rhs, { noremap = true, silent = true, buffer = bufnr, desc = desc })
       end
 
-      -- grn in Normal mode maps to vim.lsp.buf.rename()
-      -- grr in Normal mode maps to vim.lsp.buf.references()
-      -- gri in Normal mode maps to vim.lsp.buf.implementation()
-      -- gO in Normal mode maps to vim.lsp.buf.document_symbol()
-      -- gra in Normal and Visual mode maps to vim.lsp.buf.code_action()
-      -- CTRL-S in Insert and Select mode maps to vim.lsp.buf.signature_help()
-
-      -- Keymaps personalizados
       map('gd', vim.lsp.buf.definition, 'LSP: [g]oto [d]efinition')
       map('gD', vim.lsp.buf.declaration, 'LSP: [g]oto [D]eclaration')
-
       map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'LSP: Type [D]efinition')
-
-      -- map('<leader>ca', vim.lsp.buf.code_action, 'LSP: [c]ode [a]ction')
-      -- map('gr', require('telescope.builtin').lsp_references, 'LSP: [g]oto [r]eferences')
-      -- map('gI', require('telescope.builtin').lsp_implementations, 'LSP: [g]oto [I]mplementation')
-      -- map('<leader>lr', vim.lsp.buf.rename, '[L]SP: [r]ename')
-      -- vim.keymap.set('i', '<C-h>', vim.lsp.buf.signature_help, { noremap = true, silent = true, buffer = bufnr, desc = 'LSP: Signature Help' })
       map('<leader>oe', vim.diagnostic.open_float, 'LSP: [o]pen [e]rror diagnostic')
       map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')
       map('<leader>ow', vim.diagnostic.setqflist, 'LSP: [o]pen workspace [w]ide diagnostics')
-
       map('K', function()
         vim.lsp.buf.hover { border = 'single' }
       end, 'LSP: Hover')
     end)
 
-    -- Servidores configurados
+    -- Tu tabla de servers (sin cambios de intención)
     local servers = {
       yamlls = {
         settings = {
@@ -78,13 +60,10 @@ return {
         },
       },
       eslint = {
-        -- MasonInstall eslint-lsp@4.5.0
         settings = {
           useFlatConfig = true,
           workingDirectory = { mode = 'auto' },
-          experimental = {
-            useFlatConfig = nil,
-          },
+          experimental = { useFlatConfig = nil },
         },
       },
       gopls = {
@@ -95,13 +74,7 @@ return {
             completeUnimported = true,
             staticcheck = true,
             linksInHover = true,
-            directoryFilters = {
-              '-.git',
-              '-.vscode',
-              '-.idea',
-              '-.vscode-test',
-              '-node_modules',
-            },
+            directoryFilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
             semanticTokens = true,
             hints = {
               assignVariableTypes = true,
@@ -131,25 +104,16 @@ return {
           },
         },
       },
-      lua_ls = {
-        settings = {
-          Lua = {
-            completion = {
-              callSnippet = 'Replace',
-            },
-          },
-        },
-      },
+      lua_ls = { settings = { Lua = { completion = { callSnippet = 'Replace' } } } },
       terraformls = {},
       rust_analyzer = {},
-
       powershell_es = {
         settings = {
           powershell = {
             codeFormatting = {
-              Preset = 'Allman', -- O usa "Allman" si prefieres ese estilo
-              IndentationSize = 2, -- Tamaño de indentación (4 espacios)
-              PipelineIndentationStyle = 'IncreaseIndentationForFirstPipeline', -- Ajusta el estilo de pipeline
+              Preset = 'Allman',
+              IndentationSize = 2,
+              PipelineIndentationStyle = 'IncreaseIndentationForFirstPipeline',
               scriptAnalyzer = {
                 settingsPath = 'C:/Users/georg/AppData/Local/nvim/PSScriptAnalyzerSettings.psd1',
               },
@@ -160,25 +124,17 @@ return {
       jsonls = {},
       html = {},
       ts_ls = {},
-
-      -- golangci_lint_ls = {
-      --   settings = {
-      --     golangciLint = {
-      --       command = { 'golangci-lint', 'run', '--out-format', 'json' },
-      --     },
-      --   },
-      -- },
+      -- golangci_lint_ls = { ... },
     }
 
-    -- Configuración de Mason
+    -- mason base
     require('mason').setup {}
 
-    -- Asegurar herramientas instaladas
+    -- herramientas que querés tener instaladas
     require('mason-tool-installer').setup {
       ensure_installed = {
         'eslint',
         'golangci-lint',
-        -- 'golangci_lint_ls',
         'gopls',
         'html',
         'lua_ls',
@@ -194,56 +150,49 @@ return {
       },
     }
 
-    -- Configuración de mason-lspconfig
-    require('mason-lspconfig').setup {
-      ensure_installed = vim.tbl_keys(servers),
-      automatic_installation = true,
-    }
+    -- mason-lspconfig con compatibilidad de APIs (setup.handlers vs setup_handlers)
+    local mlsp = require 'mason-lspconfig'
 
-    -- require('mason-lspconfig').setup_handlers {
-    require('mason-lspconfig').setup {
-      function(server_name)
-        local opts = servers[server_name] or {}
-        opts.capabilities = capabilities
-        require('lspconfig')[server_name].setup(opts)
-      end,
-    }
+    local function default_handler(server_name)
+      local opts = servers[server_name] or {}
+      opts.capabilities = capabilities
+      require('lspconfig')[server_name].setup(opts)
+    end
 
-    -- Highlight para referencias de LSP
+    if type(mlsp.setup_handlers) == 'function' then
+      -- API antigua
+      mlsp.setup {
+        ensure_installed = vim.tbl_keys(servers),
+        automatic_installation = true,
+      }
+      mlsp.setup_handlers { default_handler }
+    else
+      -- API nueva (handlers dentro de setup)
+      mlsp.setup {
+        ensure_installed = vim.tbl_keys(servers),
+        automatic_installation = true,
+        handlers = { default_handler },
+      }
+    end
+
+    -- Highlights de referencias LSP
     vim.api.nvim_create_autocmd('LspAttach', {
       callback = function(event)
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         local buff = event.buf
-
         if client and client:supports_method('textDocument/documentHighlight', buff) then
           local group = vim.api.nvim_create_augroup('LspDocumentHighlight', { clear = false })
-
           vim.api.nvim_clear_autocmds { group = group, buffer = buff }
-          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-            group = group,
-            buffer = buff,
-            callback = vim.lsp.buf.document_highlight,
-          })
-
-          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-            group = group,
-            buffer = buff,
-            callback = vim.lsp.buf.clear_references,
-          })
+          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { group = group, buffer = buff, callback = vim.lsp.buf.document_highlight })
+          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { group = group, buffer = buff, callback = vim.lsp.buf.clear_references })
         end
       end,
     })
 
+    -- Diagnostics UI
     vim.diagnostic.config {
       virtual_text = true,
-      float = {
-        focusable = true,
-        style = 'minimal',
-        border = 'single',
-        header = '',
-        prefix = '',
-      },
-
+      float = { focusable = true, style = 'minimal', border = 'single', header = '', prefix = '' },
       signs = {
         text = {
           [vim.diagnostic.severity.ERROR] = ' ',
