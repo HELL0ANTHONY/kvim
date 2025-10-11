@@ -49,6 +49,25 @@ return {
 
     -- Tu tabla de servers (sin cambios de intención)
     local servers = {
+      emmet_ls = {
+        filetypes = {
+          'html',
+          'css',
+          'scss',
+          'javascriptreact',
+          'typescriptreact',
+        },
+        init_options = {
+          --- Mapeos opcionales si querés Emmet en más lenguajes:
+          --- (por ejemplo, habilitar Emmet en JSX/TSX como 'html')
+          includeLanguages = {
+            javascript = 'javascriptreact',
+            typescript = 'typescriptreact',
+          },
+          --- Opciones de Emmet; activá/desactivá a gusto:
+          html = { options = { ['bem.enabled'] = true } },
+        },
+      },
       yamlls = {
         settings = {
           yaml = {
@@ -133,6 +152,7 @@ return {
     -- herramientas que querés tener instaladas
     require('mason-tool-installer').setup {
       ensure_installed = {
+        'emmet_ls',
         'eslint',
         'golangci-lint',
         'gopls',
