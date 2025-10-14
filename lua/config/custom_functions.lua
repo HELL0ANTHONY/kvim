@@ -1,80 +1,136 @@
-local func = {}
+local M = {}
 
--- run :Preview
--- vnew | Preview
--- Install ts-node for typescript
-local attach_to_buffer = function(output_bufnr, patterns_and_commands)
+local DEFAULT_COMMANDS = {
+  javascript = { 'node', '%' },
+  javascriptreact = { 'node', '%' },
+  typescript = { 'ts-node', '%' },
+  typescriptreact = { 'ts-node', '%' },
+  go = { 'go', 'run', '%' },
+}
+
+local function ensure_output_buf()
+  local bufnr = vim.api.nvim_get_current_buf()
+  if vim.bo[bufnr].buftype == 'nofile' then
+    return bufnr
+  end
+
+  vim.cmd 'vnew'
+  local out = vim.api.nvim_get_current_buf()
+  vim.bo[out].buftype = 'nofile'
+  vim.bo[out].bufhidden = 'wipe'
+  vim.bo[out].swapfile = false
+  vim.bo[out].modifiable = true
+  vim.bo[out].filetype = 'previewlog'
+  return out
+end
+
+local function build_cmd(cmd_tmpl, file)
+  local cmd = {}
+  for _, v in ipairs(cmd_tmpl) do
+    if v == '%' then
+      table.insert(cmd, file)
+    else
+      table.insert(cmd, v)
+    end
+  end
+  return cmd
+end
+
+local function is_executable(cmd)
+  local bin = cmd[1]
+  return vim.fn.executable(bin) == 1
+end
+
+local function append_lines(buf, lines)
+  if not lines or #lines == 0 then
+    return
+  end
+
+  local was_mod = vim.bo[buf].modifiable
+  if not was_mod then
+    vim.bo[buf].modifiable = true
+  end
+  vim.api.nvim_buf_set_lines(buf, -1, -1, false, lines)
+  if not was_mod then
+    vim.bo[buf].modifiable = false
+  end
+end
+
+local function reset_output(buf, header)
+  local was_mod = vim.bo[buf].modifiable
+  if not was_mod then
+    vim.bo[buf].modifiable = true
+  end
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { header, '' })
+  if not was_mod then
+    vim.bo[buf].modifiable = false
+  end
+end
+
+local function attach_preview(source_bufnr, output_bufnr, ft_to_cmd)
+  local grp_name = string.format('Preview:%d', source_bufnr)
+  local aug = vim.api.nvim_create_augroup(grp_name, { clear = true })
+
   vim.api.nvim_create_autocmd('BufWritePost', {
-    group = vim.api.nvim_create_augroup('Preview', { clear = true }),
-    callback = function()
-      local filetype = vim.bo.filetype
-      local pattern_command = patterns_and_commands[filetype]
-
-      if pattern_command then
-        local command = pattern_command.command
-
-        local file = vim.fn.expand '%:p'
-        if string.match(file, ' ') then
-          file = string.format('"%s"', file)
-        end
-
-        for i, v in ipairs(command) do
-          if v == '%' then
-            command[i] = file
-            break
-          end
-        end
-
-        local append_data = function(_, data)
-          if data then
-            vim.api.nvim_buf_set_lines(output_bufnr, -1, -1, false, data)
-          end
-        end
-
-        vim.api.nvim_buf_set_lines(output_bufnr, 0, -1, false, { filetype .. ' output:' })
-        vim.fn.jobstart(command, {
-          stdout_buffered = true,
-          on_stdout = append_data,
-          on_stderr = append_data,
-        })
+    group = aug,
+    buffer = source_bufnr,
+    callback = function(args)
+      local ft = vim.bo[args.buf].filetype
+      local cmd_tpl = (ft_to_cmd and ft_to_cmd[ft]) or DEFAULT_COMMANDS[ft]
+      if not cmd_tpl then
+        reset_output(output_bufnr, ('[%s] No hay comando configurado para este filetype.'):format(ft))
+        return
       end
+
+      local file = vim.fn.expand '%:p'
+      local cmd = build_cmd(cmd_tpl, file)
+
+      if not is_executable(cmd) then
+        reset_output(output_bufnr, ('[%s] Ejecutable no encontrado: "%s" (instálalo o ajusta el comando).'):format(ft, cmd[1]))
+        return
+      end
+
+      reset_output(output_bufnr, ('%s output (%s):'):format(ft, vim.fn.fnamemodify(file, ':t')))
+
+      vim.fn.jobstart(cmd, {
+        stdout_buffered = true,
+        stderr_buffered = true,
+        on_stdout = function(_, data)
+          append_lines(output_bufnr, data)
+        end,
+        on_stderr = function(_, data)
+          append_lines(output_bufnr, data)
+        end,
+        on_exit = function(_, code)
+          append_lines(output_bufnr, { '', ('[exit code %d]'):format(code) })
+        end,
+      })
     end,
+    desc = 'Preview on save (buffer-local)',
   })
 end
 
-vim.api.nvim_create_user_command('Preview', function()
-  local patterns_and_commands = {
-    javascript = {
-      pattern = '*.js',
-      command = { 'node', '%' },
-    },
-    typescript = {
-      pattern = '*.ts',
-      command = { 'ts-node', '%' },
-    },
-    javascriptreact = {
-      pattern = '*.jsx',
-      command = { 'node', '%' },
-    },
-    typescriptreact = {
-      pattern = '*.tsx',
-      command = { 'ts-node', '%' },
-    },
-    go = {
-      pattern = '*.go',
-      command = { 'go', 'run', '%' },
-    },
-    -- Add more languages here as needed
-  }
+-- :Preview [filetype?]  -> permite override rápido del comando del FT actual
+-- Uso recomendado: :vnew | :Preview
+M.preview_cmd = function(opts)
+  local ft = vim.bo.filetype
+  local overrides = vim.deepcopy(DEFAULT_COMMANDS)
 
-  local bufnr = vim.api.nvim_get_current_buf()
-  attach_to_buffer(tonumber(bufnr), patterns_and_commands)
-end, {})
+  if opts and opts.args and #opts.args > 0 then
+    local parts = vim.split(opts.args, '%s+')
+    overrides[ft] = parts
+  end
 
--- remove_comments Remove inline comments from one file
-function func.remove_comments()
-  local filetype = vim.bo.filetype
-  local comment_chars = {
+  local out = ensure_output_buf()
+  local src = vim.api.nvim_get_current_buf()
+  attach_preview(src, out, overrides)
+  vim.notify('Preview habilitado para este buffer. Guardá el archivo para ver la salida.', vim.log.levels.INFO)
+end
+
+-- :RemoveInlineComments -> remueve comentarios de línea (inline) según filetype
+M.remove_inline_comments = function()
+  local ft = vim.bo.filetype
+  local map = {
     go = '//',
     javascript = '//',
     javascriptreact = '//',
@@ -83,13 +139,28 @@ function func.remove_comments()
     typescript = '//',
     typescriptreact = '//',
   }
-  local comment_char = comment_chars[filetype]
-  if comment_char then
-    local command = string.format('%%s,\\v%s.*$,', comment_char)
-    vim.api.nvim_command(command)
-  else
-    print 'No se ha encontrado un carácter de comentario para este tipo de archivo.'
+  local cc = map[ft]
+  if not cc then
+    vim.notify('No se encontró carácter de comentario para este filetype.', vim.log.levels.WARN)
+    return
   end
+
+  local function lua_pat_escape(s)
+    return (s:gsub('([%%%^%$%(%)%.%[%]%*%+%-%?])', '%%%1'))
+  end
+  local esc = lua_pat_escape(cc)
+  vim.cmd(string.format([[%s/\v%s.*$//]], '%', esc))
 end
 
-return func
+vim.api.nvim_create_user_command('Preview', function(opts)
+  M.preview_cmd(opts)
+end, {
+  nargs = '*',
+  desc = 'Ejecuta el archivo actual al guardar y muestra la salida en un scratch buffer (usa :vnew | :Preview).',
+})
+
+vim.api.nvim_create_user_command('RemoveInlineComments', function()
+  M.remove_inline_comments()
+end, { desc = 'Remueve comentarios inline de las líneas según el filetype.' })
+
+return M
