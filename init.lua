@@ -69,8 +69,8 @@ require('lazy').setup({
     priority = 1000,
     lazy = false,
     config = function()
-      vim.g.gruvbox_material_background = 'medium' -- hard, soft, medium
-      vim.g.gruvbox_material_foreground = 'material' -- original, mix, material
+      vim.g.gruvbox_material_background = 'soft' -- hard, soft, medium
+      vim.g.gruvbox_material_foreground = 'mix' -- original, mix, material
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_enable_bold = 1
       vim.g.gruvbox_material_sign_column_background = 'none'

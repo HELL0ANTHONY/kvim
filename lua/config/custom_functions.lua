@@ -1,19 +1,26 @@
 local M = {}
 
+-- Comandos por defecto por filetype
 local DEFAULT_COMMANDS = {
   javascript = { 'node', '%' },
-  javascriptreact = { 'node', '%' },
+  javascriptreact = { 'node', '%' }, -- requiere transpilar si usas JSX real
   typescript = { 'ts-node', '%' },
-  typescriptreact = { 'ts-node', '%' },
+  typescriptreact = { 'ts-node', '%' }, -- requiere ts-node y tsconfig
   go = { 'go', 'run', '%' },
 }
 
+-- Lleva registro de augroups para poder desactivar todo
+M._groups = {}
+
+-- === Helpers de UI (buffer de salida) ===
 local function ensure_output_buf()
-  local bufnr = vim.api.nvim_get_current_buf()
-  if vim.bo[bufnr].buftype == 'nofile' then
-    return bufnr
+  -- Si ya estás en un scratch, úsalo
+  local cur = vim.api.nvim_get_current_buf()
+  if vim.bo[cur].buftype == 'nofile' then
+    return cur
   end
 
+  -- Split vertical dedicado a la salida
   vim.cmd 'vnew'
   local out = vim.api.nvim_get_current_buf()
   vim.bo[out].buftype = 'nofile'
@@ -24,28 +31,10 @@ local function ensure_output_buf()
   return out
 end
 
-local function build_cmd(cmd_tmpl, file)
-  local cmd = {}
-  for _, v in ipairs(cmd_tmpl) do
-    if v == '%' then
-      table.insert(cmd, file)
-    else
-      table.insert(cmd, v)
-    end
-  end
-  return cmd
-end
-
-local function is_executable(cmd)
-  local bin = cmd[1]
-  return vim.fn.executable(bin) == 1
-end
-
 local function append_lines(buf, lines)
   if not lines or #lines == 0 then
     return
   end
-
   local was_mod = vim.bo[buf].modifiable
   if not was_mod then
     vim.bo[buf].modifiable = true
@@ -67,18 +56,34 @@ local function reset_output(buf, header)
   end
 end
 
+-- === Helpers de ejecución ===
+local function build_cmd(cmd_tmpl, file)
+  local cmd = {}
+  for _, v in ipairs(cmd_tmpl) do
+    table.insert(cmd, v == '%' and file or v)
+  end
+  return cmd
+end
+
+local function is_executable(cmd)
+  return vim.fn.executable(cmd[1]) == 1
+end
+
+-- === Core: attach ===
 local function attach_preview(source_bufnr, output_bufnr, ft_to_cmd)
-  local grp_name = string.format('Preview:%d', source_bufnr)
+  local grp_name = ('Preview:%d'):format(source_bufnr)
   local aug = vim.api.nvim_create_augroup(grp_name, { clear = true })
+  M._groups[grp_name] = true
 
   vim.api.nvim_create_autocmd('BufWritePost', {
     group = aug,
-    buffer = source_bufnr,
+    buffer = source_bufnr, -- 👈 buffer-local
+    desc = 'Preview on save (buffer-local)',
     callback = function(args)
       local ft = vim.bo[args.buf].filetype
       local cmd_tpl = (ft_to_cmd and ft_to_cmd[ft]) or DEFAULT_COMMANDS[ft]
       if not cmd_tpl then
-        reset_output(output_bufnr, ('[%s] No hay comando configurado para este filetype.'):format(ft))
+        reset_output(output_bufnr, ('[%s] No hay comando configurado.'):format(ft))
         return
       end
 
@@ -86,7 +91,7 @@ local function attach_preview(source_bufnr, output_bufnr, ft_to_cmd)
       local cmd = build_cmd(cmd_tpl, file)
 
       if not is_executable(cmd) then
-        reset_output(output_bufnr, ('[%s] Ejecutable no encontrado: "%s" (instálalo o ajusta el comando).'):format(ft, cmd[1]))
+        reset_output(output_bufnr, ('[%s] Ejecutable no encontrado: "%s"'):format(ft, cmd[1]))
         return
       end
 
@@ -106,19 +111,24 @@ local function attach_preview(source_bufnr, output_bufnr, ft_to_cmd)
         end,
       })
     end,
-    desc = 'Preview on save (buffer-local)',
   })
 end
 
--- :Preview [filetype?]  -> permite override rápido del comando del FT actual
--- Uso recomendado: :vnew | :Preview
+-- === Comandos públicos ===
+
+-- :Preview [comando opcional...]
+-- Ej: :Preview       -> usa DEFAULT_COMMANDS por filetype
+--     :Preview deno run %   -> override solo para este buffer
 M.preview_cmd = function(opts)
-  local ft = vim.bo.filetype
   local overrides = vim.deepcopy(DEFAULT_COMMANDS)
+  local ft = vim.bo.filetype
 
   if opts and opts.args and #opts.args > 0 then
-    local parts = vim.split(opts.args, '%s+')
-    overrides[ft] = parts
+    -- Override simple separado por espacios (si necesitás quotes, puedes mejorar el split)
+    local parts = vim.split(opts.args, '%s+', { trimempty = true })
+    if #parts > 0 then
+      overrides[ft] = parts
+    end
   end
 
   local out = ensure_output_buf()
@@ -127,7 +137,32 @@ M.preview_cmd = function(opts)
   vim.notify('Preview habilitado para este buffer. Guardá el archivo para ver la salida.', vim.log.levels.INFO)
 end
 
--- :RemoveInlineComments -> remueve comentarios de línea (inline) según filetype
+-- :PreviewStop -> desactiva la preview del buffer actual
+M.preview_stop = function()
+  local grp = ('Preview:%d'):format(vim.api.nvim_get_current_buf())
+  local ok, err = pcall(vim.api.nvim_del_augroup_by_name, grp)
+  if ok then
+    M._groups[grp] = nil
+    vim.notify('Preview deshabilitado en este buffer.', vim.log.levels.INFO)
+  else
+    vim.notify('No había Preview activo para este buffer. ' .. tostring(err or ''), vim.log.levels.WARN)
+  end
+end
+
+-- :PreviewStopAll -> desactiva todas las previews creadas por este módulo
+M.preview_stop_all = function()
+  local count = 0
+  for grp, _ in pairs(M._groups) do
+    local ok = pcall(vim.api.nvim_del_augroup_by_name, grp)
+    if ok then
+      M._groups[grp] = nil
+      count = count + 1
+    end
+  end
+  vim.notify(('Preview deshabilitado en %d buffer(s).'):format(count), vim.log.levels.INFO)
+end
+
+-- :RemoveInlineComments -> remueve comentarios de línea según filetype
 M.remove_inline_comments = function()
   local ft = vim.bo.filetype
   local map = {
@@ -145,13 +180,16 @@ M.remove_inline_comments = function()
     return
   end
 
-  local function lua_pat_escape(s)
-    return (s:gsub('([%%%^%$%(%)%.%[%]%*%+%-%?])', '%%%1'))
+  local function escape_vim_regex(s)
+    return (s:gsub('([\\/^$.*+?()[%]-])', '\\%1'))
   end
-  local esc = lua_pat_escape(cc)
+  local esc = escape_vim_regex(cc)
+
+  -- Sustitución buffer-local: elimina desde el comentario al final de cada línea
   vim.cmd(string.format([[%s/\v%s.*$//]], '%', esc))
 end
 
+-- === Definición de user commands ===
 vim.api.nvim_create_user_command('Preview', function(opts)
   M.preview_cmd(opts)
 end, {
@@ -159,8 +197,22 @@ end, {
   desc = 'Ejecuta el archivo actual al guardar y muestra la salida en un scratch buffer (usa :vnew | :Preview).',
 })
 
+vim.api.nvim_create_user_command('PreviewStop', function()
+  M.preview_stop()
+end, {
+  desc = 'Desactiva Preview en el buffer actual.',
+})
+
+vim.api.nvim_create_user_command('PreviewStopAll', function()
+  M.preview_stop_all()
+end, {
+  desc = 'Desactiva todas las previews activas.',
+})
+
 vim.api.nvim_create_user_command('RemoveInlineComments', function()
   M.remove_inline_comments()
-end, { desc = 'Remueve comentarios inline de las líneas según el filetype.' })
+end, {
+  desc = 'Remueve comentarios inline de las líneas según el filetype.',
+})
 
 return M
