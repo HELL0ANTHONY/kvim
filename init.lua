@@ -106,7 +106,6 @@ require('lazy').setup({
       })
     end,
     init = function()
-      -- vim.cmd.colorscheme 'kanagawa'
       vim.cmd.colorscheme 'gruvbox-material'
     end,
   },

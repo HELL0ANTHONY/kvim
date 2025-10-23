@@ -53,16 +53,7 @@ vim.cmd [[
 
 vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = '[o]pen terminal' })
 
--- ==================================== OPEN NETRW ===========================
-function _G.toggle_netrw()
-  for _, win in pairs(vim.api.nvim_list_wins()) do
-    local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win))
-    if bufname:match 'NetrwTree' then
-      vim.api.nvim_win_close(win, true)
-      return
-    end
-  end
-  vim.cmd 'Lexplore %:p:h'
-end
-
-vim.api.nvim_set_keymap('n', '<leader>te', ':lua toggle_netrw()<CR><C-w>r', { noremap = true, silent = true, desc = '[t]oggle Netrw [e]xplore' })
+-- ==================================== OPEN NAVBUDDY ===========================
+vim.keymap.set('n', '<leader>os', function()
+  require('nvim-navbuddy').open()
+end, { desc = 'LSP: [o]pen [s]ymbols navigation' })

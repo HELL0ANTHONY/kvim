@@ -20,8 +20,8 @@ function plugin.config()
   }
 end
 
-vim.keymap.set('n', '<leader>os', function()
-  require('nvim-navbuddy').open()
-end, { desc = 'LSP: [o]pen [s]ymbols navigation' })
+-- vim.keymap.set('n', '<leader>os', function()
+--   require('nvim-navbuddy').open()
+-- end, { desc = 'LSP: [o]pen [s]ymbols navigation' })
 
 return plugin
