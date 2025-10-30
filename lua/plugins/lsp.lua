@@ -1,70 +1,83 @@
--- https://github.com/exosyphon/nvim/blob/main/lua/plugins/lsp.lua
--- https://lsp-zero.netlify.app/docs/getting-started.html
-
 return {
   'VonHeikemen/lsp-zero.nvim',
   branch = 'v4.x',
+
+  event = { 'BufReadPre', 'BufNewFile' },
+  -- lazy = true,  -- ⛔ quítalo o déjalo, pero con el event ya carga
+
   dependencies = {
-    { 'neovim/nvim-lspconfig', version = '*' },
+    {
+      'neovim/nvim-lspconfig',
+      -- version = '*', -- opcional; puedes quitar el pin
+    },
     {
       'williamboman/mason.nvim',
+      cmd = { 'Mason', 'MasonInstall', 'MasonUpdate' },
+      opts = { PATH = 'prepend' },
       build = function()
         vim.cmd 'MasonUpdate'
       end,
     },
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
-    { 'williamboman/mason-lspconfig.nvim' },
+    {
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      event = 'VeryLazy',
+      -- ⛔ estabas usando `run_on_start` arriba del spec; debe ir en `opts`
+      opts = {
+        ensure_installed = {
+          'emmet_ls',
+          'eslint',
+          'golangci-lint',
+          'gopls',
+          'html',
+          'lua_ls',
+          'powershell_es',
+          'prettierd',
+          'rust_analyzer',
+          'stylua',
+          'taplo',
+          'terraformls',
+          'ts_ls',
+          'yamlfmt',
+          'yamllint',
+        },
+        run_on_start = true,
+      },
+      dependencies = { 'williamboman/mason.nvim' },
+    },
+    {
+      'williamboman/mason-lspconfig.nvim',
+      dependencies = { 'williamboman/mason.nvim' },
+    },
     { 'j-hui/fidget.nvim', opts = {} },
-    -- Nota: NO usamos nvim-cmp ni cmp-nvim-lsp (blink reemplaza eso)
   },
 
   config = function()
     local lsp = require 'lsp-zero'
 
-    -- Capabilities: usamos blink si está disponible; si no, fallback seguro.
     local ok_blink, blink = pcall(require, 'blink.cmp')
     local capabilities = ok_blink and blink.get_lsp_capabilities() or vim.lsp.protocol.make_client_capabilities()
 
-    -- on_attach con tus keymaps
     lsp.on_attach(function(_, bufnr)
       if vim.b[bufnr].lsp_keymaps_set then
         return
       end
       vim.b[bufnr].lsp_keymaps_set = true
-
-      local function map(keys, rhs, desc, mode)
-        vim.keymap.set(mode or 'n', keys, rhs, { noremap = true, silent = true, buffer = bufnr, desc = desc })
+      local map = function(keys, rhs, desc, mode)
+        vim.keymap.set(mode or 'n', keys, rhs, { buffer = bufnr, silent = true, desc = desc })
       end
-
-      map('gd', vim.lsp.buf.definition, 'LSP: [g]oto [d]efinition')
-      map('gD', vim.lsp.buf.declaration, 'LSP: [g]oto [D]eclaration')
-      map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'LSP: Type [D]efinition')
-      map('<leader>oe', vim.diagnostic.open_float, 'LSP: [o]pen [e]rror diagnostic')
-      map('<leader>od', vim.diagnostic.setloclist, 'LSP: [o]pen [d]iagnostics')
-      map('<leader>ow', vim.diagnostic.setqflist, 'LSP: [o]pen workspace [w]ide diagnostics')
+      map('gd', vim.lsp.buf.definition, 'LSP: Goto def')
+      map('gD', vim.lsp.buf.declaration, 'LSP: Goto decl')
+      map('<leader>oe', vim.diagnostic.open_float, 'Diag float')
       map('K', function()
         vim.lsp.buf.hover { border = 'single' }
-      end, 'LSP: Hover')
+      end, 'Hover')
     end)
 
-    -- Tu tabla de servers (sin cambios de intención)
     local servers = {
       emmet_ls = {
-        filetypes = {
-          'html',
-          'css',
-          'scss',
-          'javascriptreact',
-          'typescriptreact',
-        },
+        filetypes = { 'html', 'css', 'scss', 'javascriptreact', 'typescriptreact' },
         init_options = {
-          --- Mapeos opcionales si querés Emmet en más lenguajes:
-          --- (por ejemplo, habilitar Emmet en JSX/TSX como 'html')
-          includeLanguages = {
-            javascript = 'javascriptreact',
-            typescript = 'typescriptreact',
-          },
-          --- Opciones de Emmet; activá/desactivá a gusto:
+          includeLanguages = { javascript = 'javascriptreact', typescript = 'typescriptreact' },
           html = { options = { ['bem.enabled'] = true } },
         },
       },
@@ -78,138 +91,46 @@ return {
           },
         },
       },
-      eslint = {
-        settings = {
-          useFlatConfig = true,
-          workingDirectory = { mode = 'auto' },
-          experimental = { useFlatConfig = nil },
-        },
-      },
+      eslint = { settings = { useFlatConfig = true, workingDirectory = { mode = 'auto' } } },
       gopls = {
         settings = {
           gopls = {
-            experimentalPostfixCompletions = true,
             gofumpt = true,
-            completeUnimported = true,
             staticcheck = true,
-            linksInHover = true,
-            directoryFilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
-            semanticTokens = true,
-            hints = {
-              assignVariableTypes = true,
-              compositeLiteralFields = true,
-              compositeLiteralTypes = true,
-              constantValues = true,
-              functionTypeParameters = true,
-              parameterNames = true,
-              rangeVariableTypes = true,
-            },
-            codelenses = {
-              gc_details = false,
-              generate = true,
-              regenerate_cgo = true,
-              run_govulncheck = true,
-              test = true,
-              tidy = true,
-              upgrade_dependency = true,
-              vendor = true,
-            },
-            analyses = {
-              nilness = true,
-              unusedparams = true,
-              unusedwrite = true,
-              useany = true,
-            },
+            completeUnimported = true,
+            hints = { assignVariableTypes = true, parameterNames = true },
           },
         },
       },
       lua_ls = { settings = { Lua = { completion = { callSnippet = 'Replace' } } } },
       terraformls = {},
       rust_analyzer = {},
-      powershell_es = {
-        settings = {
-          powershell = {
-            codeFormatting = {
-              Preset = 'Allman',
-              IndentationSize = 2,
-              PipelineIndentationStyle = 'IncreaseIndentationForFirstPipeline',
-              scriptAnalyzer = {
-                settingsPath = 'C:/Users/georg/AppData/Local/nvim/PSScriptAnalyzerSettings.psd1',
-              },
-            },
-          },
-        },
-      },
       jsonls = {},
       html = {},
       ts_ls = {},
-      -- golangci_lint_ls = { ... },
     }
 
-    -- mason base
-    require('mason').setup {}
+    require('mason').setup { PATH = 'prepend' }
 
-    -- herramientas que querés tener instaladas
-    require('mason-tool-installer').setup {
-      ensure_installed = {
-        'emmet_ls',
-        'eslint',
-        'golangci-lint',
-        'gopls',
-        'html',
-        'lua_ls',
-        'powershell_es',
-        'prettierd',
-        'rust_analyzer',
-        'stylua',
-        'taplo',
-        'terraformls',
-        'ts_ls',
-        'yamlfmt',
-        'yamllint',
-      },
-    }
-
-    -- mason-lspconfig con compatibilidad de APIs (setup.handlers vs setup_handlers)
     local mlsp = require 'mason-lspconfig'
 
-    local function default_handler(server_name)
-      local opts = servers[server_name] or {}
+    local function handler(name)
+      local opts = servers[name] or {}
       opts.capabilities = capabilities
-      require('lspconfig')[server_name].setup(opts)
+      require('lspconfig')[name].setup(opts)
     end
 
     if type(mlsp.setup_handlers) == 'function' then
-      -- API antigua
-      mlsp.setup {
-        ensure_installed = vim.tbl_keys(servers),
-        automatic_installation = true,
-      }
-      mlsp.setup_handlers { default_handler }
+      mlsp.setup { ensure_installed = vim.tbl_keys(servers), automatic_installation = true }
+      mlsp.setup_handlers { handler }
     else
-      -- API nueva (handlers dentro de setup)
       mlsp.setup {
         ensure_installed = vim.tbl_keys(servers),
         automatic_installation = true,
-        handlers = { default_handler },
+        handlers = { handler },
       }
     end
 
-    -- Highlights de referencias LSP
-    vim.api.nvim_create_autocmd('LspAttach', {
-      callback = function(event)
-        local client = vim.lsp.get_client_by_id(event.data.client_id)
-        local buff = event.buf
-        if client and client:supports_method('textDocument/documentHighlight', buff) then
-          local group = vim.api.nvim_create_augroup('LspDocumentHighlight', { clear = false })
-          vim.api.nvim_clear_autocmds { group = group, buffer = buff }
-          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, { group = group, buffer = buff, callback = vim.lsp.buf.document_highlight })
-          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, { group = group, buffer = buff, callback = vim.lsp.buf.clear_references })
-        end
-      end,
-    })
-
-    -- Diagnostics UI
     vim.diagnostic.config {
       virtual_text = true,
       float = { focusable = true, style = 'minimal', border = 'single', header = '', prefix = '' },

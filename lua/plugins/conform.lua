@@ -1,3 +1,4 @@
+-- lua/plugins/conform.lua    
 local js_ts_formatters = { 'prettierd', 'prettier', stop_after_first = true }
 
 local function formatter_exists(formatter)
