@@ -63,14 +63,20 @@ return {
       'neovim/nvim-lspconfig',
       'nvim-telescope/telescope.nvim',
     },
+    keys = {
+      {
+        '<leader>os',
+        function()
+          require('nvim-navbuddy').open()
+        end,
+        desc = 'LSP: [o]pen [s]ymbols navigation',
+        mode = 'n',
+      },
+    },
     config = function()
-      local navbuddy = require 'nvim-navbuddy'
-
-      navbuddy.setup {
-        window = {
-          border = 'rounded',
-        },
-        --- icons = require("george.icons").kind,
+      require('nvim-navbuddy').setup {
+        window = { border = 'rounded' },
+        -- icons = require('george.icons').kind,
         lsp = { auto_attach = true },
       }
     end,

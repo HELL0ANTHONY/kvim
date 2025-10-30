@@ -54,6 +54,3 @@ vim.cmd [[
 vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = '[o]pen terminal' })
 
 -- ==================================== OPEN NAVBUDDY ===========================
-vim.keymap.set('n', '<leader>os', function()
-  require('nvim-navbuddy').open()
-end, { desc = 'LSP: [o]pen [s]ymbols navigation' })
