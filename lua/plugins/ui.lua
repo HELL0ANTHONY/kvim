@@ -19,6 +19,25 @@ return {
     },
   },
   {
+    'motaz-shokry/gruvbox.nvim',
+    name = 'gruvbox',
+    priority = 1000,
+    config = function()
+      require('gruvbox').setup {
+        variant = 'soft', -- hard, medium, soft, light
+        dark_variant = 'soft', -- hard, medium, soft
+        dim_inactive_windows = false,
+        extend_background_behind_borders = false,
+        styles = {
+          italic = true,
+        },
+      }
+    end,
+    init = function()
+      vim.cmd.colorscheme 'gruvbox'
+    end,
+  },
+  {
     'sainnhe/gruvbox-material',
     priority = 1000,
     lazy = false,
@@ -30,9 +49,9 @@ return {
       vim.g.gruvbox_material_sign_column_background = 'none'
       vim.g.gruvbox_material_diagnostic_virtual_text = 'colored' -- 'grey'`, `'colored'`, `'highlighted'
     end,
-    init = function()
-      vim.cmd.colorscheme 'gruvbox-material'
-    end,
+    -- init = function()
+    --   vim.cmd.colorscheme 'gruvbox-material'
+    -- end,
   },
   {
     'nvim-lualine/lualine.nvim',

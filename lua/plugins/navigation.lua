@@ -1,3 +1,10 @@
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'OilNormal', { bg = '#1d2021' }) -- por ejemplo gruvbox dark
+  end,
+})
+
 return {
   {
     'phaazon/hop.nvim',
@@ -142,12 +149,14 @@ return {
         relativenumber = false,
         signcolumn = 'no',
         winbar = '%{%v:lua.get_oil_winbar()%}', -- único lugar donde mostramos path
+        winhighlight = 'Normal:OilNormal',
       },
 
       -- Título de la flotante vacío para no duplicar path
       float = {
         max_height = 15,
         max_width = 80,
+        border = 'single', -- 👈 opciones: "single", "double", "rounded", "solid", "shadow"
         get_win_title = function(_)
           return ''
         end, -- oculta título. :contentReference[oaicite:6]{index=6}

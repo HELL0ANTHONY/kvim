@@ -18,7 +18,8 @@ local colors = {
   hint = { 'DiagnosticHint', '#8ec07c' },
   default = { 'Identifier', '#d3869b' },
   test = { 'Special', '#b16286' },
-  Orange = { 'Orange' },
+  -- Orange = { 'Orange' },
+  Orange = { '#fe8019' },
 }
 
 return {

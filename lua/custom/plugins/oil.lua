@@ -1,3 +1,10 @@
+vim.api.nvim_create_autocmd('ColorScheme', {
+  pattern = '*',
+  callback = function()
+    vim.api.nvim_set_hl(0, 'OilNormal', { bg = '#1d2021' }) -- por ejemplo gruvbox dark
+  end,
+})
+
 return {
   'stevearc/oil.nvim',
 
@@ -61,6 +68,7 @@ return {
       relativenumber = false,
       signcolumn = 'no',
       winbar = '%{%v:lua.get_oil_winbar()%}', -- único lugar donde mostramos path
+      winhighlight = 'Normal:OilNormal',
     },
 
     -- Título de la flotante vacío para no duplicar path
