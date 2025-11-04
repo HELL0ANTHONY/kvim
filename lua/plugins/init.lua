@@ -16,6 +16,7 @@ require('lazy').setup({
   { import = 'plugins.gitconfig' },
   { import = 'plugins.lua_snip' },
   { import = 'plugins.todo_comments' },
+  { import = 'plugins.outline' },
 }, {
   defaults = { lazy = true },
   change_detection = {

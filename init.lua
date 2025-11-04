@@ -4,20 +4,20 @@
 
 -- require 'config'
 --
--- vim.filetype.add {
---   extension = {
---     env = 'dotenv',
---     tpl = 'smarty',
---   },
---   filename = {
---     ['.env'] = 'dotenv',
---     ['index.tpl'] = 'smarty',
---   },
---   pattern = {
---     ['%.env%.[%w_.-]+'] = 'dotenv',
---     ['%.tpl$'] = 'smarty',
---   },
--- }
+vim.filetype.add {
+  extension = {
+    env = 'dotenv',
+    tpl = 'smarty',
+  },
+  filename = {
+    ['.env'] = 'dotenv',
+    ['index.tpl'] = 'smarty',
+  },
+  pattern = {
+    ['%.env%.[%w_.-]+'] = 'dotenv',
+    ['%.tpl$'] = 'smarty',
+  },
+}
 --
 -- require('lazy').setup({
 --   'tpope/vim-sleuth',
@@ -394,8 +394,6 @@
 --   },
 -- })
 --
--- vim.treesitter.language.register('bash', 'dotenv')
--- -- vim.treesitter.language.register('html', 'smarty')
 --
 -- -- The line beneath this is called `modeline`. See `:help modeline`
 -- -- vim: ts=2 sts=2 sw=2 et
@@ -406,3 +404,6 @@ require 'config.globals'
 require 'config.keymaps'
 require 'config.options'
 require 'plugins'
+
+vim.treesitter.language.register('bash', 'dotenv')
+vim.treesitter.language.register('html', 'smarty')
