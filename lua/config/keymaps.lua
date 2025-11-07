@@ -1,56 +1,32 @@
-local fn = require 'config.custom_functions'
-
+-- Esc para limpiar búsqueda
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
-vim.keymap.set('n', '<leader>;r', function()
-  fn.remove_comments()
-end, { desc = '[r]emove inline comments' })
+-- remove inline comments
+-- local fn = require 'config.custom_functions'
+-- vim.keymap.set('n', '<leader>;r', fn.remove_comments, { desc = '[r]emove inline comments' })
 
--- ==================================== MARKS ==============================
--- :RecallMark - Mark the current line.
--- :RecallUnmark - Unmark the current line.
--- :RecallToggle - Mark or unmark the current line.
--- :RecallNext/:RecallPrevious - Navigate through marks linearly, respecting the sequence A-Z and wrapping accordingly.
--- :RecallClear - Clear all global marks.
-vim.keymap.set('n', '<leader>M', '<CMD>RecallMark<CR>', { desc = '󰃅 Add a new [M]ark' })
-vim.keymap.set('n', '<leader>`', '<CMD>RecallUnmark<CR>', { desc = '󰃆 Clear current Mark' })
-vim.keymap.set('n', '<leader>m`', '<CMD>Telescope recall<CR>', { desc = '󰸕 Show [m]arks' })
+-- Recall
+-- vim.keymap.set('n', '<leader>M', '<CMD>RecallMark<CR>', { desc = '󰃅 Add a new [M]ark' })
+-- vim.keymap.set('n', '<leader>`', '<CMD>RecallUnmark<CR>', { desc = '󰃆 Clear current Mark' })
+-- vim.keymap.set('n', '<leader>m`', '<CMD>Telescope recall<CR>', { desc = '󰸕 Show [m]arks' })
 
--- ==================================== SIDEBAR ==============================
-
--- ==================================== BUFFERS ==============================
--- Close all buffers except one
-function CloseBuffers()
+-- Close buffers
+local function CloseBuffers()
   local cursor_pos = vim.fn.getpos '.'
   vim.cmd 'wa | %bd | e# | bd!#'
   vim.fn.setpos('.', cursor_pos)
 end
 
-vim.keymap.set('n', '<leader>;C', '<cmd>lua CloseBuffers()<CR>', { desc = ' [C]lose all buffers' })
+vim.keymap.set('n', '<leader>;C', CloseBuffers, { desc = ' [C]lose all buffers' })
 
--- ==================================== TERMINAL ==============================
--- https://stackoverflow.com/questions/1236563/how-do-i-run-a-terminal-inside-of-vim
-
--- Define the function globally
+-- Terminal
 function _G.OpenTerminal()
   local os_name = vim.loop.os_uname().sysname
-
   if os_name == 'Windows_NT' then
     vim.cmd 'split term://pwsh'
   else
     vim.cmd 'split term://zsh'
   end
-
   vim.cmd 'resize 12'
 end
-
-vim.cmd [[
-  augroup TerminalAutoClose
-    autocmd!
-    autocmd TermClose * if !v:event.status | exe 'silent! bdelete!' | endif
-  augroup END
-]]
-
-vim.api.nvim_set_keymap('n', '<leader>ot', ':lua OpenTerminal()<CR>', { noremap = true, silent = true, desc = '[o]pen terminal' })
-
--- ==================================== OPEN NAVBUDDY ===========================
+vim.keymap.set('n', '<leader>ot', OpenTerminal, { silent = true, desc = '[o]pen terminal' })

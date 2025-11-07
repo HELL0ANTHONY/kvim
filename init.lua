@@ -4,6 +4,10 @@
 
 -- require 'config'
 --
+
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 vim.filetype.add {
   extension = {
     env = 'dotenv',
@@ -18,6 +22,15 @@ vim.filetype.add {
     ['%.tpl$'] = 'smarty',
   },
 }
+
+vim.opt.guicursor = {
+  'n-v-c:block', -- Normal, Visual, Command = bloque
+  'i-ci-ve:ver25', -- Insert, Insert-completion, Visual-Select = barra vertical
+  'r-cr:hor20', -- Replace = cursor subrayado
+  'o:hor50', -- Operator-pending = subrayado más grueso
+  'sm:block-blinkwait175-blinkoff150-blinkon175', -- visual feedback
+}
+
 --
 -- require('lazy').setup({
 --   'tpope/vim-sleuth',

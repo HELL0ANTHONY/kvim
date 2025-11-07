@@ -156,7 +156,7 @@ return {
       float = {
         max_height = 15,
         max_width = 80,
-        border = 'single', -- 👈 opciones: "single", "double", "rounded", "solid", "shadow"
+        border = 'rounded', -- 👈 opciones: "single", "double", "rounded", "solid", "shadow"
         get_win_title = function(_)
           return ''
         end, -- oculta título. :contentReference[oaicite:6]{index=6}
