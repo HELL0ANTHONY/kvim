@@ -116,7 +116,8 @@ return {
     local keymaps = {
       { '<leader>sh', builtin.help_tags, '[S]earch [H]elp' },
       { '<leader>sk', builtin.keymaps, '[S]earch [K]eymaps' },
-      { '<home>', builtin.find_files, '[S]earch [F]iles' },
+      { '<home>', builtin.find_files, 'Search Files' },
+      { '<leader>sf', builtin.find_files, '[S]earch [F]iles' },
       { '<leader>ss', builtin.builtin, '[S]earch [S]elect Telescope' },
       { '<leader>sw', builtin.grep_string, '[S]earch current [W]ord' },
       { '<leader>sg', builtin.live_grep, '[S]earch by [G]rep' },

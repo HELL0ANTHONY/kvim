@@ -1,3 +1,6 @@
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
 require 'config.options' -- siempre debe ir arriba de todo.
 require 'config.autocmds'
 require 'config.custom_functions'
