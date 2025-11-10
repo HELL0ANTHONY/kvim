@@ -123,7 +123,20 @@ return {
           },
         },
       },
-      lua_ls = { settings = { Lua = { completion = { callSnippet = 'Replace' } } } },
+      lua_ls = {
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { 'vim' },
+            },
+            completion = { callSnippet = 'Replace' },
+            workspace = {
+              checkThirdParty = false,
+              library = vim.api.nvim_get_runtime_file('', true),
+            },
+          },
+        },
+      },
       terraformls = {},
       rust_analyzer = {},
       powershell_es = {

@@ -102,7 +102,14 @@ return {
           },
         },
       },
-      lua_ls = { settings = { Lua = { completion = { callSnippet = 'Replace' } } } },
+      lua_ls = {
+        settings = {
+          Lua = {
+            diagnostics = { globals = { 'vim' } },
+            completion = { callSnippet = 'Replace' },
+          },
+        },
+      },
       terraformls = {},
       rust_analyzer = {},
       jsonls = {},
