@@ -249,20 +249,6 @@ return {
         return
       end
 
-      local colors = {
-        Blue = 'Blue',
-        Cyan = 'Cyan',
-        Green = 'Green',
-        Orange = 'Orange',
-        Red = 'Red',
-        Violet = 'Violet',
-        Yellow = 'Yellow',
-      }
-
-      for name, link in pairs(colors) do
-        vim.cmd(('highlight link RainbowDelimiter%s %s'):format(name, link))
-      end
-
       vim.g.rainbow_delimiters = {
         strategy = {
           [''] = rainbow_delimiters.strategy['global'],
@@ -280,8 +266,6 @@ return {
           typescript = 'rainbow-parens',
           typescriptreact = 'rainbow-parens',
         },
-
-        highlight = vim.tbl_keys(colors),
       }
     end,
   },
