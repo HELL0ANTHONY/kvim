@@ -24,17 +24,20 @@ return {
     priority = 1000,
     config = function()
       require('gruvbox').setup {
-        variant = 'soft', -- hard, medium, soft, light
-        dark_variant = 'soft', -- hard, medium, soft
+        -- variant = 'medium', -- hard, medium, soft, light
+        -- dark_variant = 'soft', -- hard, medium, soft
         dim_inactive_windows = false,
         extend_background_behind_borders = false,
         styles = {
+          bold = true,
           italic = true,
         },
       }
     end,
     init = function()
-      vim.cmd.colorscheme 'gruvbox'
+      -- vim.cmd.colorscheme 'gruvbox'
+      vim.cmd.colorscheme 'gruvbox-soft'
+      -- vim.cmd.colorscheme 'gruvbox-medium'
     end,
   },
   {

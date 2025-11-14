@@ -21,7 +21,6 @@ return {
     {
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       event = 'VeryLazy',
-      -- ⛔ estabas usando `run_on_start` arriba del spec; debe ir en `opts`
       opts = {
         ensure_installed = {
           'emmet_ls',
@@ -39,6 +38,7 @@ return {
           'ts_ls',
           'yamlfmt',
           'yamllint',
+          'tailwindcss-language-server',
         },
         run_on_start = true,
       },
@@ -115,6 +115,28 @@ return {
       jsonls = {},
       html = {},
       ts_ls = {},
+      tailwindcss = {
+        filetypes = {
+          -- 'html',
+          'javascriptreact',
+          'typescriptreact',
+        },
+        settings = {
+          tailwindCSS = {
+            validate = true,
+            classAttributes = { 'class', 'className', 'ngClass' },
+            lint = {
+              cssConflict = 'warning',
+              invalidApply = 'error',
+              invalidScreen = 'error',
+              invalidVariant = 'error',
+              invalidConfigPath = 'error',
+              invalidTailwindDirective = 'error',
+              recommendedVariantOrder = 'warning',
+            },
+          },
+        },
+      },
     }
 
     require('mason').setup { PATH = 'prepend' }

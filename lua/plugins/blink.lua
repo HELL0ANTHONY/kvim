@@ -1,4 +1,3 @@
--- lua/plugins/blink.lua
 return {
   {
     'saghen/blink.cmp',
@@ -6,7 +5,6 @@ return {
     event = { 'InsertEnter', 'CmdlineEnter' },
     dependencies = {
       'rafamadriz/friendly-snippets',
-      -- podés quitar esta dependencia si ya tenés el plugin de LuaSnip declarado aparte
       { 'L3MON4D3/LuaSnip', version = 'v2.*' },
     },
     opts = {
@@ -26,7 +24,6 @@ return {
       appearance = { use_nvim_cmp_as_default = true },
     },
     config = function(_, opts)
-      -- aseguramos que LuaSnip esté listo y cargamos friendly-snippets en LuaSnip
       local ok, ls = pcall(require, 'luasnip')
       if ok then
         ls.config.setup {
