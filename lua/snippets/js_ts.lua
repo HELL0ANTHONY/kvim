@@ -64,11 +64,11 @@ local function make_pct()
   return s('pct', {
     f(function()
       local path = file_path()
-      return ('console.count(`%s → count: ${'):format(path)
+      return ('console.count(`%s → count: ${"'):format(path)
     end),
     i(1, 'variable'),
     f(function()
-      return '}`);'
+      return '"}`);'
     end),
   })
 end

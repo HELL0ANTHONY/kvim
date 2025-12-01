@@ -1,4 +1,4 @@
--- lua/plugins/conform.lua    
+-- lua/plugins/conform.lua
 local js_ts_formatters = { 'prettierd', 'prettier', stop_after_first = true }
 
 local function formatter_exists(formatter)
@@ -52,6 +52,7 @@ return {
       html = { 'prettierd' },
       javascript = js_ts_formatters,
       javascriptreact = js_ts_formatters,
+      css = js_ts_formatters,
       json = formatter_exists 'prettierd' and { 'prettierd' } or { 'json-tool' },
       json5 = { 'prettierd' },
       jsonc = { 'prettierd' },

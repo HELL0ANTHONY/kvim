@@ -120,6 +120,7 @@ return {
           -- 'html',
           'javascriptreact',
           'typescriptreact',
+          'typescript',
         },
         settings = {
           tailwindCSS = {
