@@ -305,4 +305,50 @@ return {
       return keys
     end,
   },
+  {
+    'folke/trouble.nvim',
+    cmd = 'Trouble',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = {
+      auto_open = false,
+      auto_close = false,
+      auto_preview = true,
+      focus = false,
+      use_diagnostic_signs = true,
+    },
+    -- keys = {
+    --   { '<leader>xx', '<cmd>Trouble diagnostics toggle<cr>', desc = 'Diagnostics (workspace) [Trouble]' },
+    --   { '<leader>xX', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Diagnostics (buffer) [Trouble]' },
+    --   { '<leader>cs', '<cmd>Trouble symbols toggle focus=false<cr>', desc = 'Symbols (document) [Trouble]' },
+    --   { '<leader>cl', '<cmd>Trouble lsp toggle focus=false win.position=right<cr>', desc = 'LSP defs/refs/etc [Trouble]' },
+    --   { '<leader>xL', '<cmd>Trouble loclist toggle<cr>', desc = 'Location List [Trouble]' },
+    --   { '<leader>xQ', '<cmd>Trouble qflist toggle<cr>', desc = 'Quickfix List [Trouble]' },
+    -- },
+  },
+
+  -- OPCIONAL: mejora la quickfix “clásica”
+  {
+    'kevinhwang91/nvim-bqf',
+    ft = 'qf', -- sólo cargar en quickfix
+    opts = {
+      auto_enable = true,
+      magic_window = true,
+      preview = {
+        win_height = 12,
+        win_vheight = 12,
+        delay_syntax = 80,
+        -- si quieres, personalizá los bordes
+        -- border_chars = { "┃", "┃", "━", "━", "┏", "┓", "┗", "┛", "█" },
+      },
+      -- si usás fzf, podés activar el modo filtro desde la quickfix con `zf`
+      -- filter = {
+      --   fzf = {
+      --     action_for = { ["ctrl-s"] = "split" },
+      --     extra_opts = { "--bind", "ctrl-o:toggle-all", "--prompt", "> " },
+      --   },
+      -- },
+    },
+  },
 }

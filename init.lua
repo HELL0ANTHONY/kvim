@@ -38,18 +38,7 @@ vim.opt.guicursor = {
 
 -- ======================== keymaps (START) ==================================
 local buffers = require 'config.utils.buffers'
-vim.keymap.set('n', '<leader>x', buffers.close_others, { desc = ' Close other buffers' })
+vim.keymap.set('n', '<F3>', buffers.close_others, { desc = ' Close other buffers' })
 
 -- Limpia las busquedas.
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-
-function _G.OpenTerminal()
-  local os_name = vim.loop.os_uname().sysname
-  if os_name == 'Windows_NT' then
-    vim.cmd 'split term://pwsh'
-  else
-    vim.cmd 'split term://zsh'
-  end
-  vim.cmd 'resize 12'
-end
-vim.keymap.set('n', '<leader>ot', OpenTerminal, { silent = true, desc = '[o]pen terminal' })
