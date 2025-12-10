@@ -122,7 +122,7 @@ return {
         -- raíz de git si existe, sino cwd
         local git = vim.fs.find('.git', { path = dir, upward = true })[1]
         local root = git and vim.fs.dirname(git) or vim.loop.cwd()
-        local shown = shorten_tail(dir, 3) -- ej: …/lua/plugins
+        local shown = shorten_tail(dir, 4) -- ej: …/lua/plugins
         local project = vim.fn.fnamemodify(root or dir, ':t')
 
         return ('󰚌 %s  ›  %s'):format(project, shown ~= '' and shown or '.')
@@ -154,8 +154,8 @@ return {
 
       -- Título de la flotante vacío para no duplicar path
       float = {
-        max_height = 15,
-        max_width = 80,
+        max_height = 25,
+        max_width = 60,
         border = 'rounded', -- 👈 opciones: "single", "double", "rounded", "solid", "shadow"
         get_win_title = function(_)
           return ''
