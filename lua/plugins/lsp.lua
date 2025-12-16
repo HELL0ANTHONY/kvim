@@ -1,48 +1,49 @@
 return {
   'VonHeikemen/lsp-zero.nvim',
   branch = 'v4.x',
-
   event = { 'BufReadPre', 'BufNewFile' },
-  -- lazy = true,  -- ⛔ quítalo o déjalo, pero con el event ya carga
 
   dependencies = {
-    {
-      'neovim/nvim-lspconfig',
-      -- version = '*', -- opcional; puedes quitar el pin
-    },
+    'neovim/nvim-lspconfig',
     {
       'williamboman/mason.nvim',
       cmd = { 'Mason', 'MasonInstall', 'MasonUpdate' },
       opts = { PATH = 'prepend' },
-      build = function()
-        vim.cmd 'MasonUpdate'
-      end,
+      build = ':MasonUpdate',
     },
     {
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       event = 'VeryLazy',
+      dependencies = { 'williamboman/mason.nvim' },
       opts = {
         ensure_installed = {
-          'emmet_ls',
-          'eslint',
-          'golangci-lint',
+          -- LSP servers
+          'emmet-language-server',
           'gopls',
-          'html',
-          'lua_ls',
-          'powershell_es',
-          'prettierd',
-          'rust_analyzer',
-          'stylua',
-          'taplo',
-          'terraformls',
-          'ts_ls',
-          'yamlfmt',
-          'yamllint',
+          'html-lsp',
+          'json-lsp',
+          'lua-language-server',
+          'powershell-editor-services',
+          'rust-analyzer',
           'tailwindcss-language-server',
+          'terraform-ls',
+          'typescript-language-server',
+          'yaml-language-server',
+          -- Linters (usados en nvim-lint)
+          'eslint_d',
+          'golangci-lint',
+          'tflint',
+          'yamllint',
+          -- Formatters (usados en conform)
+          'gofumpt',
+          'goimports-reviser',
+          'golines',
+          'prettierd',
+          'stylua',
+          'yamlfmt',
         },
         run_on_start = true,
       },
-      dependencies = { 'williamboman/mason.nvim' },
     },
     {
       'williamboman/mason-lspconfig.nvim',
@@ -53,21 +54,17 @@ return {
 
   config = function()
     local lsp = require 'lsp-zero'
-
     local ok_blink, blink = pcall(require, 'blink.cmp')
     local capabilities = ok_blink and blink.get_lsp_capabilities() or vim.lsp.protocol.make_client_capabilities()
 
+    -- Solo keymaps que NO son nativos en Neovim 0.11+
     lsp.on_attach(function(_, bufnr)
-      if vim.b[bufnr].lsp_keymaps_set then
-        return
+      local map = function(keys, fn, desc)
+        vim.keymap.set('n', keys, fn, { buffer = bufnr, silent = true, desc = desc })
       end
-      vim.b[bufnr].lsp_keymaps_set = true
-      local map = function(keys, rhs, desc, mode)
-        vim.keymap.set(mode or 'n', keys, rhs, { buffer = bufnr, silent = true, desc = desc })
-      end
-      map('gd', vim.lsp.buf.definition, 'LSP: Goto def')
-      map('gD', vim.lsp.buf.declaration, 'LSP: Goto decl')
-      map('<leader>oe', vim.diagnostic.open_float, 'Diag float')
+      map('gd', vim.lsp.buf.definition, 'LSP: Goto definition')
+      map('gD', vim.lsp.buf.declaration, 'LSP: Goto declaration')
+      map('<leader>oe', vim.diagnostic.open_float, 'Diagnostic float')
       map('K', function()
         vim.lsp.buf.hover { border = 'single' }
       end, 'Hover')
@@ -91,7 +88,6 @@ return {
           },
         },
       },
-      eslint = { settings = { useFlatConfig = true, workingDirectory = { mode = 'auto' } } },
       gopls = {
         settings = {
           gopls = {
@@ -110,18 +106,8 @@ return {
           },
         },
       },
-      terraformls = {},
-      rust_analyzer = {},
-      jsonls = {},
-      html = {},
-      ts_ls = {},
       tailwindcss = {
-        filetypes = {
-          -- 'html',
-          'javascriptreact',
-          'typescriptreact',
-          'typescript',
-        },
+        filetypes = { 'html', 'javascript', 'javascriptreact', 'typescriptreact', 'typescript' },
         settings = {
           tailwindCSS = {
             validate = true,
@@ -138,28 +124,25 @@ return {
           },
         },
       },
+      terraformls = {},
+      rust_analyzer = {},
+      jsonls = {},
+      html = {},
+      ts_ls = {},
     }
 
-    require('mason').setup { PATH = 'prepend' }
-
     local mlsp = require 'mason-lspconfig'
-
     local function handler(name)
       local opts = servers[name] or {}
       opts.capabilities = capabilities
       require('lspconfig')[name].setup(opts)
     end
 
-    if type(mlsp.setup_handlers) == 'function' then
-      mlsp.setup { ensure_installed = vim.tbl_keys(servers), automatic_installation = true }
-      mlsp.setup_handlers { handler }
-    else
-      mlsp.setup {
-        ensure_installed = vim.tbl_keys(servers),
-        automatic_installation = true,
-        handlers = { handler },
-      }
-    end
+    mlsp.setup {
+      ensure_installed = vim.tbl_keys(servers),
+      automatic_installation = true,
+      handlers = { handler },
+    }
 
     vim.diagnostic.config {
       virtual_text = true,
