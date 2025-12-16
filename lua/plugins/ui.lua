@@ -63,7 +63,7 @@ return {
         if name == '' then
           name = '[No Name]'
         end
-        local modified = vim.bo.modified and ' [+]' or ''
+        local modified = vim.bo.modified and ' [󰦒]' or ''
         return file_icon() .. name .. modified
       end
 
@@ -71,7 +71,12 @@ return {
         'diagnostics',
         sources = { 'nvim_diagnostic' },
         sections = { 'error', 'warn', 'info', 'hint' },
-        symbols = { error = ' ', warn = ' ', info = ' ', hint = '󱐋 ' },
+        symbols = {
+          error = ' ', -- Error
+          warn = ' ', -- Warning
+          info = ' ', -- Info
+          hint = '󰠠 ', -- Hint
+        },
         colored = true,
         update_in_insert = false,
         always_visible = false,
@@ -79,7 +84,11 @@ return {
 
       local diff = {
         'diff',
-        symbols = { added = ' ', modified = ' ', removed = ' ' },
+        symbols = {
+          added = ' ', -- +
+          modified = ' ', -- ~
+          removed = ' ', -- -
+        },
         colored = true,
         cond = function()
           return not win_is_narrow(0)
@@ -92,7 +101,7 @@ return {
         if win_is_narrow(0) then
           return string.format('%d/%d', l, total)
         end
-        return string.format('󰉸 %d│󱥖 %d  /%d', l, c, total)
+        return string.format('󰉸 %d│󱥖 %d  %d', l, c, total)
       end
 
       local branch = {
