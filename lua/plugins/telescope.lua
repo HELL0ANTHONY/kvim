@@ -1,6 +1,5 @@
 return {
   'nvim-telescope/telescope.nvim',
-  event = 'VimEnter',
   branch = '0.1.x',
   dependencies = {
     'nvim-lua/plenary.nvim',
@@ -14,52 +13,120 @@ return {
     'nvim-telescope/telescope-ui-select.nvim',
     { 'nvim-tree/nvim-web-devicons', enabled = true },
   },
+
+  keys = {
+    { '<leader>sh', '<cmd>Telescope help_tags<cr>', desc = '[S]earch [H]elp' },
+    { '<leader>sk', '<cmd>Telescope keymaps<cr>', desc = '[S]earch [K]eymaps' },
+    { '<home>', '<cmd>Telescope find_files<cr>', desc = 'Search Files' },
+    { '<leader>sf', '<cmd>Telescope find_files<cr>', desc = '[S]earch [F]iles' },
+    { '<leader>ss', '<cmd>Telescope builtin<cr>', desc = '[S]earch [S]elect Telescope' },
+    { '<leader>sw', '<cmd>Telescope grep_string<cr>', desc = '[S]earch current [W]ord' },
+    { '<leader>sg', '<cmd>Telescope live_grep<cr>', desc = '[S]earch by [G]rep' },
+    { '<leader>sd', '<cmd>Telescope diagnostics<cr>', desc = '[S]earch [D]iagnostics' },
+    { '<leader>sr', '<cmd>Telescope resume<cr>', desc = '[S]earch [R]esume' },
+    { '<leader>s.', '<cmd>Telescope oldfiles<cr>', desc = '[S]earch Recent Files' },
+    { '<leader><leader>', '<cmd>Telescope buffers<cr>', desc = 'Find existing buffers' },
+    {
+      '<leader>/',
+      function()
+        require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown { winblend = 10, previewer = false })
+      end,
+      desc = '[/] Fuzzily search in current buffer',
+    },
+    {
+      '<leader>s/',
+      function()
+        require('telescope.builtin').live_grep { grep_open_files = true, prompt_title = 'Live Grep in Open Files' }
+      end,
+      desc = '[S]earch [/] in Open Files',
+    },
+    {
+      '<leader>sn',
+      function()
+        require('telescope.builtin').find_files { cwd = vim.fn.stdpath 'config' }
+      end,
+      desc = '[S]earch [N]eovim files',
+    },
+  },
+
   config = function()
     local telescope = require 'telescope'
     local actions = require 'telescope.actions'
-    local builtin = require 'telescope.builtin'
     local themes = require 'telescope.themes'
-    local make_entry = require 'telescope.make_entry'
+
+    -- Layout reutilizable
+    local wide_layout = {
+      width = 0.96,
+      height = 0.92,
+      horizontal = { preview_width = 0.72, results_width = 0.28 },
+    }
+
+    -- Archivos a excluir de grep
+    local grep_ignore = {
+      '--glob=!package-lock.json',
+      '--glob=!yarn.lock',
+      '--glob=!pnpm-lock.yaml',
+      '--glob=!go.sum',
+      '--glob=!go.work.sum',
+      '--glob=!*.min.js',
+      '--glob=!*.min.css',
+      '--glob=!dist/*',
+      '--glob=!node_modules/*',
+      '--glob=!vendor/*',
+      '--glob=!.git/*',
+    }
+
+    local vimgrep_args = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case',
+    }
+    -- Agregar exclusiones
+    for _, glob in ipairs(grep_ignore) do
+      table.insert(vimgrep_args, glob)
+    end
 
     telescope.setup {
       defaults = {
-        prompt_prefix = '   ',
+        prompt_prefix = '   ',
         selection_caret = '❯ ',
         path_display = { 'truncate' },
-
-        -- ▶︎ layout: preview grande / resultados angosto
         layout_strategy = 'horizontal',
         layout_config = {
           width = 0.96,
           height = 0.92,
-          horizontal = {
-            preview_width = 0.65, -- preview más ancho
-            results_width = 0.35, -- lista más angosta
-          },
+          horizontal = { preview_width = 0.65, results_width = 0.35 },
         },
-
         borderchars = {
           prompt = { '━', '┃', '━', '┃', '┏', '┓', '┛', '┗' },
           preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
           results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
         },
-        vimgrep_arguments = {
-          'rg',
-          '--color=never',
-          '--no-heading',
-          '--with-filename',
-          '--line-number',
-          '--column',
-          '--smart-case',
-        },
+        vimgrep_arguments = vimgrep_args,
         mappings = {
-          i = { ['<C-u>'] = false, ['<C-d>'] = false },
-          n = { ['q'] = actions.close },
+          i = {
+            ['<C-u>'] = false,
+            ['<C-d>'] = false,
+            ['<CR>'] = actions.select_default,
+            ['<C-j>'] = actions.select_vertical,
+            ['<C-k>'] = actions.select_horizontal,
+            ['<C-t>'] = actions.select_tab,
+          },
+          n = {
+            ['q'] = actions.close,
+            ['H'] = actions.select_default,
+            ['J'] = actions.select_vertical,
+            ['K'] = actions.select_horizontal,
+            ['L'] = actions.select_tab,
+          },
         },
       },
 
       pickers = {
-        -- buffers como ya lo tenías
         buffers = {
           theme = 'dropdown',
           sort_mru = true,
@@ -72,34 +139,17 @@ return {
             n = { ['dd'] = actions.delete_buffer },
           },
         },
-
-        -- ▶︎ live_grep: mostrar solo "path:line:col" en la lista (preview mantiene el contenido)
         live_grep = {
           layout_strategy = 'horizontal',
-          layout_config = {
-            width = 0.96,
-            height = 0.92,
-            horizontal = { preview_width = 0.72, results_width = 0.28 },
-          },
-          entry_maker = function(line)
-            -- partimos del maker por defecto para vimgrep
-            local e = make_entry.gen_from_vimgrep {}(line)
-            -- reemplazamos el texto mostrado en la lista
-            e.display = string.format('%s:%s:%s', e.filename, e.lnum, e.col)
-            -- lo usamos también para el ordenado/búsqueda interna
-            e.ordinal = e.display
-            return e
-          end,
+          layout_config = wide_layout,
         },
-
-        -- opcional: find_files con mismo layout invertido
+        grep_string = {
+          layout_strategy = 'horizontal',
+          layout_config = wide_layout,
+        },
         find_files = {
           layout_strategy = 'horizontal',
-          layout_config = {
-            width = 0.96,
-            height = 0.92,
-            horizontal = { preview_width = 0.72, results_width = 0.28 },
-          },
+          layout_config = wide_layout,
         },
       },
 
@@ -108,66 +158,7 @@ return {
       },
     }
 
-    for _, ext in ipairs { 'fzf', 'ui-select' } do
-      pcall(telescope.load_extension, ext)
-    end
-
-    -- **Mapeos universales y representativos**
-    local keymaps = {
-      { '<leader>sh', builtin.help_tags, '[S]earch [H]elp' },
-      { '<leader>sk', builtin.keymaps, '[S]earch [K]eymaps' },
-      { '<home>', builtin.find_files, 'Search Files' },
-      { '<leader>sf', builtin.find_files, '[S]earch [F]iles' },
-      { '<leader>ss', builtin.builtin, '[S]earch [S]elect Telescope' },
-      { '<leader>sw', builtin.grep_string, '[S]earch current [W]ord' },
-      { '<leader>sg', builtin.live_grep, '[S]earch by [G]rep' },
-      { '<leader>sd', builtin.diagnostics, '[S]earch [D]iagnostics' },
-      { '<leader>sr', builtin.resume, '[S]earch [R]esume' },
-      { '<leader>s.', builtin.oldfiles, '[S]earch Recent Files' },
-      { '<leader><leader>', builtin.buffers, 'Find existing buffers' },
-      {
-        '<leader>/',
-        function()
-          builtin.current_buffer_fuzzy_find(themes.get_dropdown { winblend = 10, previewer = false })
-        end,
-        '[/] Fuzzily search in current buffer',
-      },
-      {
-        '<leader>s/',
-        function()
-          builtin.live_grep { grep_open_files = true, prompt_title = 'Live Grep in Open Files' }
-        end,
-        '[S]earch [/] in Open Files',
-      },
-      {
-        '<leader>sn',
-        function()
-          builtin.find_files { cwd = vim.fn.stdpath 'config' }
-        end,
-        '[S]earch [N]eovim files',
-      },
-    }
-
-    -- **Configuración de selección unificada (sin conflictos con Zellij ni Windows)**
-    telescope.setup {
-      defaults = {
-        mappings = {
-          i = {
-            ['<CR>'] = actions.select_default, -- Enter: Abre en la misma ventana
-          },
-          n = {
-            ['H'] = actions.select_default, -- Misma ventana
-            ['J'] = actions.select_vertical, -- División vertical
-            ['K'] = actions.select_horizontal, -- División horizontal
-            ['L'] = actions.select_tab, -- Nueva pestaña
-          },
-        },
-      },
-    }
-
-    -- Aplicar mapeos
-    for _, map in ipairs(keymaps) do
-      vim.keymap.set('n', map[1], map[2], { desc = map[3] })
-    end
+    pcall(telescope.load_extension, 'fzf')
+    pcall(telescope.load_extension, 'ui-select')
   end,
 }
