@@ -1,44 +1,47 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
-require 'config.options' -- siempre debe ir arriba de todo.
+-- Cargar utilidades antes de opciones y plugins
+require 'config.utils.css_convert'
+require 'config.utils.remove_comments'
+require 'config.utils.preview'
+
+require 'config.options'
 require 'config.autocmds'
-require 'config.custom_functions'
-require 'config.globals'
--- require 'config.keymaps'
 require 'plugins'
 
--- ======================== Configuraciones extras (START) =====================
--- Agrega estilos a los archivos .env u otros archivos de configuracion.
+-- Filetypes personalizados
 vim.filetype.add {
-  extension = {
-    env = 'dotenv',
-    tpl = 'smarty',
-  },
-  filename = {
-    ['.env'] = 'dotenv',
-    ['index.tpl'] = 'smarty',
-  },
-  pattern = {
-    ['%.env%.[%w_.-]+'] = 'dotenv',
-    ['%.tpl$'] = 'smarty',
-  },
+  extension = { env = 'dotenv', tpl = 'smarty' },
+  filename = { ['.env'] = 'dotenv', ['index.tpl'] = 'smarty' },
+  pattern = { ['%.env%.[%w_.-]+'] = 'dotenv', ['%.tpl$'] = 'smarty' },
 }
 vim.treesitter.language.register('bash', 'dotenv')
 vim.treesitter.language.register('html', 'smarty')
 
--- Estilos del cursor.
+-- Cursor
 vim.opt.guicursor = {
-  'n-v-c:block', -- Normal, Visual, Command = bloque
-  'i-ci-ve:ver25', -- Insert, Insert-completion, Visual-Select = barra vertical
-  'r-cr:hor20', -- Replace = cursor subrayado
-  'o:hor50', -- Operator-pending = subrayado más grueso
-  'sm:block-blinkwait175-blinkoff150-blinkon175', -- visual feedback
+  'n-v-c:block',
+  'i-ci-ve:ver25',
+  'r-cr:hor20',
+  'o:hor50',
+  'sm:block-blinkwait175-blinkoff150-blinkon175',
 }
 
--- ======================== keymaps (START) ==================================
 local buffers = require 'config.utils.buffers'
-vim.keymap.set('n', '<F3>', buffers.close_others, { desc = ' Close other buffers' })
+vim.keymap.set('n', '<F3>', buffers.close_others, { desc = 'Close other buffers' })
+vim.keymap.set('n', '<leader>cp', '<cmd>Preview<cr>', { desc = 'Code Preview start' })
+vim.keymap.set('n', '<leader>cP', '<cmd>PreviewStop<cr>', { desc = 'Code Preview stop' })
+vim.keymap.set('n', '<leader>cr', '<cmd>RemoveCommentsInline<cr>', { desc = 'Remove inline comments' })
+vim.keymap.set('n', '<leader>cR', '<cmd>RemoveCommentsAll<cr>', { desc = 'Remove all comment lines' })
 
--- Limpia las busquedas.
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+-- Unidades (bajo cursor)
+vim.keymap.set('n', '<leader>cu', '<cmd>CssToggle<cr>', { desc = 'CSS toggle px/rem' })
+vim.keymap.set('n', '<leader>cv', '<cmd>CssToggleVw<cr>', { desc = 'CSS toggle px/vw' })
+
+-- Colores (bajo cursor)
+vim.keymap.set('n', '<leader>cc', '<cmd>ColorToggle<cr>', { desc = 'Color cycle format' })
+vim.keymap.set('n', '<leader>ch', '<cmd>ColorToHex<cr>', { desc = 'Color to hex' })
+
+-- Batch
+-- vim.keymap.set('n', '<leader>cR', '<cmd>CssAllPxToRem<cr>', { desc = 'All px→rem' })

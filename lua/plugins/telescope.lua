@@ -11,9 +11,9 @@ return {
       end,
     },
     'nvim-telescope/telescope-ui-select.nvim',
-    { 'nvim-tree/nvim-web-devicons', enabled = true },
+    'nvim-tree/nvim-web-devicons',
+    'folke/trouble.nvim',
   },
-
   keys = {
     { '<leader>sh', '<cmd>Telescope help_tags<cr>', desc = '[S]earch [H]elp' },
     { '<leader>sk', '<cmd>Telescope keymaps<cr>', desc = '[S]earch [K]eymaps' },
@@ -31,14 +31,7 @@ return {
       function()
         require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown { winblend = 10, previewer = false })
       end,
-      desc = '[/] Fuzzily search in current buffer',
-    },
-    {
-      '<leader>s/',
-      function()
-        require('telescope.builtin').live_grep { grep_open_files = true, prompt_title = 'Live Grep in Open Files' }
-      end,
-      desc = '[S]earch [/] in Open Files',
+      desc = 'Fuzzily search in buffer',
     },
     {
       '<leader>sn',
@@ -47,27 +40,22 @@ return {
       end,
       desc = '[S]earch [N]eovim files',
     },
+    -- Trouble integration
+    { '<leader>xx', '<cmd>Trouble diagnostics toggle<cr>', desc = 'Diagnostics (Trouble)' },
+    { '<leader>xX', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer Diagnostics' },
   },
-
   config = function()
     local telescope = require 'telescope'
     local actions = require 'telescope.actions'
-    local themes = require 'telescope.themes'
+    local open_with_trouble = require('trouble.sources.telescope').open
 
-    -- Layout reutilizable
-    local wide_layout = {
-      width = 0.96,
-      height = 0.92,
-      horizontal = { preview_width = 0.72, results_width = 0.28 },
-    }
+    local wide = { width = 0.96, height = 0.92, horizontal = { preview_width = 0.72, results_width = 0.28 } }
 
-    -- Archivos a excluir de grep
     local grep_ignore = {
       '--glob=!package-lock.json',
       '--glob=!yarn.lock',
       '--glob=!pnpm-lock.yaml',
       '--glob=!go.sum',
-      '--glob=!go.work.sum',
       '--glob=!*.min.js',
       '--glob=!*.min.css',
       '--glob=!dist/*',
@@ -75,19 +63,9 @@ return {
       '--glob=!vendor/*',
       '--glob=!.git/*',
     }
-
-    local vimgrep_args = {
-      'rg',
-      '--color=never',
-      '--no-heading',
-      '--with-filename',
-      '--line-number',
-      '--column',
-      '--smart-case',
-    }
-    -- Agregar exclusiones
-    for _, glob in ipairs(grep_ignore) do
-      table.insert(vimgrep_args, glob)
+    local vimgrep_args = { 'rg', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' }
+    for _, g in ipairs(grep_ignore) do
+      table.insert(vimgrep_args, g)
     end
 
     telescope.setup {
@@ -96,16 +74,7 @@ return {
         selection_caret = '❯ ',
         path_display = { 'truncate' },
         layout_strategy = 'horizontal',
-        layout_config = {
-          width = 0.96,
-          height = 0.92,
-          horizontal = { preview_width = 0.65, results_width = 0.35 },
-        },
-        borderchars = {
-          prompt = { '━', '┃', '━', '┃', '┏', '┓', '┛', '┗' },
-          preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-          results = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-        },
+        layout_config = { width = 0.96, height = 0.92, horizontal = { preview_width = 0.65, results_width = 0.35 } },
         vimgrep_arguments = vimgrep_args,
         mappings = {
           i = {
@@ -115,6 +84,7 @@ return {
             ['<C-j>'] = actions.select_vertical,
             ['<C-k>'] = actions.select_horizontal,
             ['<C-t>'] = actions.select_tab,
+            ['<C-q>'] = open_with_trouble, -- Enviar a Trouble
           },
           n = {
             ['q'] = actions.close,
@@ -122,42 +92,25 @@ return {
             ['J'] = actions.select_vertical,
             ['K'] = actions.select_horizontal,
             ['L'] = actions.select_tab,
+            ['<C-q>'] = open_with_trouble,
           },
         },
       },
-
       pickers = {
         buffers = {
           theme = 'dropdown',
           sort_mru = true,
-          layout_config = { prompt_position = 'top' },
           previewer = false,
           ignore_current_buffer = true,
           initial_mode = 'normal',
-          mappings = {
-            i = { ['<C-d>'] = actions.delete_buffer },
-            n = { ['dd'] = actions.delete_buffer },
-          },
+          mappings = { n = { ['dd'] = actions.delete_buffer } },
         },
-        live_grep = {
-          layout_strategy = 'horizontal',
-          layout_config = wide_layout,
-        },
-        grep_string = {
-          layout_strategy = 'horizontal',
-          layout_config = wide_layout,
-        },
-        find_files = {
-          layout_strategy = 'horizontal',
-          layout_config = wide_layout,
-        },
+        live_grep = { layout_config = wide },
+        grep_string = { layout_config = wide },
+        find_files = { layout_config = wide },
       },
-
-      extensions = {
-        ['ui-select'] = themes.get_dropdown(),
-      },
+      extensions = { ['ui-select'] = require('telescope.themes').get_dropdown() },
     }
-
     pcall(telescope.load_extension, 'fzf')
     pcall(telescope.load_extension, 'ui-select')
   end,

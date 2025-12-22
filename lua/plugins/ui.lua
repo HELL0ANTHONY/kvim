@@ -106,7 +106,7 @@ return {
 
       local branch = {
         'branch',
-        icon = '',
+        icon = '',
         color = { gui = 'bold' },
         cond = function()
           return not is_vsplit()

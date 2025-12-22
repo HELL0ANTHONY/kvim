@@ -70,32 +70,6 @@ return {
   },
 
   {
-    'SmiteshP/nvim-navbuddy',
-    dependencies = {
-      'SmiteshP/nvim-navic',
-      'MunifTanjim/nui.nvim',
-      'neovim/nvim-lspconfig',
-      'nvim-telescope/telescope.nvim',
-    },
-    keys = {
-      {
-        '<leader>os',
-        function()
-          require('nvim-navbuddy').open()
-        end,
-        desc = 'LSP: [o]pen [s]ymbols navigation',
-        mode = 'n',
-      },
-    },
-    config = function()
-      require('nvim-navbuddy').setup {
-        window = { border = 'rounded' },
-        lsp = { auto_attach = true },
-      }
-    end,
-  },
-
-  {
     'stevearc/oil.nvim',
     init = function()
       -- Highlight para Oil
@@ -290,26 +264,17 @@ return {
     'folke/trouble.nvim',
     cmd = 'Trouble',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    opts = {
-      auto_open = false,
-      auto_close = false,
-      auto_preview = true,
-      focus = false,
-      use_diagnostic_signs = true,
-    },
+    opts = { auto_preview = true, focus = true },
   },
 
+  -- Outline
   {
-    'kevinhwang91/nvim-bqf',
-    ft = 'qf',
-    opts = {
-      auto_enable = true,
-      magic_window = true,
-      preview = {
-        win_height = 12,
-        win_vheight = 12,
-        delay_syntax = 80,
-      },
-    },
+    'hedyhli/outline.nvim',
+    cmd = { 'Outline', 'OutlineOpen' },
+    keys = { { '<F2>', '<cmd>Outline<CR>', desc = 'Toggle outline' } },
+    opts = {},
   },
+
+  -- BQF (quickfix mejorado)
+  { 'kevinhwang91/nvim-bqf', ft = 'qf', opts = { auto_enable = true } },
 }
