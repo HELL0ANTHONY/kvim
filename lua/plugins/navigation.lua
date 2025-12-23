@@ -241,7 +241,7 @@ return {
           '<leader>=',
           function()
             local harpoon = require 'harpoon'
-            local width = math.floor(vim.api.nvim_win_get_width(0) * 0.5)
+            -- local width = math.floor(vim.api.nvim_win_get_width(0) * 0.5)
             harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.5 })
           end,
           desc = 'Harpoon Quick Menu',
