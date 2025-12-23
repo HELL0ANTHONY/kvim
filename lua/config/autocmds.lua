@@ -12,3 +12,13 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.colorcolumn = '100'
   end,
 })
+
+-- Cargar ui-select cuando se llame vim.ui.select
+vim.api.nvim_create_autocmd('LspAttach', {
+  once = true,
+  callback = function()
+    pcall(function()
+      require('telescope').load_extension 'ui-select'
+    end)
+  end,
+})

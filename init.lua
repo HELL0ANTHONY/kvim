@@ -61,3 +61,11 @@ vim.keymap.set('n', '<leader>fJ', '<cmd>JsonTplValidate<cr>', { desc = 'Validate
 -- Quickfix/Location list
 vim.keymap.set('n', '<leader>xq', lk.toggle_qf, { desc = 'Toggle quickfix' })
 vim.keymap.set('n', '<leader>xl', lk.toggle_loc, { desc = 'Toggle loclist' })
+
+-- Golang: Betteralign integration
+vim.keymap.set('n', '<leader>fa', function()
+  local dir = vim.fn.expand '%:p:h'
+  vim.cmd 'silent! write'
+  vim.fn.system('betteralign -apply ' .. vim.fn.shellescape(dir))
+  vim.cmd 'silent! checktime' -- Recarga sin warning
+end, { desc = 'Fix [f]ield [a]lignment' })
