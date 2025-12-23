@@ -277,4 +277,53 @@ return {
 
   -- BQF (quickfix mejorado)
   { 'kevinhwang91/nvim-bqf', ft = 'qf', opts = { auto_enable = true } },
+
+  -- Arrow (bookmarks)
+  {
+    'otavioschwanck/arrow.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = {
+      show_icons = true,
+      leader_key = ';', -- ; + número para ir al bookmark
+      buffer_leader_key = 'm', -- m para bookmarks del buffer actual
+      save_path = function()
+        return vim.fn.stdpath 'data' .. '/arrow'
+      end,
+      mappings = {
+        edit = 'e',
+        delete_mode = 'd',
+        clear_all_items = 'C',
+        toggle = 'a', -- Toggle bookmark en línea actual
+        open_vertical = 'v',
+        open_horizontal = 'h',
+        quit = 'q',
+      },
+      per_buffer_config = {
+        lines = 3, -- Mostrar 3 líneas de contexto
+        sort_automatically = true,
+        satellite = {
+          enable = true,
+          overlap = true,
+          priority = 1000,
+        },
+      },
+      separate_save_and_remove = false,
+      save_key = 'git_root', -- Bookmarks por proyecto (git root)
+      global_bookmarks = false,
+      index_keys = '123456789', -- Teclas para acceso rápido
+      full_path_list = { 'update_resolve' },
+    },
+    keys = {
+      {
+        'm',
+        function()
+          require('arrow.ui').openMenu(nil, { buffer = true })
+        end,
+        desc = 'Buffer bookmarks',
+      },
+    },
+  },
 }
