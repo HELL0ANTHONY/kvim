@@ -18,6 +18,8 @@ require('lazy').setup({
   { import = 'plugins.misc' },
   { import = 'plugins.copilot' },
   { import = 'plugins.testing' },
+  { import = 'plugins.debug' },
+  { import = 'plugins.diagnostics-focus' },
 }, {
   defaults = { lazy = true },
   change_detection = { notify = false },

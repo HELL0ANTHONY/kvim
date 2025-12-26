@@ -111,7 +111,6 @@ M.start = function()
       if vim.api.nvim_buf_is_valid(output_buf) then
         run_preview(source_buf, output_buf)
       else
-        -- Output cerrado, limpiar
         M.stop()
       end
     end,
