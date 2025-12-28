@@ -3,7 +3,13 @@ return {
   event = 'VeryLazy',
   opts = {
     -- usa LSP con fallback a TS/indent
-    useLspFoldsWithTreesitterFallback = true,
+    -- useLspFoldsWithTreesitterFallback = true,
+
+    useLspFoldsWithTreesitterFallback = {
+      enabled = true,
+      foldmethodIfNeitherIsAvailable = 'indent', ---@type string|fun(bufnr: number): string
+    },
+
     pauseFoldsOnSearch = true,
     foldtext = { enabled = true, diagnosticsCount = true, gitsignsCount = true },
     autoFold = { enabled = true, kinds = { 'comment', 'imports' } },
