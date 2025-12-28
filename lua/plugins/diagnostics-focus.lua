@@ -72,6 +72,8 @@ return {
         if cfg.vt == 'current_line' then
           vt_config = { current_line = true }
         else
+          vt_config = cfg.vt
+        end
         vim.diagnostic.config { virtual_text = vt_config }
         -- Float on hover
         setup_float_hover(cfg.float)
