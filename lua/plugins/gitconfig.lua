@@ -1,16 +1,181 @@
 return {
   {
     "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen" },
+    cmd = { "DiffviewOpen", "DiffviewFileHistory" },
+    keys = {
+      { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Diffview Open" },
+      { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "File History" },
+      { "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "Branch History" },
+    },
     config = function()
+      local actions = require("diffview.actions")
+
+      -- Colores sutiles basados en la paleta Gruvbox
+      local function set_diffview_colors()
+        local bg = vim.o.background
+        local gruvbox = bg == "dark"
+            and {
+              -- Gruvbox dark - tonos muy sutiles
+              add_bg = "#2e3b2e", -- verde apagado
+              add_fg = "#b8bb26", -- gruvbox green
+              delete_bg = "#3c2c2c", -- rojo apagado
+              delete_fg = "#fb4934", -- gruvbox red
+              change_bg = "#2e2e3b", -- azul apagado
+              change_fg = "#83a598", -- gruvbox blue
+              text_bg = "#4a4a2e", -- amarillo apagado (cambio inline)
+              text_fg = "#fabd2f", -- gruvbox yellow
+              -- Conflictos
+              ours_bg = "#1d2a1d",
+              theirs_bg = "#1d1d2a",
+              base_bg = "#2a2a1d",
+              dim = "#665c54", -- gruvbox bg4
+            }
+          or {
+            -- Gruvbox light
+            add_bg = "#d5e3c8",
+            add_fg = "#79740e",
+            delete_bg = "#e3c8c8",
+            delete_fg = "#9d0006",
+            change_bg = "#c8d5e3",
+            change_fg = "#076678",
+            text_bg = "#e3dfc8",
+            text_fg = "#b57614",
+            ours_bg = "#e0ebd0",
+            theirs_bg = "#d0d0eb",
+            base_bg = "#ebe0d0",
+            dim = "#a89984",
+          }
+
+        -- Diff básico
+        vim.api.nvim_set_hl(0, "DiffAdd", { bg = gruvbox.add_bg })
+        vim.api.nvim_set_hl(
+          0,
+          "DiffDelete",
+          { bg = gruvbox.delete_bg, fg = gruvbox.dim }
+        )
+        vim.api.nvim_set_hl(0, "DiffChange", { bg = gruvbox.change_bg })
+        vim.api.nvim_set_hl(
+          0,
+          "DiffText",
+          { bg = gruvbox.text_bg, bold = true }
+        )
+
+        -- Diffview específico
+        vim.api.nvim_set_hl(0, "DiffviewDiffAdd", { bg = gruvbox.add_bg })
+        vim.api.nvim_set_hl(0, "DiffviewDiffDelete", { bg = gruvbox.delete_bg })
+        vim.api.nvim_set_hl(0, "DiffviewDiffChange", { bg = gruvbox.change_bg })
+        vim.api.nvim_set_hl(
+          0,
+          "DiffviewDiffText",
+          { bg = gruvbox.text_bg, bold = true }
+        )
+        vim.api.nvim_set_hl(
+          0,
+          "DiffviewDiffAddAsDelete",
+          { bg = gruvbox.delete_bg, fg = gruvbox.dim }
+        )
+        vim.api.nvim_set_hl(0, "DiffviewDiffDeleteDim", { fg = gruvbox.dim })
+      end
+
+      set_diffview_colors()
+
+      -- Reaplicar colores al cambiar colorscheme
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        callback = set_diffview_colors,
+      })
+
       require("diffview").setup({
         enhanced_diff_hl = true,
         view = {
+          default = { layout = "diff2_horizontal" },
           merge_tool = {
-            layout = "diff3_mixed", -- :h diffview-config-view.x.layout
+            layout = "diff3_mixed",
             disable_diagnostics = true,
             winbar_info = true,
           },
+          file_history = { layout = "diff2_horizontal" },
+        },
+        file_panel = {
+          listing_style = "tree",
+          win_config = { position = "left", width = 35 },
+        },
+        keymaps = {
+          view = {
+            {
+              "n",
+              "q",
+              "<cmd>DiffviewClose<cr>",
+              { desc = "Cerrar Diffview" },
+            },
+            {
+              "n",
+              "<leader>co",
+              actions.conflict_choose("ours"),
+              { desc = "Elegir OURS" },
+            },
+            {
+              "n",
+              "<leader>ct",
+              actions.conflict_choose("theirs"),
+              { desc = "Elegir THEIRS" },
+            },
+            {
+              "n",
+              "<leader>cb",
+              actions.conflict_choose("base"),
+              { desc = "Elegir BASE" },
+            },
+            {
+              "n",
+              "<leader>ca",
+              actions.conflict_choose("all"),
+              { desc = "Elegir ALL" },
+            },
+            {
+              "n",
+              "<leader>cn",
+              actions.conflict_choose("none"),
+              { desc = "Elegir NONE" },
+            },
+            {
+              "n",
+              "]x",
+              actions.next_conflict,
+              { desc = "Siguiente conflicto" },
+            },
+            {
+              "n",
+              "[x",
+              actions.prev_conflict,
+              { desc = "Anterior conflicto" },
+            },
+          },
+          file_panel = {
+            {
+              "n",
+              "q",
+              "<cmd>DiffviewClose<cr>",
+              { desc = "Cerrar Diffview" },
+            },
+            { "n", "j", actions.next_entry, { desc = "Siguiente entrada" } },
+            { "n", "k", actions.prev_entry, { desc = "Anterior entrada" } },
+            { "n", "<cr>", actions.select_entry, { desc = "Abrir diff" } },
+            {
+              "n",
+              "s",
+              actions.toggle_stage_entry,
+              { desc = "Stage/Unstage" },
+            },
+            { "n", "S", actions.stage_all, { desc = "Stage all" } },
+            { "n", "U", actions.unstage_all, { desc = "Unstage all" } },
+            { "n", "R", actions.refresh_files, { desc = "Refresh" } },
+          },
+        },
+        hooks = {
+          diff_buf_read = function()
+            vim.opt_local.wrap = false
+            vim.opt_local.cursorline = true
+          end,
         },
       })
     end,
