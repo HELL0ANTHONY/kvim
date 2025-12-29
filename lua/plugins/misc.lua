@@ -1,39 +1,46 @@
 return {
   -- Auto-close tags
   {
-    'windwp/nvim-ts-autotag',
-    ft = { 'html', 'markdown', 'javascriptreact', 'typescriptreact', 'tsx', 'jsx' },
+    "windwp/nvim-ts-autotag",
+    ft = {
+      "html",
+      "markdown",
+      "javascriptreact",
+      "typescriptreact",
+      "tsx",
+      "jsx",
+    },
     opts = {},
   },
 
   -- Auto-pairs (ligero)
   {
-    'echasnovski/mini.pairs',
-    event = 'InsertEnter',
+    "echasnovski/mini.pairs",
+    event = "InsertEnter",
     opts = {},
   },
 
   -- Surround
   {
-    'echasnovski/mini.surround',
-    event = 'VeryLazy',
+    "echasnovski/mini.surround",
+    event = "VeryLazy",
     opts = {
       mappings = {
-        add = 'sa', -- sa{motion}{char}
-        delete = 'sd', -- sd{char}
-        replace = 'sr', -- sr{old}{new}
-        find = 'sf',
-        find_left = 'sF',
-        highlight = 'sh',
-        update_n_lines = 'sn',
+        add = "sa", -- sa{motion}{char}
+        delete = "sd", -- sd{char}
+        replace = "sr", -- sr{old}{new}
+        find = "sf",
+        find_left = "sF",
+        highlight = "sh",
+        update_n_lines = "sn",
       },
     },
   },
 
   -- Comment (gcc, gc{motion})
   {
-    'echasnovski/mini.comment',
-    event = 'VeryLazy',
+    "echasnovski/mini.comment",
+    event = "VeryLazy",
     opts = {},
   },
 }

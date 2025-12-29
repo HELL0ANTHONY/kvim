@@ -1,126 +1,129 @@
 return {
   -- Flash en lugar de Hop (con tus shortcuts)
   {
-    'folke/flash.nvim',
-    event = 'VeryLazy',
+    "folke/flash.nvim",
+    event = "VeryLazy",
     opts = {
-      labels = 'etovxqpdygfblzhckisuran', -- tus labels originales
+      labels = "etovxqpdygfblzhckisuran", -- tus labels originales
       modes = {
         char = { enabled = false }, -- desactiva f/F/t/T nativos para usar los tuyos
       },
     },
     keys = {
       {
-        '<leader>ww',
+        "<leader>ww",
         function()
-          require('flash').jump()
+          require("flash").jump()
         end,
-        mode = { 'n', 'x', 'o' },
-        desc = '[w]orkspace: jump to [w]ord',
+        mode = { "n", "x", "o" },
+        desc = "[w]orkspace: jump to [w]ord",
       },
       {
-        '<leader>wl',
+        "<leader>wl",
         function()
-          require('flash').jump { search = { mode = 'search' }, pattern = '^' }
+          require("flash").jump({ search = { mode = "search" }, pattern = "^" })
         end,
-        mode = { 'n', 'x', 'o' },
-        desc = '[w]orkspace: jump to [l]ine',
+        mode = { "n", "x", "o" },
+        desc = "[w]orkspace: jump to [l]ine",
       },
       {
-        '<leader>wW',
+        "<leader>wW",
         function()
-          require('flash').jump { search = { multi_window = true } }
+          require("flash").jump({ search = { multi_window = true } })
         end,
-        mode = { 'n', 'x', 'o' },
-        desc = '[w]orkspace: jump to [W]ord (multi-window)',
+        mode = { "n", "x", "o" },
+        desc = "[w]orkspace: jump to [W]ord (multi-window)",
       },
       {
-        '<leader>wf',
+        "<leader>wf",
         function()
-          require('flash').jump {
-            search = { mode = 'search', max_length = 1, forward = true },
-            pattern = '',
-            labels = 'etovxqpdygfblzhckisuran',
-          }
+          require("flash").jump({
+            search = { mode = "search", max_length = 1, forward = true },
+            pattern = "",
+            labels = "etovxqpdygfblzhckisuran",
+          })
         end,
-        mode = { 'n', 'x', 'o' },
-        desc = '[w]orkspace: jump to [f] char after cursor',
+        mode = { "n", "x", "o" },
+        desc = "[w]orkspace: jump to [f] char after cursor",
       },
       {
-        '<leader>wF',
+        "<leader>wF",
         function()
-          require('flash').jump {
-            search = { mode = 'search', max_length = 1, forward = false },
-            pattern = '',
-            labels = 'etovxqpdygfblzhckisuran',
-          }
+          require("flash").jump({
+            search = { mode = "search", max_length = 1, forward = false },
+            pattern = "",
+            labels = "etovxqpdygfblzhckisuran",
+          })
         end,
-        mode = { 'n', 'x', 'o' },
-        desc = '[w]orkspace: jump to [F] char before cursor',
+        mode = { "n", "x", "o" },
+        desc = "[w]orkspace: jump to [F] char before cursor",
       },
       {
-        '<leader>wt',
+        "<leader>wt",
         function()
-          require('flash').treesitter()
+          require("flash").treesitter()
         end,
-        mode = { 'n', 'x', 'o' },
-        desc = '[w]orkspace: select [t]reesitter node',
+        mode = { "n", "x", "o" },
+        desc = "[w]orkspace: select [t]reesitter node",
       },
     },
   },
 
   {
-    'stevearc/oil.nvim',
+    "stevearc/oil.nvim",
     init = function()
       -- Highlight para Oil
-      vim.api.nvim_create_autocmd('ColorScheme', {
-        pattern = '*',
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "*",
         callback = function()
-          vim.api.nvim_set_hl(0, 'OilNormal', { bg = '#1d2021' })
+          vim.api.nvim_set_hl(0, "OilNormal", { bg = "#1d2021" })
         end,
       })
       -- Aplicar inmediatamente si el colorscheme ya cargó
-      vim.api.nvim_set_hl(0, 'OilNormal', { bg = '#1d2021' })
+      vim.api.nvim_set_hl(0, "OilNormal", { bg = "#1d2021" })
 
       local function shorten_tail(dir, keep)
-        dir = dir:gsub('/+$', '')
-        local parts = vim.split(dir, '/', { trimempty = true })
+        dir = dir:gsub("/+$", "")
+        local parts = vim.split(dir, "/", { trimempty = true })
         local n = #parts
         if n <= keep then
           return dir
         end
-        return '…/' .. table.concat(parts, '/', n - keep + 1, n)
+        return "…/" .. table.concat(parts, "/", n - keep + 1, n)
       end
 
       _G.get_oil_winbar = function()
-        local ok, oil = pcall(require, 'oil')
+        local ok, oil = pcall(require, "oil")
         if not ok or not oil.get_current_dir then
-          return ''
+          return ""
         end
 
         local winid = tonumber(vim.g.statusline_winid or 0) or 0
         local bufnr = (winid > 0) and vim.api.nvim_win_get_buf(winid) or 0
         local dir = oil.get_current_dir(bufnr)
         if not dir then
-          return ''
+          return ""
         end
 
-        local git = vim.fs.find('.git', { path = dir, upward = true })[1]
+        local git = vim.fs.find(".git", { path = dir, upward = true })[1]
         local root = git and vim.fs.dirname(git) or vim.uv.cwd() -- ✅ vim.uv
         local shown = shorten_tail(dir, 4)
-        local project = vim.fn.fnamemodify(root or dir, ':t')
+        local project = vim.fn.fnamemodify(root or dir, ":t")
 
-        return ('󰚌 %s  ›  %s'):format(project, shown ~= '' and shown or '.')
+        return ("󰚌 %s  ›  %s"):format(
+          project,
+          shown ~= "" and shown or "."
+        )
       end
     end,
 
     keys = {
       {
-        '-',
+        "-",
         function()
-          require('oil').toggle_float()
+          require("oil").toggle_float()
         end,
-        desc = 'Open/close Oil in float',
+        desc = "Open/close Oil in float",
       },
     },
 
@@ -129,59 +132,64 @@ return {
       win_options = {
         number = false,
         relativenumber = false,
-        signcolumn = 'no',
-        winbar = '%{%v:lua.get_oil_winbar()%}',
-        winhighlight = 'Normal:OilNormal',
+        signcolumn = "no",
+        winbar = "%{%v:lua.get_oil_winbar()%}",
+        winhighlight = "Normal:OilNormal",
       },
       float = {
         max_height = 25,
         max_width = 60,
-        border = 'rounded',
+        border = "rounded",
         get_win_title = function()
-          return ''
+          return ""
         end,
       },
       use_default_keymaps = false,
       keymaps = {
-        ['g?'] = { 'actions.show_help', mode = 'n' },
-        ['<CR>'] = 'actions.select',
-        ['J'] = { 'actions.select', opts = { vertical = true } },
-        ['K'] = { 'actions.select', opts = { horizontal = true } },
-        ['T'] = { 'actions.select', opts = { tab = true } },
-        ['<Tab>'] = 'actions.preview',
-        ['q'] = { 'actions.close', mode = 'n' },
-        ['<F5>'] = 'actions.refresh',
-        ['-'] = { 'actions.parent', mode = 'n' },
-        ['_'] = { 'actions.open_cwd', mode = 'n' },
-        ['`'] = { 'actions.cd', mode = 'n' },
-        ['~'] = { 'actions.cd', opts = { scope = 'tab' }, mode = 'n' },
-        ['S'] = { 'actions.change_sort', mode = 'n' },
-        ['gx'] = 'actions.open_external',
-        ['H'] = { 'actions.toggle_hidden', mode = 'n' },
-        ['g\\'] = { 'actions.toggle_trash', mode = 'n' },
-        ['gd'] = {
-          desc = 'Toggle file detail view',
+        ["g?"] = { "actions.show_help", mode = "n" },
+        ["<CR>"] = "actions.select",
+        ["J"] = { "actions.select", opts = { vertical = true } },
+        ["K"] = { "actions.select", opts = { horizontal = true } },
+        ["T"] = { "actions.select", opts = { tab = true } },
+        ["<Tab>"] = "actions.preview",
+        ["q"] = { "actions.close", mode = "n" },
+        ["<F5>"] = "actions.refresh",
+        ["-"] = { "actions.parent", mode = "n" },
+        ["_"] = { "actions.open_cwd", mode = "n" },
+        ["`"] = { "actions.cd", mode = "n" },
+        ["~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
+        ["S"] = { "actions.change_sort", mode = "n" },
+        ["gx"] = "actions.open_external",
+        ["H"] = { "actions.toggle_hidden", mode = "n" },
+        ["g\\"] = { "actions.toggle_trash", mode = "n" },
+        ["gd"] = {
+          desc = "Toggle file detail view",
           callback = (function()
             local detail = false
             return function()
               detail = not detail
               if detail then
-                require('oil').set_columns { 'icon', 'permissions', 'size', 'mtime' }
+                require("oil").set_columns({
+                  "icon",
+                  "permissions",
+                  "size",
+                  "mtime",
+                })
               else
-                require('oil').set_columns { 'icon' }
+                require("oil").set_columns({ "icon" })
               end
             end
           end)(),
         },
       },
-      columns = { 'icon' },
+      columns = { "icon" },
       view_options = {
         show_hidden = false,
-        natural_order = 'fast',
-        sort = { { 'type', 'asc' }, { 'name', 'asc' } },
+        natural_order = "fast",
+        sort = { { "type", "asc" }, { "name", "asc" } },
       },
       preview_win = {
-        preview_method = 'fast_scratch',
+        preview_method = "fast_scratch",
         update_on_cursor_moved = false,
       },
       lsp_file_methods = { enabled = false },
@@ -190,7 +198,7 @@ return {
 
     dependencies = {
       {
-        'nvim-tree/nvim-web-devicons',
+        "nvim-tree/nvim-web-devicons",
         cond = function()
           return vim.g.have_nerd_font == true
         end,
@@ -199,61 +207,64 @@ return {
   },
 
   {
-    'ThePrimeagen/harpoon',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    branch = 'harpoon2',
+    "ThePrimeagen/harpoon",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    branch = "harpoon2",
     config = function()
-      local harpoon = require 'harpoon'
-      harpoon:setup {
+      local harpoon = require("harpoon")
+      harpoon:setup({
         settings = {
           save_on_toggle = true,
           sync_on_ui_close = true,
         },
-      }
+      })
 
-      harpoon:extend {
+      harpoon:extend({
         UI_CREATE = function(cx)
-          vim.keymap.set('n', 'J', function()
-            harpoon.ui:select_menu_item { vsplit = true }
+          vim.keymap.set("n", "J", function()
+            harpoon.ui:select_menu_item({ vsplit = true })
           end, { buffer = cx.bufnr })
-          vim.keymap.set('n', 'K', function()
-            harpoon.ui:select_menu_item { split = true }
+          vim.keymap.set("n", "K", function()
+            harpoon.ui:select_menu_item({ split = true })
           end, { buffer = cx.bufnr })
-          vim.keymap.set('n', '<CR>', function()
+          vim.keymap.set("n", "<CR>", function()
             harpoon.ui:select_menu_item()
           end, { buffer = cx.bufnr })
-          vim.keymap.set('n', '<C-t>', function()
-            harpoon.ui:select_menu_item { tabedit = true }
+          vim.keymap.set("n", "<C-t>", function()
+            harpoon.ui:select_menu_item({ tabedit = true })
           end, { buffer = cx.bufnr })
         end,
-      }
+      })
     end,
     keys = function()
       local keys = {
         {
-          '<leader>+',
+          "<leader>+",
           function()
-            require('harpoon'):list():add()
+            require("harpoon"):list():add()
           end,
-          desc = 'Harpoon File',
+          desc = "Harpoon File",
         },
         {
-          '<leader>=',
+          "<leader>=",
           function()
-            local harpoon = require 'harpoon'
+            local harpoon = require("harpoon")
             -- local width = math.floor(vim.api.nvim_win_get_width(0) * 0.5)
-            harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_width_ratio = 0.5 })
+            harpoon.ui:toggle_quick_menu(
+              harpoon:list(),
+              { ui_width_ratio = 0.5 }
+            )
           end,
-          desc = 'Harpoon Quick Menu',
+          desc = "Harpoon Quick Menu",
         },
       }
       for i = 1, 9 do
         table.insert(keys, {
-          '<leader>' .. i,
+          "<leader>" .. i,
           function()
-            require('harpoon'):list():select(i)
+            require("harpoon"):list():select(i)
           end,
-          desc = 'Harpoon to File ' .. i,
+          desc = "Harpoon to File " .. i,
         })
       end
       return keys
@@ -261,45 +272,45 @@ return {
   },
 
   {
-    'folke/trouble.nvim',
-    cmd = 'Trouble',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    "folke/trouble.nvim",
+    cmd = "Trouble",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = { auto_preview = true, focus = true },
   },
 
   -- Outline
   {
-    'hedyhli/outline.nvim',
-    cmd = { 'Outline', 'OutlineOpen' },
-    keys = { { '<F2>', '<cmd>Outline<CR>', desc = 'Toggle outline' } },
+    "hedyhli/outline.nvim",
+    cmd = { "Outline", "OutlineOpen" },
+    keys = { { "<F2>", "<cmd>Outline<CR>", desc = "Toggle outline" } },
     opts = {},
   },
 
   -- BQF (quickfix mejorado)
-  { 'kevinhwang91/nvim-bqf', ft = 'qf', opts = { auto_enable = true } },
+  { "kevinhwang91/nvim-bqf", ft = "qf", opts = { auto_enable = true } },
 
   -- Arrow (bookmarks)
   {
-    'otavioschwanck/arrow.nvim',
-    event = 'VeryLazy',
+    "otavioschwanck/arrow.nvim",
+    event = "VeryLazy",
     dependencies = {
-      'nvim-tree/nvim-web-devicons',
+      "nvim-tree/nvim-web-devicons",
     },
     opts = {
       show_icons = true,
-      leader_key = ';', -- ; + número para ir al bookmark
-      buffer_leader_key = 'm', -- m para bookmarks del buffer actual
+      leader_key = ";", -- ; + número para ir al bookmark
+      buffer_leader_key = "m", -- m para bookmarks del buffer actual
       save_path = function()
-        return vim.fn.stdpath 'data' .. '/arrow'
+        return vim.fn.stdpath("data") .. "/arrow"
       end,
       mappings = {
-        edit = 'e',
-        delete_mode = 'd',
-        clear_all_items = 'C',
-        toggle = 'a', -- Toggle bookmark en línea actual
-        open_vertical = 'v',
-        open_horizontal = 'h',
-        quit = 'q',
+        edit = "e",
+        delete_mode = "d",
+        clear_all_items = "C",
+        toggle = "a", -- Toggle bookmark en línea actual
+        open_vertical = "v",
+        open_horizontal = "h",
+        quit = "q",
       },
       per_buffer_config = {
         lines = 3, -- Mostrar 3 líneas de contexto
@@ -311,18 +322,18 @@ return {
         },
       },
       separate_save_and_remove = false,
-      save_key = 'git_root', -- Bookmarks por proyecto (git root)
+      save_key = "git_root", -- Bookmarks por proyecto (git root)
       global_bookmarks = false,
-      index_keys = '123456789', -- Teclas para acceso rápido
-      full_path_list = { 'update_resolve' },
+      index_keys = "123456789", -- Teclas para acceso rápido
+      full_path_list = { "update_resolve" },
     },
     keys = {
       {
-        'm',
+        "m",
         function()
-          require('arrow.ui').openMenu(nil, { buffer = true })
+          require("arrow.ui").openMenu(nil, { buffer = true })
         end,
-        desc = 'Buffer bookmarks',
+        desc = "Buffer bookmarks",
       },
     },
   },

@@ -11,19 +11,19 @@ local VIEWPORT_HEIGHT = 1080 -- Para cálculos vh
 -- PATRONES
 -- ============================================================================
 local patterns = {
-  px = '([%d%.]+)px',
-  rem = '([%d%.]+)rem',
-  em = '([%d%.]+)em',
-  vh = '([%d%.]+)vh',
-  vw = '([%d%.]+)vw',
-  percent = '([%d%.]+)%%',
-  hex6 = '#([%x][%x])([%x][%x])([%x][%x])',
-  hex3 = '#([%x])([%x])([%x])',
-  hex8 = '#([%x][%x])([%x][%x])([%x][%x])([%x][%x])',
-  rgb = 'rgb%((%d+),%s*(%d+),%s*(%d+)%)',
-  rgba = 'rgba%((%d+),%s*(%d+),%s*(%d+),%s*([%d%.]+)%)',
-  hsl = 'hsl%((%d+),%s*(%d+)%%,%s*(%d+)%%%)',
-  hsla = 'hsla%((%d+),%s*(%d+)%%,%s*(%d+)%%,%s*([%d%.]+)%)',
+  px = "([%d%.]+)px",
+  rem = "([%d%.]+)rem",
+  em = "([%d%.]+)em",
+  vh = "([%d%.]+)vh",
+  vw = "([%d%.]+)vw",
+  percent = "([%d%.]+)%%",
+  hex6 = "#([%x][%x])([%x][%x])([%x][%x])",
+  hex3 = "#([%x])([%x])([%x])",
+  hex8 = "#([%x][%x])([%x][%x])([%x][%x])([%x][%x])",
+  rgb = "rgb%((%d+),%s*(%d+),%s*(%d+)%)",
+  rgba = "rgba%((%d+),%s*(%d+),%s*(%d+),%s*([%d%.]+)%)",
+  hsl = "hsl%((%d+),%s*(%d+)%%,%s*(%d+)%%%)",
+  hsla = "hsla%((%d+),%s*(%d+)%%,%s*(%d+)%%,%s*([%d%.]+)%)",
 }
 
 -- ============================================================================
@@ -43,28 +43,28 @@ end
 -- ============================================================================
 local unit_conversions = {
   px_to_rem = function(v)
-    return string.format('%.4grem', v / REM_BASE)
+    return string.format("%.4grem", v / REM_BASE)
   end,
   rem_to_px = function(v)
-    return string.format('%gpx', v * REM_BASE)
+    return string.format("%gpx", v * REM_BASE)
   end,
   px_to_em = function(v)
-    return string.format('%.4gem', v / REM_BASE)
+    return string.format("%.4gem", v / REM_BASE)
   end,
   em_to_px = function(v)
-    return string.format('%gpx', v * REM_BASE)
+    return string.format("%gpx", v * REM_BASE)
   end,
   px_to_vw = function(v)
-    return string.format('%.2fvw', (v / VIEWPORT_WIDTH) * 100)
+    return string.format("%.2fvw", (v / VIEWPORT_WIDTH) * 100)
   end,
   vw_to_px = function(v)
-    return string.format('%gpx', round((v / 100) * VIEWPORT_WIDTH))
+    return string.format("%gpx", round((v / 100) * VIEWPORT_WIDTH))
   end,
   px_to_vh = function(v)
-    return string.format('%.2fvh', (v / VIEWPORT_HEIGHT) * 100)
+    return string.format("%.2fvh", (v / VIEWPORT_HEIGHT) * 100)
   end,
   vh_to_px = function(v)
-    return string.format('%gpx', round((v / 100) * VIEWPORT_HEIGHT))
+    return string.format("%gpx", round((v / 100) * VIEWPORT_HEIGHT))
   end,
 }
 
@@ -74,7 +74,7 @@ local unit_conversions = {
 
 -- HEX -> RGB
 local function hex_to_rgb(hex)
-  hex = hex:gsub('#', '')
+  hex = hex:gsub("#", "")
   if #hex == 3 then
     hex = hex:sub(1, 1):rep(2) .. hex:sub(2, 2):rep(2) .. hex:sub(3, 3):rep(2)
   end
@@ -88,9 +88,9 @@ end
 -- RGB -> HEX
 local function rgb_to_hex(r, g, b, a)
   if a and a < 1 then
-    return string.format('#%02x%02x%02x%02x', r, g, b, math.floor(a * 255))
+    return string.format("#%02x%02x%02x%02x", r, g, b, math.floor(a * 255))
   end
-  return string.format('#%02x%02x%02x', r, g, b)
+  return string.format("#%02x%02x%02x", r, g, b)
 end
 
 -- RGB -> HSL
@@ -194,66 +194,68 @@ end
 -- ============================================================================
 
 M.toggle_px_rem = function()
-  local match = get_match_under_cursor {
-    { pattern = patterns.px, type = 'px' },
-    { pattern = patterns.rem, type = 'rem' },
-    { pattern = patterns.em, type = 'em' },
-  }
+  local match = get_match_under_cursor({
+    { pattern = patterns.px, type = "px" },
+    { pattern = patterns.rem, type = "rem" },
+    { pattern = patterns.em, type = "em" },
+  })
 
   if not match then
-    vim.notify('No se encontró px/rem/em bajo el cursor', vim.log.levels.WARN)
+    vim.notify("No se encontró px/rem/em bajo el cursor", vim.log.levels.WARN)
     return
   end
 
   local value = tonumber(match.captures[1])
   local new_value
 
-  if match.type == 'px' then
+  if match.type == "px" then
     new_value = unit_conversions.px_to_rem(value)
-  elseif match.type == 'rem' then
+  elseif match.type == "rem" then
     new_value = unit_conversions.rem_to_px(value)
-  elseif match.type == 'em' then
+  elseif match.type == "em" then
     new_value = unit_conversions.em_to_px(value)
   end
 
   replace_match(match, new_value)
-  vim.notify(match.full_match .. ' → ' .. new_value, vim.log.levels.INFO)
+  vim.notify(match.full_match .. " → " .. new_value, vim.log.levels.INFO)
 end
 
 M.toggle_px_vw = function()
-  local match = get_match_under_cursor {
-    { pattern = patterns.px, type = 'px' },
-    { pattern = patterns.vw, type = 'vw' },
-  }
+  local match = get_match_under_cursor({
+    { pattern = patterns.px, type = "px" },
+    { pattern = patterns.vw, type = "vw" },
+  })
 
   if not match then
-    vim.notify('No se encontró px/vw bajo el cursor', vim.log.levels.WARN)
+    vim.notify("No se encontró px/vw bajo el cursor", vim.log.levels.WARN)
     return
   end
 
   local value = tonumber(match.captures[1])
-  local new_value = match.type == 'px' and unit_conversions.px_to_vw(value) or unit_conversions.vw_to_px(value)
+  local new_value = match.type == "px" and unit_conversions.px_to_vw(value)
+    or unit_conversions.vw_to_px(value)
 
   replace_match(match, new_value)
-  vim.notify(match.full_match .. ' → ' .. new_value, vim.log.levels.INFO)
+  vim.notify(match.full_match .. " → " .. new_value, vim.log.levels.INFO)
 end
 
 M.toggle_px_vh = function()
-  local match = get_match_under_cursor {
-    { pattern = patterns.px, type = 'px' },
-    { pattern = patterns.vh, type = 'vh' },
-  }
+  local match = get_match_under_cursor({
+    { pattern = patterns.px, type = "px" },
+    { pattern = patterns.vh, type = "vh" },
+  })
 
   if not match then
-    vim.notify('No se encontró px/vh bajo el cursor', vim.log.levels.WARN)
+    vim.notify("No se encontró px/vh bajo el cursor", vim.log.levels.WARN)
     return
   end
 
   local value = tonumber(match.captures[1])
-  local new_value = match.type == 'px' and unit_conversions.px_to_vh(value) or unit_conversions.vh_to_px(value)
+  local new_value = match.type == "px" and unit_conversions.px_to_vh(value)
+    or unit_conversions.vh_to_px(value)
 
   replace_match(match, new_value)
-  vim.notify(match.full_match .. ' → ' .. new_value, vim.log.levels.INFO)
+  vim.notify(match.full_match .. " → " .. new_value, vim.log.levels.INFO)
 end
 
 -- ============================================================================
@@ -261,84 +263,84 @@ end
 -- ============================================================================
 
 M.toggle_color_format = function()
-  local match = get_match_under_cursor {
-    { pattern = patterns.hex8, type = 'hex8' },
-    { pattern = patterns.hex6, type = 'hex6' },
-    { pattern = patterns.hex3, type = 'hex3' },
-    { pattern = patterns.rgba, type = 'rgba' },
-    { pattern = patterns.rgb, type = 'rgb' },
-    { pattern = patterns.hsla, type = 'hsla' },
-    { pattern = patterns.hsl, type = 'hsl' },
-  }
+  local match = get_match_under_cursor({
+    { pattern = patterns.hex8, type = "hex8" },
+    { pattern = patterns.hex6, type = "hex6" },
+    { pattern = patterns.hex3, type = "hex3" },
+    { pattern = patterns.rgba, type = "rgba" },
+    { pattern = patterns.rgb, type = "rgb" },
+    { pattern = patterns.hsla, type = "hsla" },
+    { pattern = patterns.hsl, type = "hsl" },
+  })
 
   if not match then
-    vim.notify('No se encontró color bajo el cursor', vim.log.levels.WARN)
+    vim.notify("No se encontró color bajo el cursor", vim.log.levels.WARN)
     return
   end
 
   local new_value
   local c = match.captures
 
-  if match.type == 'hex6' or match.type == 'hex3' then
+  if match.type == "hex6" or match.type == "hex3" then
     -- HEX -> RGB
     local r, g, b = hex_to_rgb(match.full_match)
-    new_value = string.format('rgb(%d, %d, %d)', r, g, b)
-  elseif match.type == 'hex8' then
+    new_value = string.format("rgb(%d, %d, %d)", r, g, b)
+  elseif match.type == "hex8" then
     -- HEX8 -> RGBA
     local r, g, b, a = hex_to_rgb(match.full_match)
-    new_value = string.format('rgba(%d, %d, %d, %.2g)', r, g, b, a)
-  elseif match.type == 'rgb' then
+    new_value = string.format("rgba(%d, %d, %d, %.2g)", r, g, b, a)
+  elseif match.type == "rgb" then
     -- RGB -> HSL
     local h, s, l = rgb_to_hsl(tonumber(c[1]), tonumber(c[2]), tonumber(c[3]))
-    new_value = string.format('hsl(%d, %d%%, %d%%)', h, s, l)
-  elseif match.type == 'rgba' then
+    new_value = string.format("hsl(%d, %d%%, %d%%)", h, s, l)
+  elseif match.type == "rgba" then
     -- RGBA -> HSLA
     local h, s, l = rgb_to_hsl(tonumber(c[1]), tonumber(c[2]), tonumber(c[3]))
-    new_value = string.format('hsla(%d, %d%%, %d%%, %s)', h, s, l, c[4])
-  elseif match.type == 'hsl' then
+    new_value = string.format("hsla(%d, %d%%, %d%%, %s)", h, s, l, c[4])
+  elseif match.type == "hsl" then
     -- HSL -> HEX
     local r, g, b = hsl_to_rgb(tonumber(c[1]), tonumber(c[2]), tonumber(c[3]))
     new_value = rgb_to_hex(r, g, b)
-  elseif match.type == 'hsla' then
+  elseif match.type == "hsla" then
     -- HSLA -> HEX8
     local r, g, b = hsl_to_rgb(tonumber(c[1]), tonumber(c[2]), tonumber(c[3]))
     new_value = rgb_to_hex(r, g, b, tonumber(c[4]))
   end
 
   replace_match(match, new_value)
-  vim.notify(match.full_match .. ' → ' .. new_value, vim.log.levels.INFO)
+  vim.notify(match.full_match .. " → " .. new_value, vim.log.levels.INFO)
 end
 
 M.color_to_hex = function()
-  local match = get_match_under_cursor {
-    { pattern = patterns.rgba, type = 'rgba' },
-    { pattern = patterns.rgb, type = 'rgb' },
-    { pattern = patterns.hsla, type = 'hsla' },
-    { pattern = patterns.hsl, type = 'hsl' },
-  }
+  local match = get_match_under_cursor({
+    { pattern = patterns.rgba, type = "rgba" },
+    { pattern = patterns.rgb, type = "rgb" },
+    { pattern = patterns.hsla, type = "hsla" },
+    { pattern = patterns.hsl, type = "hsl" },
+  })
 
   if not match then
-    vim.notify('No se encontró rgb/hsl bajo el cursor', vim.log.levels.WARN)
+    vim.notify("No se encontró rgb/hsl bajo el cursor", vim.log.levels.WARN)
     return
   end
 
   local c = match.captures
   local r, g, b, a
 
-  if match.type == 'rgb' then
+  if match.type == "rgb" then
     r, g, b = tonumber(c[1]), tonumber(c[2]), tonumber(c[3])
-  elseif match.type == 'rgba' then
+  elseif match.type == "rgba" then
     r, g, b, a = tonumber(c[1]), tonumber(c[2]), tonumber(c[3]), tonumber(c[4])
-  elseif match.type == 'hsl' then
+  elseif match.type == "hsl" then
     r, g, b = hsl_to_rgb(tonumber(c[1]), tonumber(c[2]), tonumber(c[3]))
-  elseif match.type == 'hsla' then
+  elseif match.type == "hsla" then
     r, g, b = hsl_to_rgb(tonumber(c[1]), tonumber(c[2]), tonumber(c[3]))
     a = tonumber(c[4])
   end
 
   local new_value = rgb_to_hex(r, g, b, a)
   replace_match(match, new_value)
-  vim.notify(match.full_match .. ' → ' .. new_value, vim.log.levels.INFO)
+  vim.notify(match.full_match .. " → " .. new_value, vim.log.levels.INFO)
 end
 
 -- ============================================================================
@@ -358,9 +360,12 @@ M.all_px_to_rem = function()
 
   if count > 0 then
     vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-    vim.notify(string.format('Convertidos %d valores px → rem', count), vim.log.levels.INFO)
+    vim.notify(
+      string.format("Convertidos %d valores px → rem", count),
+      vim.log.levels.INFO
+    )
   else
-    vim.notify('No se encontraron valores en px', vim.log.levels.INFO)
+    vim.notify("No se encontraron valores en px", vim.log.levels.INFO)
   end
 end
 
@@ -377,9 +382,12 @@ M.all_rem_to_px = function()
 
   if count > 0 then
     vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-    vim.notify(string.format('Convertidos %d valores rem → px', count), vim.log.levels.INFO)
+    vim.notify(
+      string.format("Convertidos %d valores rem → px", count),
+      vim.log.levels.INFO
+    )
   else
-    vim.notify('No se encontraron valores en rem', vim.log.levels.INFO)
+    vim.notify("No se encontraron valores en rem", vim.log.levels.INFO)
   end
 end
 
@@ -389,17 +397,25 @@ M.all_hex_to_rgb = function()
 
   for i, line in ipairs(lines) do
     -- Hex de 6 dígitos
-    lines[i] = line:gsub('#([%x][%x])([%x][%x])([%x][%x])', function(r, g, b)
+    lines[i] = line:gsub("#([%x][%x])([%x][%x])([%x][%x])", function(r, g, b)
       count = count + 1
-      return string.format('rgb(%d, %d, %d)', tonumber(r, 16), tonumber(g, 16), tonumber(b, 16))
+      return string.format(
+        "rgb(%d, %d, %d)",
+        tonumber(r, 16),
+        tonumber(g, 16),
+        tonumber(b, 16)
+      )
     end)
   end
 
   if count > 0 then
     vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
-    vim.notify(string.format('Convertidos %d colores hex → rgb', count), vim.log.levels.INFO)
+    vim.notify(
+      string.format("Convertidos %d colores hex → rgb", count),
+      vim.log.levels.INFO
+    )
   else
-    vim.notify('No se encontraron colores hex', vim.log.levels.INFO)
+    vim.notify("No se encontraron colores hex", vim.log.levels.INFO)
   end
 end
 
@@ -409,13 +425,16 @@ end
 
 M.set_rem_base = function(base)
   REM_BASE = base or 16
-  vim.notify('REM base: ' .. REM_BASE .. 'px', vim.log.levels.INFO)
+  vim.notify("REM base: " .. REM_BASE .. "px", vim.log.levels.INFO)
 end
 
 M.set_viewport = function(width, height)
   VIEWPORT_WIDTH = width or 1920
   VIEWPORT_HEIGHT = height or 1080
-  vim.notify(string.format('Viewport: %dx%d', VIEWPORT_WIDTH, VIEWPORT_HEIGHT), vim.log.levels.INFO)
+  vim.notify(
+    string.format("Viewport: %dx%d", VIEWPORT_WIDTH, VIEWPORT_HEIGHT),
+    vim.log.levels.INFO
+  )
 end
 
 -- ============================================================================
@@ -423,43 +442,43 @@ end
 -- ============================================================================
 
 -- Unidades
-vim.api.nvim_create_user_command('CssToggle', M.toggle_px_rem, {
-  desc = 'Toggle px <-> rem/em',
+vim.api.nvim_create_user_command("CssToggle", M.toggle_px_rem, {
+  desc = "Toggle px <-> rem/em",
 })
-vim.api.nvim_create_user_command('CssToggleVw', M.toggle_px_vw, {
-  desc = 'Toggle px <-> vw',
+vim.api.nvim_create_user_command("CssToggleVw", M.toggle_px_vw, {
+  desc = "Toggle px <-> vw",
 })
-vim.api.nvim_create_user_command('CssToggleVh', M.toggle_px_vh, {
-  desc = 'Toggle px <-> vh',
+vim.api.nvim_create_user_command("CssToggleVh", M.toggle_px_vh, {
+  desc = "Toggle px <-> vh",
 })
 
 -- Colores
-vim.api.nvim_create_user_command('ColorToggle', M.toggle_color_format, {
-  desc = 'Ciclo: hex -> rgb -> hsl -> hex',
+vim.api.nvim_create_user_command("ColorToggle", M.toggle_color_format, {
+  desc = "Ciclo: hex -> rgb -> hsl -> hex",
 })
-vim.api.nvim_create_user_command('ColorToHex', M.color_to_hex, {
-  desc = 'Convierte rgb/hsl a hex',
+vim.api.nvim_create_user_command("ColorToHex", M.color_to_hex, {
+  desc = "Convierte rgb/hsl a hex",
 })
 
 -- Batch
-vim.api.nvim_create_user_command('CssAllPxToRem', M.all_px_to_rem, {
-  desc = 'Todos los px -> rem',
+vim.api.nvim_create_user_command("CssAllPxToRem", M.all_px_to_rem, {
+  desc = "Todos los px -> rem",
 })
-vim.api.nvim_create_user_command('CssAllRemToPx', M.all_rem_to_px, {
-  desc = 'Todos los rem -> px',
+vim.api.nvim_create_user_command("CssAllRemToPx", M.all_rem_to_px, {
+  desc = "Todos los rem -> px",
 })
-vim.api.nvim_create_user_command('ColorAllHexToRgb', M.all_hex_to_rgb, {
-  desc = 'Todos los hex -> rgb',
+vim.api.nvim_create_user_command("ColorAllHexToRgb", M.all_hex_to_rgb, {
+  desc = "Todos los hex -> rgb",
 })
 
 -- Config
-vim.api.nvim_create_user_command('CssSetBase', function(opts)
+vim.api.nvim_create_user_command("CssSetBase", function(opts)
   M.set_rem_base(tonumber(opts.args))
-end, { nargs = 1, desc = 'Set rem base (default 16)' })
+end, { nargs = 1, desc = "Set rem base (default 16)" })
 
-vim.api.nvim_create_user_command('CssSetViewport', function(opts)
-  local args = vim.split(opts.args, '%s+')
+vim.api.nvim_create_user_command("CssSetViewport", function(opts)
+  local args = vim.split(opts.args, "%s+")
   M.set_viewport(tonumber(args[1]), tonumber(args[2]))
-end, { nargs = '+', desc = 'Set viewport width height' })
+end, { nargs = "+", desc = "Set viewport width height" })
 
 return M

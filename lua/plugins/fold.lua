@@ -1,18 +1,18 @@
 return {
-  'chrisgrieser/nvim-origami',
-  event = 'VeryLazy',
+  "chrisgrieser/nvim-origami",
+  event = "VeryLazy",
   opts = {
     -- usa LSP con fallback a TS/indent
     -- useLspFoldsWithTreesitterFallback = true,
 
     useLspFoldsWithTreesitterFallback = {
       enabled = true,
-      foldmethodIfNeitherIsAvailable = 'indent', ---@type string|fun(bufnr: number): string
+      foldmethodIfNeitherIsAvailable = "indent", ---@type string|fun(bufnr: number): string
     },
 
     pauseFoldsOnSearch = true,
     foldtext = { enabled = true, diagnosticsCount = true, gitsignsCount = true },
-    autoFold = { enabled = true, kinds = { 'comment', 'imports' } },
+    autoFold = { enabled = true, kinds = { "comment", "imports" } },
   },
   init = function()
     vim.opt.foldlevel = 99

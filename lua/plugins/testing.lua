@@ -1,104 +1,104 @@
 return {
   {
-    'nvim-neotest/neotest',
+    "nvim-neotest/neotest",
     dependencies = {
-      'nvim-neotest/nvim-nio',
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
       -- Adapters (lazy, solo se cargan si el ft coincide)
-      'fredrikaverpil/neotest-golang',
-      'nvim-neotest/neotest-jest',
-      'marilari88/neotest-vitest',
-      'nvim-neotest/neotest-python',
+      "fredrikaverpil/neotest-golang",
+      "nvim-neotest/neotest-jest",
+      "marilari88/neotest-vitest",
+      "nvim-neotest/neotest-python",
     },
     keys = {
       {
-        '<leader>tr',
+        "<leader>tr",
         function()
-          require('neotest').run.run()
+          require("neotest").run.run()
         end,
-        desc = '[T]est [R]un nearest',
+        desc = "[T]est [R]un nearest",
       },
       {
-        '<leader>tf',
+        "<leader>tf",
         function()
-          require('neotest').run.run(vim.fn.expand '%')
+          require("neotest").run.run(vim.fn.expand("%"))
         end,
-        desc = '[T]est [F]ile',
+        desc = "[T]est [F]ile",
       },
       {
-        '<leader>ts',
+        "<leader>ts",
         function()
-          require('neotest').summary.toggle()
+          require("neotest").summary.toggle()
         end,
-        desc = '[T]est [S]ummary',
+        desc = "[T]est [S]ummary",
       },
       {
-        '<leader>to',
+        "<leader>to",
         function()
-          require('neotest').output.open { enter = true }
+          require("neotest").output.open({ enter = true })
         end,
-        desc = '[T]est [O]utput',
+        desc = "[T]est [O]utput",
       },
       {
-        '<leader>tp',
+        "<leader>tp",
         function()
-          require('neotest').output_panel.toggle()
+          require("neotest").output_panel.toggle()
         end,
-        desc = '[T]est [P]anel',
+        desc = "[T]est [P]anel",
       },
       {
-        '<leader>td',
+        "<leader>td",
         function()
-          require('neotest').run.run { strategy = 'dap' }
+          require("neotest").run.run({ strategy = "dap" })
         end,
-        desc = '[T]est [D]ebug nearest',
+        desc = "[T]est [D]ebug nearest",
       },
       {
-        '<leader>tD',
+        "<leader>tD",
         function()
-          require('neotest').run.run { vim.fn.expand '%', strategy = 'dap' }
+          require("neotest").run.run({ vim.fn.expand("%"), strategy = "dap" })
         end,
-        desc = '[T]est [D]ebug file',
+        desc = "[T]est [D]ebug file",
       },
       {
-        '<leader>tl',
+        "<leader>tl",
         function()
-          require('neotest').run.run_last()
+          require("neotest").run.run_last()
         end,
-        desc = '[T]est [L]ast',
+        desc = "[T]est [L]ast",
       },
       {
-        '<leader>tw',
+        "<leader>tw",
         function()
-          require('neotest').watch.toggle(vim.fn.expand '%')
+          require("neotest").watch.toggle(vim.fn.expand("%"))
         end,
-        desc = '[T]est [W]atch file',
+        desc = "[T]est [W]atch file",
       },
     },
     config = function()
-      require('neotest').setup {
+      require("neotest").setup({
         adapters = {
-          require 'neotest-golang' {
-            go_test_args = { '-v', '-race', '-coverprofile=coverage.out' },
-          },
-          require 'neotest-jest' {
-            jestCommand = 'npm test --',
+          require("neotest-golang")({
+            go_test_args = { "-v", "-race", "-coverprofile=coverage.out" },
+          }),
+          require("neotest-jest")({
+            jestCommand = "npm test --",
             cwd = function()
               return vim.fn.getcwd()
             end,
-          },
-          require 'neotest-vitest',
-          require 'neotest-python' {
+          }),
+          require("neotest-vitest"),
+          require("neotest-python")({
             dap = { justMyCode = false },
-            runner = 'pytest',
-          },
+            runner = "pytest",
+          }),
         },
         output = { open_on_run = false },
-        summary = { mappings = { expand = '<CR>', jumpto = '<Tab>' } },
+        summary = { mappings = { expand = "<CR>", jumpto = "<Tab>" } },
         status = { virtual_text = true, signs = true },
         quickfix = { enabled = true, open = false },
-      }
+      })
     end,
   },
 }

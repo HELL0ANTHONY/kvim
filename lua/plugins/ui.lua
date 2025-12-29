@@ -1,22 +1,22 @@
 return {
   {
-    'folke/which-key.nvim',
-    event = 'VimEnter',
+    "folke/which-key.nvim",
+    event = "VimEnter",
     opts = {
       icons = { mappings = true, keys = {} },
       spec = {
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { '<leader>o', group = '[O]pen' },
+        { "<leader>s", group = "[S]earch" },
+        { "<leader>w", group = "[W]orkspace" },
+        { "<leader>t", group = "[T]oggle" },
+        { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
+        { "<leader>o", group = "[O]pen" },
       },
     },
   },
 
   {
-    'motaz-shokry/gruvbox.nvim',
-    name = 'gruvbox',
+    "motaz-shokry/gruvbox.nvim",
+    name = "gruvbox",
     lazy = false,
     priority = 1000,
     opts = {
@@ -25,14 +25,14 @@ return {
       styles = { bold = true, italic = true },
     },
     init = function()
-      vim.cmd.colorscheme 'gruvbox-soft'
+      vim.cmd.colorscheme("gruvbox-soft")
     end,
   },
 
   {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    event = 'VeryLazy',
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    event = "VeryLazy",
     opts = function()
       local function is_vsplit()
         local wins = vim.api.nvim_tabpage_list_wins(0)
@@ -44,38 +44,38 @@ return {
       end
 
       local function file_icon()
-        local ok, dev = pcall(require, 'nvim-web-devicons')
+        local ok, dev = pcall(require, "nvim-web-devicons")
         if not ok then
-          return ''
+          return ""
         end
-        local name, ext = vim.fn.expand '%:t', vim.fn.expand '%:e'
+        local name, ext = vim.fn.expand("%:t"), vim.fn.expand("%:e")
         local icon = dev.get_icon(name, ext, { default = true })
-        return icon and (icon .. ' ') or ''
+        return icon and (icon .. " ") or ""
       end
 
       local function smart_filename()
         local name
         if is_vsplit() or win_is_narrow(0) then
-          name = vim.fn.expand '%:t'
+          name = vim.fn.expand("%:t")
         else
-          name = vim.fn.fnamemodify(vim.fn.expand '%:p', ':.')
+          name = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.")
         end
-        if name == '' then
-          name = '[No Name]'
+        if name == "" then
+          name = "[No Name]"
         end
-        local modified = vim.bo.modified and ' [󰦒]' or ''
+        local modified = vim.bo.modified and " [󰦒]" or ""
         return file_icon() .. name .. modified
       end
 
       local diagnostics = {
-        'diagnostics',
-        sources = { 'nvim_diagnostic' },
-        sections = { 'error', 'warn', 'info', 'hint' },
+        "diagnostics",
+        sources = { "nvim_diagnostic" },
+        sections = { "error", "warn", "info", "hint" },
         symbols = {
-          error = ' ', -- Error
-          warn = ' ', -- Warning
-          info = ' ', -- Info
-          hint = '󰠠 ', -- Hint
+          error = " ", -- Error
+          warn = " ", -- Warning
+          info = " ", -- Info
+          hint = "󰠠 ", -- Hint
         },
         colored = true,
         update_in_insert = false,
@@ -83,11 +83,11 @@ return {
       }
 
       local diff = {
-        'diff',
+        "diff",
         symbols = {
-          added = ' ', -- +
-          modified = ' ', -- ~
-          removed = ' ', -- -
+          added = " ", -- +
+          modified = " ", -- ~
+          removed = " ", -- -
         },
         colored = true,
         cond = function()
@@ -96,18 +96,18 @@ return {
       }
 
       local function cursor_and_total()
-        local l, c = vim.fn.line '.', vim.fn.col '.'
+        local l, c = vim.fn.line("."), vim.fn.col(".")
         local total = vim.api.nvim_buf_line_count(0)
         if win_is_narrow(0) then
-          return string.format('%d/%d', l, total)
+          return string.format("%d/%d", l, total)
         end
-        return string.format('󰉸 %d│󱥖 %d  %d', l, c, total)
+        return string.format("󰉸 %d│󱥖 %d  %d", l, c, total)
       end
 
       local branch = {
-        'branch',
-        icon = '',
-        color = { gui = 'bold' },
+        "branch",
+        icon = "",
+        color = { gui = "bold" },
         cond = function()
           return not is_vsplit()
         end,
@@ -115,10 +115,10 @@ return {
 
       return {
         options = {
-          theme = 'auto',
+          theme = "auto",
           globalstatus = false,
-          section_separators = '',
-          component_separators = '',
+          section_separators = "",
+          component_separators = "",
           disabled_filetypes = { statusline = {} },
           icons_enabled = true,
         },
@@ -138,96 +138,96 @@ return {
           lualine_y = {},
           lualine_z = {},
         },
-        extensions = { 'quickfix', 'fugitive', 'man', 'nvim-tree', 'lazy' },
+        extensions = { "quickfix", "fugitive", "man", "nvim-tree", "lazy" },
       }
     end,
   },
 
   {
-    'nvim-treesitter/nvim-treesitter',
-    build = ':TSUpdate',
-    event = { 'BufReadPost', 'BufNewFile' },
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
     opts = {
       auto_install = true,
       ensure_installed = {
-        'bash',
-        'css',
-        'go',
-        'gomod',
-        'gosum',
-        'html',
-        'javascript',
-        'json',
-        'lua',
-        'markdown',
-        'markdown_inline',
-        'terraform',
-        'toml',
-        'tsx',
-        'typescript',
-        'vim',
-        'vimdoc',
-        'yaml',
+        "bash",
+        "css",
+        "go",
+        "gomod",
+        "gosum",
+        "html",
+        "javascript",
+        "json",
+        "lua",
+        "markdown",
+        "markdown_inline",
+        "terraform",
+        "toml",
+        "tsx",
+        "typescript",
+        "vim",
+        "vimdoc",
+        "yaml",
       },
       highlight = { enable = true },
       indent = { enable = true },
       incremental_selection = { enable = true },
     },
     config = function(_, opts)
-      require('nvim-treesitter.configs').setup(opts)
+      require("nvim-treesitter.configs").setup(opts)
     end,
   },
 
   {
-    'HiPhish/rainbow-delimiters.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
+    "HiPhish/rainbow-delimiters.nvim",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
-      local rd = require 'rainbow-delimiters'
+      local rd = require("rainbow-delimiters")
       vim.g.rainbow_delimiters = {
         strategy = {
-          [''] = rd.strategy['global'],
-          vim = rd.strategy['local'],
+          [""] = rd.strategy["global"],
+          vim = rd.strategy["local"],
         },
         query = {
-          [''] = 'rainbow-delimiters',
-          go = 'rainbow-parens',
-          html = 'rainbow-parens',
-          javascript = 'rainbow-parens',
-          javascriptreact = 'rainbow-parens',
-          jsx = 'rainbow-parens',
-          lua = 'rainbow-blocks',
-          tsx = 'rainbow-parens',
-          typescript = 'rainbow-parens',
-          typescriptreact = 'rainbow-parens',
+          [""] = "rainbow-delimiters",
+          go = "rainbow-parens",
+          html = "rainbow-parens",
+          javascript = "rainbow-parens",
+          javascriptreact = "rainbow-parens",
+          jsx = "rainbow-parens",
+          lua = "rainbow-blocks",
+          tsx = "rainbow-parens",
+          typescript = "rainbow-parens",
+          typescriptreact = "rainbow-parens",
         },
       }
     end,
   },
 
   {
-    'lukas-reineke/indent-blankline.nvim',
-    main = 'ibl',
-    ft = { 'yaml', 'python', 'tf', 'hcl', 'tpl' },
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    ft = { "yaml", "python", "tf", "hcl", "tpl" },
     opts = {
       scope = { enabled = false, show_start = false },
       whitespace = {
-        highlight = { 'CursorColumn', 'Whitespace' },
+        highlight = { "CursorColumn", "Whitespace" },
         remove_blankline_trail = false,
       },
       indent = {
-        highlight = { 'CursorColumn', 'Whitespace' },
-        char = '',
+        highlight = { "CursorColumn", "Whitespace" },
+        char = "",
       },
       exclude = {
         filetypes = {
-          'help',
-          'startify',
-          'dashboard',
-          'lazy',
-          'neogitstatus',
-          'NvimTree',
-          'Trouble',
-          'text',
+          "help",
+          "startify",
+          "dashboard",
+          "lazy",
+          "neogitstatus",
+          "NvimTree",
+          "Trouble",
+          "text",
         },
       },
     },
