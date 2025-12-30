@@ -1,14 +1,25 @@
 return {
-  -- Flash en lugar de Hop (con tus shortcuts)
   {
     "folke/flash.nvim",
     event = "VeryLazy",
     opts = {
-      labels = "etovxqpdygfblzhckisuran", -- tus labels originales
+      labels = "etovxqpdygfblzhckisuran",
       modes = {
-        char = { enabled = false }, -- desactiva f/F/t/T nativos para usar los tuyos
+        char = { enabled = false },
       },
     },
+    config = function(_, opts)
+      vim.api.nvim_set_hl(
+        0,
+        "FlashLabel",
+        { fg = "#282828", bg = "#fabd2f", bold = true }
+      )
+      vim.api.nvim_set_hl(0, "FlashMatch", { fg = "#ebdbb2", bg = "#504945" })
+      vim.api.nvim_set_hl(0, "FlashCurrent", { fg = "#282828", bg = "#8ec07c" })
+      vim.api.nvim_set_hl(0, "FlashBackdrop", { fg = "#665c54" })
+
+      require("flash").setup(opts)
+    end,
     keys = {
       {
         "<leader>jw",
@@ -72,13 +83,13 @@ return {
   {
     "stevearc/oil.nvim",
     init = function()
-      -- Highlight para Oil
       vim.api.nvim_create_autocmd("ColorScheme", {
         pattern = "*",
         callback = function()
           vim.api.nvim_set_hl(0, "OilNormal", { bg = "#1d2021" })
         end,
       })
+
       -- Aplicar inmediatamente si el colorscheme ya cargó
       vim.api.nvim_set_hl(0, "OilNormal", { bg = "#1d2021" })
 
