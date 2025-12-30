@@ -89,7 +89,7 @@ return {
         if n <= keep then
           return dir
         end
-        return "…/" .. table.concat(parts, "/", n - keep + 1, n)
+        return table.concat(parts, "/", n - keep + 1, n)
       end
 
       _G.get_oil_winbar = function()
@@ -97,23 +97,14 @@ return {
         if not ok or not oil.get_current_dir then
           return ""
         end
-
         local winid = tonumber(vim.g.statusline_winid or 0) or 0
         local bufnr = (winid > 0) and vim.api.nvim_win_get_buf(winid) or 0
         local dir = oil.get_current_dir(bufnr)
         if not dir then
           return ""
         end
-
-        local git = vim.fs.find(".git", { path = dir, upward = true })[1]
-        local root = git and vim.fs.dirname(git) or vim.uv.cwd() -- ✅ vim.uv
         local shown = shorten_tail(dir, 4)
-        local project = vim.fn.fnamemodify(root or dir, ":t")
-
-        return ("󰚌 %s  ›  %s"):format(
-          project,
-          shown ~= "" and shown or "."
-        )
+        return ("󰚌 %s"):format(shown ~= "" and shown or ".")
       end
     end,
 
