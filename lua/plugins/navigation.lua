@@ -89,7 +89,7 @@ return {
         if n <= keep then
           return dir
         end
-        return table.concat(parts, "/", n - keep + 1, n)
+        return "➜ " .. table.concat(parts, "/", n - keep + 1, n)
       end
 
       _G.get_oil_winbar = function()
@@ -124,7 +124,7 @@ return {
         number = false,
         relativenumber = false,
         signcolumn = "no",
-        winbar = "%{%v:lua.get_oil_winbar()%}",
+        winbar = "%#OilWinbar#%{%v:lua.get_oil_winbar()%}",
         winhighlight = "Normal:OilNormal",
       },
       float = {

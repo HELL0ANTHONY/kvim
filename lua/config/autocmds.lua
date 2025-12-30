@@ -22,3 +22,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end)
   end,
 })
+
+-- Highlight personalizado para Oil.nvim
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "*",
+  callback = function()
+    vim.api.nvim_set_hl(0, "OilNormal", { bg = "#1d2021" })
+    vim.api.nvim_set_hl(
+      0,
+      "OilWinbar",
+      { fg = "#d65d0e", bg = "#1d2021", bold = true }
+    )
+  end,
+})
+
+vim.api.nvim_set_hl(0, "OilNormal", { bg = "#1d2021" })
+vim.api.nvim_set_hl(
+  0,
+  "OilWinbar",
+  { fg = "#458588", bg = "#1d2021", bold = true }
+)
