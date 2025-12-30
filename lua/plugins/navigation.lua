@@ -11,31 +11,31 @@ return {
     },
     keys = {
       {
-        "<leader>ww",
+        "<leader>jw",
         function()
           require("flash").jump()
         end,
         mode = { "n", "x", "o" },
-        desc = "[w]orkspace: jump to [w]ord",
+        desc = "[j]ump to [w]ord",
       },
       {
-        "<leader>wl",
+        "<leader>jl",
         function()
           require("flash").jump({ search = { mode = "search" }, pattern = "^" })
         end,
         mode = { "n", "x", "o" },
-        desc = "[w]orkspace: jump to [l]ine",
+        desc = "[j]ump to [l]ine",
       },
       {
-        "<leader>wW",
+        "<leader>jW",
         function()
           require("flash").jump({ search = { multi_window = true } })
         end,
         mode = { "n", "x", "o" },
-        desc = "[w]orkspace: jump to [W]ord (multi-window)",
+        desc = "[j]ump to [W]ord (multi-window)",
       },
       {
-        "<leader>wf",
+        "<leader>jf",
         function()
           require("flash").jump({
             search = { mode = "search", max_length = 1, forward = true },
@@ -44,10 +44,10 @@ return {
           })
         end,
         mode = { "n", "x", "o" },
-        desc = "[w]orkspace: jump to [f] char after cursor",
+        desc = "[j]ump to [f] char after cursor",
       },
       {
-        "<leader>wF",
+        "<leader>jF",
         function()
           require("flash").jump({
             search = { mode = "search", max_length = 1, forward = false },
@@ -56,15 +56,15 @@ return {
           })
         end,
         mode = { "n", "x", "o" },
-        desc = "[w]orkspace: jump to [F] char before cursor",
+        desc = "[j]ump to [F] char before cursor",
       },
       {
-        "<leader>wt",
+        "<leader>jt",
         function()
           require("flash").treesitter()
         end,
         mode = { "n", "x", "o" },
-        desc = "[w]orkspace: select [t]reesitter node",
+        desc = "[j]ump: select [t]reesitter node",
       },
     },
   },
@@ -276,6 +276,18 @@ return {
     cmd = "Trouble",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = { auto_preview = true, focus = true },
+    keys = {
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics",
+      },
+    },
   },
 
   -- Outline

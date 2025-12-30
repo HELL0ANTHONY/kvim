@@ -5,11 +5,37 @@ return {
     opts = {
       icons = { mappings = true, keys = {} },
       spec = {
-        { "<leader>s", group = "[S]earch" },
-        { "<leader>w", group = "[W]orkspace" },
-        { "<leader>t", group = "[T]oggle" },
+        {
+          "<leader>c",
+          group = "[C]ustom",
+          icon = { icon = "", color = "yellow" },
+        },
+        {
+          "<leader>d",
+          group = "[D]ebug",
+          icon = { icon = "", color = "red" },
+        },
         { "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
-        { "<leader>o", group = "[O]pen" },
+        {
+          "<leader>j",
+          group = "[J]ump",
+          icon = { icon = "󱕘", color = "yellow" },
+        },
+        {
+          "<leader>t",
+          group = "[T]est",
+          icon = { icon = "󰙨", color = "azure" },
+        },
+        {
+          "<leader>s",
+          group = "[S]earch",
+          icon = { icon = "", color = "green" },
+        },
+        {
+          "<leader>x",
+          group = "Trouble e[X]plorer",
+          icon = { icon = "󰝖", color = "purple" },
+        },
       },
     },
   },
