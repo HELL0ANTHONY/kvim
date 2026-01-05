@@ -8,9 +8,9 @@ return {
         enabled = true,
         auto_trigger = true,
         keymap = {
-          accept = "<M-l>", -- Alt+l para aceptar
-          accept_word = "<M-w>", -- Alt+w para aceptar palabra
-          accept_line = "<M-j>", -- Alt+j para aceptar línea
+          accept = "<M-l>",
+          accept_word = "<M-w>",
+          accept_line = "<M-j>",
           next = "<M-]>",
           prev = "<M-[>",
           dismiss = "<M-c>",
