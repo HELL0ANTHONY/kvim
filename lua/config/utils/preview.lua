@@ -11,10 +11,6 @@ local DEFAULT_COMMANDS = {
   lua = { "lua", "%" },
 }
 
--- Alternativas para rust
--- cargo install rust-script y usar { 'rust-script', '%' }
--- o usar rust = { 'rustc', '%', '-o', '/tmp/rust_preview', '&&', '/tmp/rust_preview' },
-
 local active_previews = {} -- { [source_bufnr] = output_bufnr }
 
 local function create_output_buf()
@@ -25,7 +21,6 @@ local function create_output_buf()
   vim.bo[buf].swapfile = false
   vim.bo[buf].filetype = "preview_output"
   vim.api.nvim_buf_set_name(buf, "[Preview Output]")
-  -- Volver al buffer original
   vim.cmd("wincmd p")
   return buf
 end
@@ -63,7 +58,6 @@ local function run_preview(source_buf, output_buf)
     return
   end
 
-  local filename = vim.fn.fnamemodify(file, ":t")
   write_to_buf(output_buf, {
     "▶ " .. table.concat(cmd, " "),
     "─────────────────────────────",
@@ -75,28 +69,37 @@ local function run_preview(source_buf, output_buf)
     stderr_buffered = true,
     on_stdout = function(_, data)
       if data and #data > 0 and data[1] ~= "" then
-        write_to_buf(output_buf, data, true)
+        vim.schedule(function()
+          write_to_buf(output_buf, data, true)
+        end)
       end
     end,
     on_stderr = function(_, data)
       if data and #data > 0 and data[1] ~= "" then
-        write_to_buf(output_buf, data, true)
+        vim.schedule(function()
+          write_to_buf(output_buf, data, true)
+        end)
       end
     end,
     on_exit = function(_, code)
-      local status = code == 0 and "✓ OK" or ("✗ Exit: " .. code)
-      write_to_buf(output_buf, {
-        "",
-        "─────────────────────────────",
-        status,
-      }, true)
+      vim.schedule(function()
+        local status = code == 0 and "✓ OK" or ("✗ Exit: " .. code)
+        write_to_buf(
+          output_buf,
+          {
+            "",
+            "─────────────────────────────",
+            status,
+          },
+          true
+        )
+      end)
     end,
   })
 end
 
 M.start = function()
   local source_buf = vim.api.nvim_get_current_buf()
-
   if active_previews[source_buf] then
     vim.notify("Preview ya activo en este buffer", vim.log.levels.WARN)
     return
@@ -105,7 +108,6 @@ M.start = function()
   local output_buf = create_output_buf()
   active_previews[source_buf] = output_buf
 
-  -- Crear autocmd para este buffer específico
   local group =
     vim.api.nvim_create_augroup("Preview_" .. source_buf, { clear = true })
 
@@ -121,7 +123,6 @@ M.start = function()
     end,
   })
 
-  -- Limpiar cuando se cierre el output buffer
   vim.api.nvim_create_autocmd("BufWipeout", {
     group = group,
     buffer = output_buf,
@@ -131,30 +132,22 @@ M.start = function()
     end,
   })
 
-  vim.notify(
-    "Preview activado. Guarda el archivo para ejecutar.",
-    vim.log.levels.INFO
-  )
-  -- Ejecutar inmediatamente
+  vim.notify("Preview activado", vim.log.levels.INFO)
   run_preview(source_buf, output_buf)
 end
 
 M.stop = function()
   local source_buf = vim.api.nvim_get_current_buf()
-
   if not active_previews[source_buf] then
-    vim.notify("No hay preview activo en este buffer", vim.log.levels.WARN)
+    vim.notify("No hay preview activo", vim.log.levels.WARN)
     return
   end
-
   local output_buf = active_previews[source_buf]
   active_previews[source_buf] = nil
   pcall(vim.api.nvim_del_augroup_by_name, "Preview_" .. source_buf)
-
   if vim.api.nvim_buf_is_valid(output_buf) then
     vim.api.nvim_buf_delete(output_buf, { force = true })
   end
-
   vim.notify("Preview desactivado", vim.log.levels.INFO)
 end
 
@@ -171,17 +164,20 @@ M.stop_all = function()
   vim.notify(("Desactivados %d previews"):format(count), vim.log.levels.INFO)
 end
 
--- User commands
-vim.api.nvim_create_user_command("Preview", M.start, {
-  desc = "Activa preview on save para el buffer actual",
-})
-
-vim.api.nvim_create_user_command("PreviewStop", M.stop, {
-  desc = "Desactiva preview del buffer actual",
-})
-
-vim.api.nvim_create_user_command("PreviewStopAll", M.stop_all, {
-  desc = "Desactiva todos los previews",
-})
+vim.api.nvim_create_user_command(
+  "Preview",
+  M.start,
+  { desc = "Activa preview on save" }
+)
+vim.api.nvim_create_user_command(
+  "PreviewStop",
+  M.stop,
+  { desc = "Desactiva preview" }
+)
+vim.api.nvim_create_user_command(
+  "PreviewStopAll",
+  M.stop_all,
+  { desc = "Desactiva todos" }
+)
 
 return M
