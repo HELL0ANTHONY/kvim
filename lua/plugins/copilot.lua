@@ -8,7 +8,7 @@ return {
         enabled = true,
         auto_trigger = true,
         keymap = {
-          accept = "<M-l>",
+          accept = "<M-y>",
           accept_word = "<M-w>",
           accept_line = "<M-j>",
           next = "<M-]>",
@@ -26,3 +26,22 @@ return {
     },
   },
 }
+
+-- Algunas alternativas populares para accept que no conflictan con teclas comunes:
+-- Opciones con Alt/Meta:
+--
+-- <M-y> - intuitivo (yes/accept)
+-- <M-CR> - Alt+Enter
+-- <M-;> - fácil de alcanzar
+-- <M-Space> - cómodo
+--
+-- Opciones con Ctrl:
+--
+-- <C-y> - común para confirmar en muchos programas
+-- <C-l> - si no usas para limpiar pantalla
+-- <C-;>
+--
+-- Con Tab (si no usas para completado):
+--
+-- <Tab>
+-- <S-Tab>
