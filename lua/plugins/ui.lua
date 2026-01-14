@@ -181,6 +181,7 @@ return {
         "go",
         "gomod",
         "gosum",
+        "gowork",
         "html",
         "javascript",
         "json",
