@@ -51,7 +51,11 @@ return {
       styles = { bold = true, italic = true },
     },
     init = function()
-      vim.cmd.colorscheme("gruvbox-soft")
+      -- vim.cmd("colorscheme gruvbox")
+      -- vim.cmd("colorscheme gruvbox-hard")
+      vim.cmd("colorscheme gruvbox-medium")
+      -- vim.cmd("colorscheme gruvobx-soft")
+      -- vim.cmd("colorscheme gruvobx-light")
     end,
   },
 

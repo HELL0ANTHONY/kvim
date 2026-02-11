@@ -1,6 +1,6 @@
 vim.opt.termguicolors = true
 vim.opt.wildmenu = true
-vim.g.have_nerd_font = true -- ← CAMBIAR a true si tienes Nerd Font
+vim.g.have_nerd_font = true
 
 vim.opt.number = false
 vim.opt.relativenumber = false
@@ -34,7 +34,8 @@ vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 vim.opt.cmdheight = 1
+vim.opt.swapfile = false
 
--- Netrw desactivado (usas oil)
+-- Netrw desactivado
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
