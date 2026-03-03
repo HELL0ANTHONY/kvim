@@ -39,25 +39,64 @@ return {
       },
     },
   },
-
   {
-    "motaz-shokry/gruvbox.nvim",
-    name = "gruvbox",
+    "catppuccin/nvim",
+    name = "catppuccin",
     lazy = false,
     priority = 1000,
     opts = {
-      dim_inactive_windows = false,
-      extend_background_behind_borders = false,
-      styles = { bold = true, italic = true },
+      flavour = "macchiato", -- latte | frappe | macchiato | mocha
+      dim_inactive = { enabled = false },
+      styles = {
+        comments = { "italic" },
+        conditionals = { "italic" },
+        keywords = { "bold" },
+        functions = { "bold" },
+        types = { "bold", "italic" },
+      },
+      integrations = {
+        gitsigns = true,
+        indent_blankline = { enabled = true },
+        lsp_trouble = true,
+        mason = true,
+        native_lsp = {
+          enabled = true,
+          underlines = {
+            errors = { "undercurl" },
+            hints = { "undercurl" },
+            warnings = { "undercurl" },
+            information = { "undercurl" },
+          },
+        },
+        rainbow_delimiters = true,
+        telescope = { enabled = true },
+        treesitter = true,
+        which_key = true,
+      },
     },
     init = function()
-      -- vim.cmd("colorscheme gruvbox")
-      -- vim.cmd("colorscheme gruvbox-hard")
-      vim.cmd("colorscheme gruvbox-medium")
-      -- vim.cmd("colorscheme gruvobx-soft")
-      -- vim.cmd("colorscheme gruvobx-light")
+      vim.cmd("colorscheme catppuccin")
     end,
   },
+
+  -- {
+  --   "motaz-shokry/gruvbox.nvim",
+  --   name = "gruvbox",
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {
+  --     dim_inactive_windows = false,
+  --     extend_background_behind_borders = false,
+  --     styles = { bold = true, italic = true },
+  --   },
+  --   init = function()
+  --     -- vim.cmd("colorscheme gruvbox")
+  --     -- vim.cmd("colorscheme gruvbox-hard")
+  --     vim.cmd("colorscheme gruvbox-medium")
+  --     -- vim.cmd("colorscheme gruvobx-soft")
+  --     -- vim.cmd("colorscheme gruvobx-light")
+  --   end,
+  -- },
 
   {
     "nvim-lualine/lualine.nvim",

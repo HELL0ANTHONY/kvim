@@ -17,7 +17,30 @@ return {
   {
     "echasnovski/mini.pairs",
     event = "InsertEnter",
-    opts = {},
+    config = function()
+      require("mini.pairs").setup({})
+
+      local function t(keys)
+        return vim.api.nvim_replace_termcodes(keys, true, true, true)
+      end
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "markdown" },
+        callback = function()
+          vim.keymap.set("i", "`", function()
+            local col = vim.fn.col(".") - 1
+            local line = vim.fn.getline(".")
+            local before = line:sub(1, col)
+
+            if before:match("``$") then
+              return t("`<CR><CR>```<Up>")
+            end
+
+            return t("``<Left>")
+          end, { buffer = true, expr = true, noremap = true })
+        end,
+      })
+    end,
   },
 
   -- Surround
