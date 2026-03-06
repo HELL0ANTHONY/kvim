@@ -59,7 +59,6 @@ return {
 
           -- Se prioriza el uso de comandos por defecto: gra, grn, grr, gri, etc.
           map("gd", vim.lsp.buf.definition, "Goto definition")
-          map("gD", vim.lsp.buf.declaration, "Goto declaration")
           -- map('gr', vim.lsp.buf.references, 'References')
           -- map('gi', vim.lsp.buf.implementation, 'Implementation')
           -- map('<leader>rn', vim.lsp.buf.rename, 'Rename')

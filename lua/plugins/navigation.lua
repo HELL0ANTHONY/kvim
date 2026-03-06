@@ -9,15 +9,14 @@ return {
       },
     },
     config = function(_, opts)
-      vim.api.nvim_set_hl(
-        0,
-        "FlashLabel",
-        { fg = "#282828", bg = "#fabd2f", bold = true }
-      )
-      vim.api.nvim_set_hl(0, "FlashMatch", { fg = "#ebdbb2", bg = "#504945" })
-      vim.api.nvim_set_hl(0, "FlashCurrent", { fg = "#282828", bg = "#8ec07c" })
-      vim.api.nvim_set_hl(0, "FlashBackdrop", { fg = "#665c54" })
-
+      local function set_flash_hl()
+        vim.api.nvim_set_hl(0, "FlashLabel", { fg = "#282828", bg = "#fabd2f", bold = true })
+        vim.api.nvim_set_hl(0, "FlashMatch", { fg = "#ebdbb2", bg = "#504945" })
+        vim.api.nvim_set_hl(0, "FlashCurrent", { fg = "#282828", bg = "#8ec07c" })
+        vim.api.nvim_set_hl(0, "FlashBackdrop", { fg = "#665c54" })
+      end
+      set_flash_hl()
+      vim.api.nvim_create_autocmd("ColorScheme", { callback = set_flash_hl })
       require("flash").setup(opts)
     end,
     keys = {

@@ -36,10 +36,19 @@ return {
       end
     end
 
+    local js_fts = {
+      javascript = true,
+      javascriptreact = true,
+      typescript = true,
+      typescriptreact = true,
+    }
+
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
       group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
       callback = function()
-        configure_eslint()
+        if js_fts[vim.bo.filetype] then
+          configure_eslint()
+        end
         lint.try_lint()
       end,
     })

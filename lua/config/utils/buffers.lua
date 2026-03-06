@@ -3,18 +3,10 @@
 --- @module close_others
 local M = {}
 
---- Checks whether a buffer is listed (visible in buffer list).
---- Compatible with Neovim 0.8 and 0.9+ APIs.
 --- @param buf integer Buffer handle
---- @return boolean listed True if the buffer is listed
+--- @return boolean
 local function is_listed(buf)
-  if vim.api.nvim_get_option_value then
-    -- nvim 0.9+
-    return vim.api.nvim_get_option_value("buflisted", { buf = buf })
-  else
-    -- nvim 0.8
-    return vim.fn.buflisted(buf) == 1
-  end
+  return vim.bo[buf].buflisted
 end
 
 --- Closes all listed buffers except the current one.

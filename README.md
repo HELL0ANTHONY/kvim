@@ -94,6 +94,25 @@ git clone https://github.com/nvim-lua/kickstart.nvim.git "${env:LOCALAPPDATA}\nv
 
 </details>
 
+### Spell Check Dictionaries
+
+Markdown files have spell checking enabled for English, Spanish, and German.
+English is bundled with Neovim, but Spanish and German must be downloaded manually.
+
+Since this config uses `NVIM_APPNAME=kick`, the spell files must go into `~/.local/share/kick/site/spell/`:
+
+```sh
+mkdir -p ~/.local/share/kick/site/spell
+
+curl -L https://ftp.nluug.nl/pub/vim/runtime/spell/es.utf-8.spl -o ~/.local/share/kick/site/spell/es.utf-8.spl
+curl -L https://ftp.nluug.nl/pub/vim/runtime/spell/es.utf-8.sug -o ~/.local/share/kick/site/spell/es.utf-8.sug
+curl -L https://ftp.nluug.nl/pub/vim/runtime/spell/de.utf-8.spl -o ~/.local/share/kick/site/spell/de.utf-8.spl
+curl -L https://ftp.nluug.nl/pub/vim/runtime/spell/de.utf-8.sug -o ~/.local/share/kick/site/spell/de.utf-8.sug
+```
+
+> **NOTE**
+> If you use a different `NVIM_APPNAME`, replace `kick` with your app name in the path above.
+
 ### Post Installation
 
 Start Neovim

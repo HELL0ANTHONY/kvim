@@ -140,8 +140,9 @@ return {
       -- Quick toggles
       vim.keymap.set("n", "<leader>dh", function()
         local cur = vim.diagnostic.config().virtual_text
-        vim.diagnostic.config({ virtual_text = not cur })
-        vim.notify("Virtual text: " .. (not cur and "ON" or "OFF"))
+        local enable = cur == false
+        vim.diagnostic.config({ virtual_text = enable })
+        vim.notify("Virtual text: " .. (enable and "ON" or "OFF"))
       end, { desc = "[D]iagnostics toggle virtual text" })
 
       -- Initialize

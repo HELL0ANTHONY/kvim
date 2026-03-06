@@ -47,6 +47,14 @@ return {
     opts = {
       flavour = "macchiato", -- latte | frappe | macchiato | mocha
       dim_inactive = { enabled = false },
+      custom_highlights = function(colors)
+        return {
+          DiagnosticUnderlineError = { undercurl = true, sp = colors.red },
+          DiagnosticUnderlineWarn = { undercurl = true, sp = colors.yellow },
+          DiagnosticUnderlineInfo = { undercurl = true, sp = colors.sky },
+          DiagnosticUnderlineHint = { undercurl = true, sp = colors.teal },
+        }
+      end,
       styles = {
         comments = { "italic" },
         conditionals = { "italic" },

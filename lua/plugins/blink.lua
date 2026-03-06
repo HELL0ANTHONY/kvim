@@ -90,7 +90,17 @@ return {
           region_check_events = "CursorMoved,InsertEnter",
           delete_check_events = "TextChanged,InsertLeave",
         })
-        pcall(require("luasnip.loaders.from_vscode").lazy_load)
+        require("luasnip.loaders.from_vscode").lazy_load()
+
+        -- Custom snippets
+        require("snippets.js_ts").register({
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact",
+        })
+        require("snippets.go").register()
+        require("snippets.terraform").register()
       end
       require("blink.cmp").setup(opts)
     end,

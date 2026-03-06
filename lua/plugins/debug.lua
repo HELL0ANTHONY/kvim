@@ -187,6 +187,12 @@ return {
     config = function()
       local dap = require("dap")
 
+      -- Sign highlight groups
+      vim.api.nvim_set_hl(0, "DapBreakpoint", { fg = "#fb4934" })
+      vim.api.nvim_set_hl(0, "DapBreakpointCondition", { fg = "#fabd2f" })
+      vim.api.nvim_set_hl(0, "DapStopped", { fg = "#b8bb26" })
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { bg = "#2e3b2e" })
+
       -- Signs
       vim.fn.sign_define(
         "DapBreakpoint",
