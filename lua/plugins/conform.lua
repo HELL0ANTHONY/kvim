@@ -1,6 +1,8 @@
 -- go install github.com/dkorunic/betteralign/cmd/betteralign@latest
 -- Hace falta instalar los formateadores correspondientes para que funcione el formateo de Go.
 
+vim.g.autoformat = true
+
 local js_formatters = { "prettierd", "prettier", stop_after_first = true }
 local slow_filetypes = { terraform = true, hcl = true, tf = true }
 
@@ -14,13 +16,39 @@ return {
       function()
         require("conform").format({ async = true, lsp_format = "fallback" })
       end,
-      mode = "",
+      mode = "n",
       desc = "[F]ormat buffer",
+    },
+    {
+      "<leader>f",
+      function()
+        require("conform").format({
+          async = true,
+          lsp_format = "fallback",
+          range = {
+            start = vim.api.nvim_buf_get_mark(0, "<"),
+            ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+          },
+        })
+      end,
+      mode = "v",
+      desc = "[F]ormat selection",
+    },
+    {
+      "<leader>ft",
+      function()
+        vim.g.autoformat = not vim.g.autoformat
+        vim.notify("Format on save: " .. (vim.g.autoformat and "ON" or "OFF"))
+      end,
+      desc = "[F]ormat [T]oggle auto-save",
     },
   },
   opts = {
     notify_on_error = true,
     format_on_save = function(bufnr)
+      if not vim.g.autoformat then
+        return nil
+      end
       local ft = vim.bo[bufnr].filetype
       local disable_lsp = { c = true, cpp = true }
       return {
