@@ -83,37 +83,60 @@ return {
       },
     },
     init = function()
-      vim.cmd("colorscheme catppuccin")
+      if vim.g.theme ~= "docs" then
+        vim.cmd("colorscheme catppuccin")
+      end
     end,
   },
 
-  -- {
-  --   "motaz-shokry/gruvbox.nvim",
-  --   name = "gruvbox",
-  --   lazy = false,
-  --   priority = 1000,
-  --   opts = {
-  --     dim_inactive_windows = false,
-  --     extend_background_behind_borders = false,
-  --     styles = { bold = true, italic = true },
-  --   },
-  --   init = function()
-  --     -- vim.cmd("colorscheme gruvbox")
-  --     -- vim.cmd("colorscheme gruvbox-hard")
-  --     vim.cmd("colorscheme gruvbox-medium")
-  --     -- vim.cmd("colorscheme gruvobx-soft")
-  --     -- vim.cmd("colorscheme gruvobx-light")
-  --   end,
-  -- },
+  {
+    "motaz-shokry/gruvbox.nvim",
+    name = "gruvbox",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      dim_inactive_windows = false,
+      extend_background_behind_borders = false,
+      styles = { bold = true, italic = true },
+    },
+    init = function()
+      if vim.g.theme == "docs" then
+        vim.cmd("colorscheme gruvbox-medium")
+      end
+    end,
+  },
 
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "VeryLazy",
     opts = function()
-      local function is_vsplit()
+      local function has_terminal_win()
+        for _, w in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+          local buf = vim.api.nvim_win_get_buf(w)
+          if vim.bo[buf].buftype == "terminal" then
+            return true
+          end
+        end
+        return false
+      end
+
+      local function is_compact()
+        local width = vim.api.nvim_win_get_width(0)
+        -- small screen
+        if vim.o.columns < 120 then
+          return true
+        end
+        -- current window is narrow (vsplit or terminal taking space)
         local wins = vim.api.nvim_tabpage_list_wins(0)
-        return #wins > 1 and vim.api.nvim_win_get_width(0) < vim.o.columns * 0.8
+        if #wins > 1 and width < vim.o.columns * 0.8 then
+          return true
+        end
+        -- terminal open reduces usable space
+        if has_terminal_win() and width < vim.o.columns * 0.9 then
+          return true
+        end
+        return false
       end
 
       local function win_is_narrow(w)
@@ -132,11 +155,7 @@ return {
 
       local function smart_filename()
         local name
-        if is_vsplit() or win_is_narrow(0) then
-          name = vim.fn.expand("%:t")
-        else
-          name = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.")
-        end
+        name = vim.fn.fnamemodify(vim.fn.expand("%:p"), ":.")
         if name == "" then
           name = "[No Name]"
         end
@@ -186,7 +205,7 @@ return {
         icon = "",
         color = { gui = "bold" },
         cond = function()
-          return not is_vsplit()
+          return not is_compact()
         end,
       }
 
