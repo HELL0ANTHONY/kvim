@@ -21,31 +21,31 @@ return {
     end,
     keys = {
       {
-        "<leader>jw",
+        "s",
         function()
           require("flash").jump()
         end,
         mode = { "n", "x", "o" },
-        desc = "[j]ump to [w]ord",
+        desc = "Flash jump",
       },
       {
-        "<leader>jl",
+        "S",
         function()
           require("flash").jump({ search = { mode = "search" }, pattern = "^" })
         end,
         mode = { "n", "x", "o" },
-        desc = "[j]ump to [l]ine",
+        desc = "Flash jump to line",
       },
       {
-        "<leader>jW",
+        "gs",
         function()
           require("flash").jump({ search = { multi_window = true } })
         end,
         mode = { "n", "x", "o" },
-        desc = "[j]ump to [W]ord (multi-window)",
+        desc = "Flash jump (multi-window)",
       },
       {
-        "<leader>jf",
+        "f",
         function()
           require("flash").jump({
             search = { mode = "search", max_length = 1, forward = true },
@@ -54,10 +54,10 @@ return {
           })
         end,
         mode = { "n", "x", "o" },
-        desc = "[j]ump to [f] char after cursor",
+        desc = "Flash jump to char after cursor",
       },
       {
-        "<leader>jF",
+        "F",
         function()
           require("flash").jump({
             search = { mode = "search", max_length = 1, forward = false },
@@ -66,15 +66,15 @@ return {
           })
         end,
         mode = { "n", "x", "o" },
-        desc = "[j]ump to [F] char before cursor",
+        desc = "Flash jump to char before cursor",
       },
       {
-        "<leader>jt",
+        "t",
         function()
           require("flash").treesitter()
         end,
         mode = { "n", "x", "o" },
-        desc = "[j]ump: select [t]reesitter node",
+        desc = "Flash select Treesitter node",
       },
     },
   },
