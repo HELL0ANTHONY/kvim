@@ -39,6 +39,15 @@ return {
       desc = "[S]earch by [G]rep",
     },
     {
+      "<leader>sl",
+      function()
+        require("telescope.builtin").live_grep({
+          additional_args = { "--fixed-strings" },
+        })
+      end,
+      desc = "[S]earch [L]iteral string",
+    },
+    {
       "<leader>sd",
       "<cmd>Telescope diagnostics<cr>",
       desc = "[S]earch [D]iagnostics",
