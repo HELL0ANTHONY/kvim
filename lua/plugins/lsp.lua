@@ -64,9 +64,7 @@ return {
           -- map('<leader>rn', vim.lsp.buf.rename, 'Rename')
           -- map('<leader>ca', vim.lsp.buf.code_action, 'Code action')
           map("<leader>dd", vim.diagnostic.open_float, "Diagnostic float")
-          map("K", function()
-            vim.lsp.buf.hover({ border = "single" })
-          end, "Hover")
+          map("K", vim.lsp.buf.hover, "Hover")
         end,
       })
 
@@ -144,7 +142,6 @@ return {
         virtual_text = false,
         float = {
           focusable = true,
-          border = "single",
           header = "",
           prefix = "",
         },

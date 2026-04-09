@@ -1,17 +1,10 @@
 return {
-  -- Auto-close tags
-  {
-    "windwp/nvim-ts-autotag",
-    ft = {
-      "html",
-      "markdown",
-      "javascriptreact",
-      "typescriptreact",
-      "tsx",
-      "jsx",
-    },
-    opts = {},
-  },
+  -- Auto-close tags (deshabilitado: incompatible con Neovim 0.12)
+  -- {
+  --   "windwp/nvim-ts-autotag",
+  --   ft = { "html", "markdown", "javascriptreact", "typescriptreact", "tsx", "jsx" },
+  --   opts = {},
+  -- },
 
   -- Auto-pairs (ligero)
   {

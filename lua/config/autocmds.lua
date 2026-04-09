@@ -12,3 +12,11 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.colorcolumn = "100"
   end,
 })
+
+-- Neovim 0.12: treesitter highlighting nativo
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Enable treesitter highlighting",
+  callback = function(ev)
+    pcall(vim.treesitter.start, ev.buf)
+  end,
+})

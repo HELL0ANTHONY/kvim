@@ -36,6 +36,10 @@ vim.opt.scrolloff = 10
 vim.opt.cmdheight = 1
 vim.opt.swapfile = false
 
+-- Neovim 0.12: bordes globales para floating windows y popup menu
+vim.opt.winborder = "single"
+vim.opt.pumborder = "single"
+
 -- Netrw desactivado
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1

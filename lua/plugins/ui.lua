@@ -36,16 +36,22 @@ return {
           group = "Trouble e[X]plorer",
           icon = { icon = "󰝖", color = "purple" },
         },
+        {
+          "gr",
+          group = "LSP [G]oto/[R]efactor",
+          icon = { icon = "", color = "blue" },
+        },
       },
     },
   },
+
   {
     "catppuccin/nvim",
     name = "catppuccin",
     lazy = false,
     priority = 1000,
     opts = {
-      flavour = "macchiato", -- latte | frappe | macchiato | mocha
+      flavour = "mocha", -- latte | frappe | macchiato | mocha
       dim_inactive = { enabled = false },
       custom_highlights = function(colors)
         return {
@@ -83,7 +89,7 @@ return {
       },
     },
     init = function()
-      if vim.g.theme ~= "docs" then
+      if vim.g.theme == "docs" then
         vim.cmd("colorscheme catppuccin")
       end
     end,
@@ -100,8 +106,13 @@ return {
       styles = { bold = true, italic = true },
     },
     init = function()
-      if vim.g.theme == "docs" then
+      if vim.g.theme ~= "docs" then
         vim.cmd("colorscheme gruvbox-medium")
+        -- Undercurl para diagnósticos LSP
+        vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { undercurl = true, sp = "#FB4934" })
+        vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { undercurl = true, sp = "#FABD2F" })
+        vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { undercurl = true, sp = "#83A598" })
+        vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { undercurl = true, sp = "#8EC07C" })
       end
     end,
   },
@@ -240,12 +251,10 @@ return {
   },
 
   {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
+    "lewis6991/ts-install.nvim",
     opts = {
       auto_install = true,
-      ensure_installed = {
+      ensure_install = {
         "bash",
         "css",
         "go",
@@ -266,13 +275,7 @@ return {
         "vimdoc",
         "yaml",
       },
-      highlight = { enable = true },
-      indent = { enable = true },
-      incremental_selection = { enable = true },
     },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
-    end,
   },
 
   {
