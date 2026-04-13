@@ -5,6 +5,7 @@ require("config.globals")
 require("config.options")
 require("config.autocmds")
 require("plugins")
+require("config.statusline").setup()
 
 -- Cargar utilidades después de plugins
 require("config.utils.css_convert")

@@ -34,13 +34,13 @@ External Requirements:
   - etc.
 
 > **NOTE**
-> See [Install Recipes](#Install-Recipes) for additional Windows and Linux specific notes
+> See [Install Recipes](#install-recipes) for additional Windows and Linux specific notes
 > and quick install snippets
 
 ### Install Kickstart
 
 > **NOTE**
-> [Backup](#FAQ) your previous configuration (if any exists)
+> [Backup](#faq) your previous configuration (if any exists)
 
 Neovim's configurations are located under the following paths, depending on your OS:
 
@@ -142,9 +142,11 @@ examples of adding popularly requested plugins.
   - Yes! You can use [NVIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)`=nvim-NAME`
     to maintain multiple configurations. For example, you can install the kickstart
     configuration in `~/.config/nvim-kickstart` and create an alias:
+
     ```
     alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
     ```
+
     When you run Neovim using `nvim-kickstart` alias it will use the alternative
     config directory and the matching local directory
     `~/.local/share/nvim-kickstart`. You can apply this approach to any Neovim
@@ -166,7 +168,7 @@ examples of adding popularly requested plugins.
 
 Below you can find OS specific install instructions for Neovim and dependencies.
 
-After installing all the dependencies continue with the [Install Kickstart](#Install-Kickstart) step.
+After installing all the dependencies continue with the [Install Kickstart](#install-kickstart) step.
 
 #### Windows Installation
 
@@ -196,7 +198,7 @@ the easiest way is to use choco:
 winget install --accept-source-agreements chocolatey.chocolatey
 ```
 
-2. install all requirements using choco, exit previous cmd and
+1. install all requirements using choco, exit previous cmd and
    open a new one so that choco path is set, and run in cmd as **admin**:
 
 ```
