@@ -49,7 +49,14 @@ return {
         if js_fts[vim.bo.filetype] then
           configure_eslint()
         end
-        lint.try_lint()
+        local ok, err = pcall(lint.try_lint)
+        if not ok and err then
+          vim.schedule(function()
+            -- Silenciar errores de config de eslint (repos legacy sin deps)
+            if type(err) == "string" and err:match("eslint") then return end
+            vim.notify(err, vim.log.levels.WARN)
+          end)
+        end
       end,
     })
   end,

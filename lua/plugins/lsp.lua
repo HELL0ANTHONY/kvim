@@ -137,6 +137,15 @@ return {
         },
       })
 
+      -- Silenciar errores de eslint config (repos legacy sin deps instaladas)
+      local original_notify = vim.notify
+      vim.notify = function(msg, level, opts)
+        if type(msg) == "string" and msg:match("eslint") and msg:match("Failed to load config") then
+          return
+        end
+        original_notify(msg, level, opts)
+      end
+
       -- Diagnostics: solo float, sin virtual_text
       vim.diagnostic.config({
         virtual_text = false,
