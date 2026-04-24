@@ -136,12 +136,46 @@ function M.position()
   return string.format("%%#StPos#󰉸 %d│󱥖 %d  %d ", l, c, total)
 end
 
--- ── Layout ──
+-- ── Short filename (solo nombre, sin ruta) ──
+
+function M.filename_short()
+  local name = vim.fn.expand("%:t")
+  if name == "" then
+    name = "[No Name]"
+  end
+  local modified = vim.bo.modified and " %#StModified#[󰦒]%#StFile#" or ""
+  return "%#StFile# " .. icon_for_file() .. name .. modified .. " "
+end
+
+-- ── Layout (adapta al ancho de ventana) ──
 
 function M.active()
   if should_skip() then
     return ""
   end
+  local w = vim.api.nvim_win_get_width(0)
+
+  if w < 50 then
+    return M.filename_short()
+  end
+
+  if w < 80 then
+    return table.concat({
+      M.filename_short(),
+      "%=",
+      M.diagnostics(),
+    })
+  end
+
+  if w < 120 then
+    return table.concat({
+      M.filename(),
+      "%=",
+      M.diagnostics(),
+      M.position(),
+    })
+  end
+
   return table.concat({
     M.branch(),
     M.diff(),
@@ -158,9 +192,7 @@ function M.inactive()
   end
   return table.concat({
     "%#StInactive#",
-    M.filename(),
-    "%=",
-    M.diagnostics(),
+    M.filename_short(),
   })
 end
 
