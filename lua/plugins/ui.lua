@@ -76,6 +76,13 @@ return {
         end,
       },
     },
+    config = function(_, opts)
+      require("ts-install").setup(opts)
+
+      -- Neovim 0.12 ships native queries. Keep nvim-treesitter available for
+      -- ts-install parser metadata, but do not let its queries override core.
+      vim.opt.runtimepath:remove(vim.fn.stdpath("data") .. "/lazy/nvim-treesitter")
+    end,
     opts = {
       auto_install = true,
       ensure_install = {
