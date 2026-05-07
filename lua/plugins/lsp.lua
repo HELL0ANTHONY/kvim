@@ -23,7 +23,9 @@ return {
             "html-lsp",
             "json-lsp",
             "lua-language-server",
+            "postgres-language-server",
             "prettierd",
+            "sqlfluff",
             "stylua",
             "tailwindcss-language-server",
             "terraform-ls",
@@ -43,6 +45,21 @@ return {
       local ok_blink, blink = pcall(require, "blink.cmp")
       local capabilities = ok_blink and blink.get_lsp_capabilities()
         or vim.lsp.protocol.make_client_capabilities()
+
+      local lspconfig_configs = require("lspconfig.configs")
+      if not lspconfig_configs.postgres_lsp then
+        lspconfig_configs.postgres_lsp = {
+          default_config = {
+            cmd = { "postgres-language-server", "lsp-proxy" },
+            filetypes = { "sql" },
+            root_dir = function(fname)
+              return vim.fs.root(fname, { "postgres-language-server.jsonc", ".git" })
+                or vim.fs.dirname(fname)
+            end,
+            single_file_support = true,
+          },
+        }
+      end
 
       -- Keymaps on attach
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -95,6 +112,15 @@ return {
         html = {},
         cssls = {},
         jsonls = {},
+        postgres_lsp = {
+          cmd = { "postgres-language-server", "lsp-proxy" },
+          filetypes = { "sql" },
+          root_dir = function(fname)
+            return vim.fs.root(fname, { "postgres-language-server.jsonc", ".git" })
+              or vim.fs.dirname(fname)
+          end,
+          single_file_support = true,
+        },
         yamlls = {
           settings = {
             yaml = {

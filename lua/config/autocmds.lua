@@ -17,6 +17,12 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
   desc = "Enable treesitter highlighting",
   callback = function(ev)
+    local disable_treesitter = { sql = true, mysql = true }
+    if disable_treesitter[vim.bo[ev.buf].filetype] then
+      pcall(vim.treesitter.stop, ev.buf)
+      return
+    end
+
     pcall(vim.treesitter.start, ev.buf)
   end,
 })

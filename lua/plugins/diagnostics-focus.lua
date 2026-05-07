@@ -17,26 +17,10 @@ return {
       end,
     },
   },
-  -- {
-  -- 'folke/trouble.nvim', -- Better diagnostics list
-  -- cmd = 'Trouble',
-  -- keys = {
-  --   { '<leader>xx', '<cmd>Trouble diagnostics toggle<cr>', desc = 'Diagnostics (Trouble)' },
-  --   { '<leader>xd', '<cmd>Trouble diagnostics toggle filter.buf=0<cr>', desc = 'Buffer diagnostics' },
-  --   { '<leader>xq', '<cmd>Trouble qflist toggle<cr>', desc = 'Quickfix list' },
-  -- },
-  -- opts = {
-  --   auto_close = true,
-  --   focus = true,
-  --   modes = {
-  --     diagnostics = { auto_open = false, auto_preview = false },
-  --   },
-  -- },
-  -- },
   {
     dir = ".", -- Virtual plugin for focus mode logic
     name = "diagnostics-focus",
-    event = "LspAttach",
+    event = "VeryLazy",
     config = function()
       local M = {}
       M.mode = 1 -- Start in minimal mode (building)
@@ -55,11 +39,11 @@ return {
 
       local float_augroup =
         vim.api.nvim_create_augroup("DiagFloatHover", { clear = true })
-      local float_enabled = false
+      -- local float_enabled = false
 
       local function setup_float_hover(enable)
         vim.api.nvim_clear_autocmds({ group = float_augroup })
-        float_enabled = enable
+        -- float_enabled = enable
         if enable then
           vim.api.nvim_create_autocmd("CursorHold", {
             group = float_augroup,

@@ -5,6 +5,19 @@ vim.g.autoformat = true
 
 local js_formatters = { "prettierd", "prettier", stop_after_first = true }
 local slow_filetypes = { terraform = true, hcl = true, tf = true }
+local sqlfluff_config_files =
+  { ".sqlfluff", "pep8.ini", "pyproject.toml", "setup.cfg", "tox.ini" }
+
+local function sqlfluff_root_dir(_, ctx)
+  return vim.fs.root(ctx.dirname, sqlfluff_config_files) or ctx.dirname
+end
+
+local function sqlfluff_args(_, ctx)
+  if vim.fs.root(ctx.dirname, sqlfluff_config_files) then
+    return { "fix", "-" }
+  end
+  return { "fix", "--dialect", "ansi", "-" }
+end
 
 return {
   "stevearc/conform.nvim",
@@ -69,12 +82,20 @@ return {
       lua = { "stylua" },
       markdown = { "prettierd" },
       powershell = { "prettierd" },
+      sql = { "sqlfluff" },
       terraform = { "terraform_fmt" },
       ["terraform-vars"] = { "terraform_fmt" },
       tf = { "terraform_fmt" },
       typescript = js_formatters,
       typescriptreact = js_formatters,
       yaml = { "yamlfmt" },
+    },
+    formatters = {
+      sqlfluff = {
+        cwd = sqlfluff_root_dir,
+        args = sqlfluff_args,
+        require_cwd = false,
+      },
     },
   },
 }

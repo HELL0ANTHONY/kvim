@@ -4,6 +4,14 @@ return {
 
   config = function()
     local lint = require("lint")
+    local sqlfluff_config_files =
+      { ".sqlfluff", "pep8.ini", "pyproject.toml", "setup.cfg", "tox.ini" }
+
+    local function has_sqlfluff_config()
+      local bufname = vim.api.nvim_buf_get_name(0)
+      local path = bufname ~= "" and vim.fn.fnamemodify(bufname, ":p:h") or vim.uv.cwd()
+      return vim.fs.find(sqlfluff_config_files, { upward = true, path = path })[1] ~= nil
+    end
 
     lint.linters_by_ft = {
       go = { "golangcilint" },
@@ -11,9 +19,19 @@ return {
       javascriptreact = { "eslint_d" },
       typescript = { "eslint_d" },
       typescriptreact = { "eslint_d" },
+      sql = { "sqlfluff" },
       terraform = { "tflint" },
       yaml = { "yamllint" },
     }
+
+    local sqlfluff_linter = require("lint.linters.sqlfluff")
+    lint.linters.sqlfluff = function()
+      local linter = vim.deepcopy(sqlfluff_linter)
+      linter.args = has_sqlfluff_config()
+          and { "lint", "--format=json", "-" }
+        or { "lint", "--dialect", "ansi", "--format=json", "-" }
+      return linter
+    end
 
     local function get_local_eslint()
       local buf = vim.api.nvim_get_current_buf()
