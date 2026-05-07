@@ -32,7 +32,7 @@ highlight! link htmlArg Aqua
 highlight! link htmlScriptTag Purple
 highlight! link htmlSpecialTagName RedItalic
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 highlight! link htmlTSText TSNone
 if has('nvim-0.8')
   highlight! link @text.html htmlTSText
@@ -193,7 +193,7 @@ highlight! link typescriptDOMFormProp Aqua
 highlight! link typescriptBOMHistoryProp Aqua
 highlight! link typescriptMathStaticProp Aqua
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 highlight! link tsxTSConstructor TSType
 if has('nvim-0.8')
   highlight! link @constructor.tsx tsxTSConstructor

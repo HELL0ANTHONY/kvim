@@ -53,7 +53,7 @@ highlight! link jsTemplateExpression Yellow
 highlight! link jsTemplateBraces Yellow
 highlight! link jsClassMethodType Orange
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 if has('nvim-0.9')
   highlight! link @lsp.typemod.variable.defaultLibrary.javascript TSConstBuiltin
   highlight! link @lsp.typemod.variable.defaultLibrary.javascriptreact TSConstBuiltin

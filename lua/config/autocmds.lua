@@ -13,9 +13,10 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Neovim 0.12: treesitter highlighting nativo
+-- tree-sitter-manager installs parsers; we start highlighting manually so
+-- filetype aliases like javascriptreact and dotenv keep working.
 vim.api.nvim_create_autocmd("FileType", {
-  desc = "Enable treesitter highlighting",
+  desc = "Enable Tree-sitter highlighting",
   callback = function(ev)
     local disable_treesitter = { sql = true, mysql = true }
     if disable_treesitter[vim.bo[ev.buf].filetype] then

@@ -17,7 +17,7 @@ highlight! link gitcommitOnBranch Grey
 highlight! link gitcommitArrow Grey
 highlight! link gitcommitFile Green
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 if has('nvim-0.8')
   highlight! link @text.gitcommit TSNone
 endif

@@ -32,7 +32,7 @@ highlight! link htmlArg Aqua
 highlight! link htmlScriptTag Purple
 highlight! link htmlSpecialTagName RedItalic
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 highlight! link htmlTSText TSNone
 if has('nvim-0.8')
   highlight! link @text.html htmlTSText

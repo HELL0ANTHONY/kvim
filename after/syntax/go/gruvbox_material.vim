@@ -24,7 +24,7 @@ highlight! link goPredefinedIdentifiers Aqua
 highlight! link goBuiltins GreenBold
 highlight! link goVarArgs Grey
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 highlight! link goTSInclude Purple
 highlight! link goTSNamespace Fg
 highlight! link goTSConstBuiltin AquaItalic

@@ -26,7 +26,7 @@ highlight! link luaFuncArgName Blue
 highlight! link luaEllipsis Orange
 highlight! link luaDocTag Green
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 highlight! link luaTSConstructor luaBraces
 if has('nvim-0.8')
   highlight! link @constructor.lua luaTSConstructor

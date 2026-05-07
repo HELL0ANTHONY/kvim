@@ -159,7 +159,7 @@ highlight! link typescriptDOMFormProp Aqua
 highlight! link typescriptBOMHistoryProp Aqua
 highlight! link typescriptMathStaticProp Aqua
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 highlight! link tsxTSConstructor TSType
 if has('nvim-0.8')
   highlight! link @constructor.tsx tsxTSConstructor

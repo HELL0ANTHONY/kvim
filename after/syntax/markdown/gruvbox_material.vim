@@ -51,7 +51,7 @@ highlight! link mkdRule Purple
 highlight! link mkdDelimiter Grey
 highlight! link mkdId Yellow
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 if has('nvim-0.8')
   highlight! link @markup.heading.1.markdown markdownH1
   highlight! link @markup.heading.2.markdown markdownH2
@@ -99,7 +99,7 @@ highlight! link htmlArg Aqua
 highlight! link htmlScriptTag Purple
 highlight! link htmlSpecialTagName RedItalic
 " }}}
-" nvim-treesitter/nvim-treesitter {{{
+" Tree-sitter {{{
 highlight! link htmlTSText TSNone
 if has('nvim-0.8')
   highlight! link @text.html htmlTSText
