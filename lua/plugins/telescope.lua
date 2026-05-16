@@ -1,3 +1,32 @@
+local small_screen_columns = 140
+
+local function responsive_layout(overrides)
+  local layout = {
+    width = 0.96,
+    height = 0.92,
+    flip_columns = small_screen_columns,
+    horizontal = {
+      width = 0.96,
+      height = 0.92,
+      preview_width = 0.65,
+      preview_cutoff = small_screen_columns,
+    },
+    vertical = {
+      width = 0.96,
+      height = 0.92,
+      preview_height = 0.55,
+      preview_cutoff = 25,
+      prompt_position = "bottom",
+    },
+  }
+
+  if overrides then
+    layout = vim.tbl_deep_extend("force", layout, overrides)
+  end
+
+  return layout
+end
+
 return {
   "nvim-telescope/telescope.nvim",
   branch = "master",
@@ -66,12 +95,11 @@ return {
     {
       "<leader>/",
       function()
-        require("telescope.builtin").current_buffer_fuzzy_find(
-          require("telescope.themes").get_dropdown({
-            winblend = 10,
-            previewer = false,
-          })
-        )
+        require("telescope.builtin").current_buffer_fuzzy_find({
+          layout_strategy = "flex",
+          layout_config = responsive_layout(),
+          previewer = false,
+        })
       end,
       desc = "Fuzzily search in buffer",
     },
@@ -90,11 +118,12 @@ return {
     local actions = require("telescope.actions")
     local open_with_trouble = require("trouble.sources.telescope").open
 
-    local wide = {
-      width = 0.96,
-      height = 0.92,
-      horizontal = { preview_width = 0.72, results_width = 0.28 },
-    }
+    local default_layout = responsive_layout()
+    local wide = responsive_layout({
+      horizontal = {
+        preview_width = 0.72,
+      },
+    })
 
     local grep_ignore = {
       "--glob=!package-lock.json",
@@ -126,12 +155,8 @@ return {
         prompt_prefix = "  ",
         selection_caret = "❯ ",
         path_display = { "truncate" },
-        layout_strategy = "horizontal",
-        layout_config = {
-          width = 0.96,
-          height = 0.92,
-          horizontal = { preview_width = 0.65, results_width = 0.35 },
-        },
+        layout_strategy = "flex",
+        layout_config = default_layout,
         vimgrep_arguments = vimgrep_args,
         mappings = {
           i = {
@@ -155,7 +180,6 @@ return {
       },
       pickers = {
         buffers = {
-          theme = "dropdown",
           sort_mru = true,
           previewer = false,
           ignore_current_buffer = true,

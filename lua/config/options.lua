@@ -2,8 +2,8 @@ vim.opt.termguicolors = true
 vim.opt.wildmenu = true
 vim.g.have_nerd_font = true
 
-vim.opt.number = false
-vim.opt.relativenumber = false
+vim.opt.number = true
+vim.opt.relativenumber = true
 vim.opt.wrap = false
 vim.opt.linebreak = true
 vim.opt.mouse = ""
