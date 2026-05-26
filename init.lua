@@ -40,6 +40,7 @@ vim.opt.guicursor = {
 
 -- Keymaps
 local buffers = require("config.utils.buffers")
+local clipboard = require("config.utils.clipboard")
 vim.keymap.set(
   "n",
   "<F3>",
@@ -47,6 +48,12 @@ vim.keymap.set(
   { desc = "Close other buffers" }
 )
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set(
+  "n",
+  "<leader>yp",
+  clipboard.copy_current_file_path,
+  { desc = "Yank current file path" }
+)
 
 -- Code utilities
 vim.keymap.set(

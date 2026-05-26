@@ -10,6 +10,37 @@ vim.opt.mouse = ""
 vim.opt.pumheight = 10
 vim.opt.showmode = false
 
+if
+  vim.fn.has("wsl") == 1
+  and vim.fn.executable("clip.exe") == 1
+  and vim.fn.executable("powershell.exe") == 1
+then
+  vim.g.clipboard = {
+    name = "WslClipboard",
+    copy = {
+      ["+"] = { "clip.exe" },
+      ["*"] = { "clip.exe" },
+    },
+    paste = {
+      ["+"] = {
+        "powershell.exe",
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "Get-Clipboard -Raw",
+      },
+      ["*"] = {
+        "powershell.exe",
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "Get-Clipboard -Raw",
+      },
+    },
+    cache_enabled = 0,
+  }
+end
+
 vim.schedule(function()
   vim.opt.clipboard = "unnamedplus"
 end)

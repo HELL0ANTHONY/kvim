@@ -4,7 +4,6 @@ local function responsive_layout(overrides)
   local layout = {
     width = 0.96,
     height = 0.92,
-    flip_columns = small_screen_columns,
     horizontal = {
       width = 0.96,
       height = 0.92,

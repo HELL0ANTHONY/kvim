@@ -10,9 +10,17 @@ return {
     },
     config = function(_, opts)
       local function set_flash_hl()
-        vim.api.nvim_set_hl(0, "FlashLabel", { fg = "#282828", bg = "#fabd2f", bold = true })
+        vim.api.nvim_set_hl(
+          0,
+          "FlashLabel",
+          { fg = "#282828", bg = "#fabd2f", bold = true }
+        )
         vim.api.nvim_set_hl(0, "FlashMatch", { fg = "#ebdbb2", bg = "#504945" })
-        vim.api.nvim_set_hl(0, "FlashCurrent", { fg = "#282828", bg = "#8ec07c" })
+        vim.api.nvim_set_hl(
+          0,
+          "FlashCurrent",
+          { fg = "#282828", bg = "#8ec07c" }
+        )
         vim.api.nvim_set_hl(0, "FlashBackdrop", { fg = "#665c54" })
       end
       set_flash_hl()
@@ -253,7 +261,7 @@ return {
             -- local width = math.floor(vim.api.nvim_win_get_width(0) * 0.5)
             harpoon.ui:toggle_quick_menu(
               harpoon:list(),
-              { ui_width_ratio = 0.5 }
+              { ui_width_ratio = 0.8 }
             )
           end,
           desc = "Harpoon Quick Menu",
