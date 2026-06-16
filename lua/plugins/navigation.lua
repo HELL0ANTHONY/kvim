@@ -141,7 +141,7 @@ return {
       win_options = {
         number = false,
         relativenumber = false,
-        signcolumn = "no",
+        signcolumn = "yes:2",
         winbar = "%#OilWinbar#%{%v:lua.get_oil_winbar()%}",
         winhighlight = "Normal:OilNormal",
       },
@@ -205,12 +205,27 @@ return {
       watch_for_changes = false,
     },
 
+    config = function(_, opts)
+      require("oil").setup(opts)
+
+      local icons = require("config.icons")
+      require("oil-git-status").setup({
+        symbols = {
+          index = icons.git_status,
+          working_tree = icons.git_status,
+        },
+      })
+    end,
+
     dependencies = {
       {
         "nvim-tree/nvim-web-devicons",
         cond = function()
           return vim.g.have_nerd_font == true
         end,
+      },
+      {
+        "refractalize/oil-git-status.nvim",
       },
     },
   },

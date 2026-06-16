@@ -67,6 +67,11 @@ return {
       desc = "[S]earch by [G]rep",
     },
     {
+      "<leader>gs",
+      "<cmd>Telescope git_status<cr>",
+      desc = "[G]it [S]tatus",
+    },
+    {
       "<leader>sl",
       function()
         require("telescope.builtin").live_grep({

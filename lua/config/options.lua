@@ -15,6 +15,15 @@ if
   and vim.fn.executable("clip.exe") == 1
   and vim.fn.executable("powershell.exe") == 1
 then
+  local paste_from_windows_clipboard = {
+    "powershell.exe",
+    "-NoLogo",
+    "-NoProfile",
+    "-Command",
+    "[Console]::OutputEncoding = [Text.UTF8Encoding]::new(); "
+      .. "(Get-Clipboard -Raw) -replace \"`r`n\", \"`n\" -replace \"`r\", \"`n\"",
+  }
+
   vim.g.clipboard = {
     name = "WslClipboard",
     copy = {
@@ -22,20 +31,8 @@ then
       ["*"] = { "clip.exe" },
     },
     paste = {
-      ["+"] = {
-        "powershell.exe",
-        "-NoLogo",
-        "-NoProfile",
-        "-Command",
-        "Get-Clipboard -Raw",
-      },
-      ["*"] = {
-        "powershell.exe",
-        "-NoLogo",
-        "-NoProfile",
-        "-Command",
-        "Get-Clipboard -Raw",
-      },
+      ["+"] = paste_from_windows_clipboard,
+      ["*"] = paste_from_windows_clipboard,
     },
     cache_enabled = 0,
   }

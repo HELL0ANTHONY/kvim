@@ -3,6 +3,7 @@
 -- Layout assembles components via vim statusline syntax (%! expression)
 
 local M = {}
+local icons = require("config.icons")
 
 -- ── Highlight groups (SSOT for statusline colors) ──
 
@@ -84,7 +85,7 @@ function M.branch()
   if not head or head == "" then
     return ""
   end
-  return "  " .. head .. " "
+  return " " .. icons.git.branch .. " " .. head .. " "
 end
 
 function M.diff()
@@ -94,13 +95,13 @@ function M.diff()
   end
   local parts = {}
   if (s.added or 0) > 0 then
-    parts[#parts + 1] = " " .. s.added
+    parts[#parts + 1] = icons.git.added .. " " .. s.added
   end
   if (s.changed or 0) > 0 then
-    parts[#parts + 1] = " " .. s.changed
+    parts[#parts + 1] = icons.git.modified .. " " .. s.changed
   end
   if (s.removed or 0) > 0 then
-    parts[#parts + 1] = " " .. s.removed
+    parts[#parts + 1] = icons.git.removed .. " " .. s.removed
   end
   if #parts == 0 then
     return ""
