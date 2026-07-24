@@ -11,7 +11,7 @@ return {
     keys = {
       {
         "<leader>e",
-        "<cmd>Neotree filesystem toggle left<cr>",
+        "<cmd>Neotree filesystem toggle right<cr>",
         desc = "Explorer (filesystem)",
       },
       {
