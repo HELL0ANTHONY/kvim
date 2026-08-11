@@ -81,13 +81,36 @@ return {
       typescriptreact = true,
     }
 
+    -- Mapa de binario real por nombre de linter (para chequear si está instalado)
+    local linter_binaries = {
+      phpcs     = "phpcs",
+      sqlfluff  = "sqlfluff",
+      tflint    = "tflint",
+      yamllint  = "yamllint",
+      eslint_d  = "eslint_d",
+    }
+
+    -- Retorna solo los linters del filetype actual que tienen su binario disponible
+    local function available_linters()
+      local ft = vim.bo.filetype
+      local names = lint.linters_by_ft[ft]
+      if not names then return {} end
+      return vim.tbl_filter(function(name)
+        local bin = linter_binaries[name]
+        if bin then return vim.fn.executable(bin) == 1 end
+        return true -- linters sin mapeo directo pasan siempre (ej: golangcilint)
+      end, names)
+    end
+
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
       group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
       callback = function()
         if js_fts[vim.bo.filetype] then
           configure_eslint()
         end
-        local ok, err = pcall(lint.try_lint)
+        local linters = available_linters()
+        if #linters == 0 then return end
+        local ok, err = pcall(lint.try_lint, linters)
         if not ok and err then
           vim.schedule(function()
             -- Silenciar errores de config de eslint (repos legacy sin deps)
