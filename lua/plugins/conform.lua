@@ -80,6 +80,7 @@ return {
       json5 = { "prettierd" },
       jsonc = { "prettierd" },
       lua = { "stylua" },
+      php = { "php_cs_fixer" },
       markdown = { "prettierd" },
       powershell = { "prettierd" },
       sql = { "sqlfluff" },

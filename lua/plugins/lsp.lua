@@ -21,8 +21,11 @@ return {
             "golines",
             "gopls",
             "html-lsp",
+            "intelephense",
             "json-lsp",
             "lua-language-server",
+            "php-cs-fixer",
+            "phpcs",
             "postgres-language-server",
             "prettierd",
             "sqlfluff",
@@ -127,6 +130,32 @@ return {
               schemas = {
                 kubernetes = "*.k8s.yaml",
                 ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+              },
+            },
+          },
+        },
+        intelephense = {
+          settings = {
+            intelephense = {
+              environment = { phpVersion = "8.3" },
+              files = { maxSize = 1000000 },
+              -- Stubs comunes para PHP moderno + extensiones populares
+              stubs = {
+                "apache", "bcmath", "bz2", "calendar", "com_dotnet", "Core",
+                "ctype", "curl", "date", "dba", "dom", "enchant", "exif",
+                "FFI", "fileinfo", "filter", "fpm", "ftp", "gd", "gettext",
+                "gmp", "hash", "iconv", "imap", "intl", "json", "ldap",
+                "libxml", "mbstring", "meta", "mysqli", "mysqlnd", "oci8",
+                "odbc", "openssl", "pcntl", "pcre", "PDO", "pdo_ibm",
+                "pdo_mysql", "pdo_pgsql", "pdo_sqlite", "pgsql", "Phar",
+                "posix", "pspell", "random", "readline", "Reflection",
+                "session", "shmop", "SimpleXML", "snmp", "soap", "sockets",
+                "sodium", "SPL", "sqlite3", "standard", "superglobals",
+                "sysvmsg", "sysvsem", "sysvshm", "tidy", "tokenizer",
+                "xml", "xmlreader", "xmlrpc", "xmlwriter", "xsl", "Zend OPcache",
+                "zip", "zlib",
+                -- extensiones comunes de frameworks/DB
+                "mongodb", "redis",
               },
             },
           },

@@ -6,11 +6,19 @@ return {
     local lint = require("lint")
     local sqlfluff_config_files =
       { ".sqlfluff", "pep8.ini", "pyproject.toml", "setup.cfg", "tox.ini" }
+    local phpcs_config_files =
+      { "phpcs.xml", ".phpcs.xml", "phpcs.xml.dist", ".phpcs.xml.dist" }
 
     local function has_sqlfluff_config()
       local bufname = vim.api.nvim_buf_get_name(0)
       local path = bufname ~= "" and vim.fn.fnamemodify(bufname, ":p:h") or vim.uv.cwd()
       return vim.fs.find(sqlfluff_config_files, { upward = true, path = path })[1] ~= nil
+    end
+
+    local function has_phpcs_config()
+      local bufname = vim.api.nvim_buf_get_name(0)
+      local path = bufname ~= "" and vim.fn.fnamemodify(bufname, ":p:h") or vim.uv.cwd()
+      return vim.fs.find(phpcs_config_files, { upward = true, path = path })[1] ~= nil
     end
 
     lint.linters_by_ft = {
@@ -19,10 +27,22 @@ return {
       javascriptreact = { "eslint_d" },
       typescript = { "eslint_d" },
       typescriptreact = { "eslint_d" },
+      php = { "phpcs" },
       sql = { "sqlfluff" },
       terraform = { "tflint" },
       yaml = { "yamllint" },
     }
+
+    -- phpcs: si no hay config en el proyecto, usa PSR2 como estándar por defecto
+    local phpcs_linter = require("lint.linters.phpcs")
+    lint.linters.phpcs = function()
+      local linter = vim.deepcopy(phpcs_linter)
+      if not has_phpcs_config() then
+        -- Insertar --standard=PSR2 después del primer arg
+        table.insert(linter.args, 1, "--standard=PSR2")
+      end
+      return linter
+    end
 
     local sqlfluff_linter = require("lint.linters.sqlfluff")
     lint.linters.sqlfluff = function()
