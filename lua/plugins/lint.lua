@@ -27,8 +27,9 @@ return {
       javascriptreact = { "eslint_d" },
       typescript = { "eslint_d" },
       typescriptreact = { "eslint_d" },
-      php = { "phpcs" },
-      sql = { "sqlfluff" },
+      php    = { "phpcs" },
+      python = { "ruff" },
+      sql    = { "sqlfluff" },
       terraform = { "tflint" },
       yaml = { "yamllint" },
     }
@@ -83,11 +84,12 @@ return {
 
     -- Mapa de binario real por nombre de linter (para chequear si está instalado)
     local linter_binaries = {
+      eslint_d  = "eslint_d",
       phpcs     = "phpcs",
+      ruff      = "ruff",
       sqlfluff  = "sqlfluff",
       tflint    = "tflint",
       yamllint  = "yamllint",
-      eslint_d  = "eslint_d",
     }
 
     -- Retorna solo los linters del filetype actual que tienen su binario disponible

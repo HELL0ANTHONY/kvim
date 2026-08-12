@@ -28,6 +28,8 @@ return {
             "phpcs",
             "postgres-language-server",
             "prettierd",
+            "pyright",
+            "ruff",
             "sqlfluff",
             "stylua",
             "tailwindcss-language-server",
@@ -130,6 +132,18 @@ return {
               schemas = {
                 kubernetes = "*.k8s.yaml",
                 ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+              },
+            },
+          },
+        },
+        pyright = {
+          settings = {
+            python = {
+              analysis = {
+                autoSearchPaths        = true,
+                useLibraryCodeForTypes = true,
+                diagnosticMode         = "openFilesOnly",
+                typeCheckingMode       = "basic",
               },
             },
           },

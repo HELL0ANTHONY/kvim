@@ -17,6 +17,7 @@ require("lazy").setup({
   { import = "plugins.telescope" },
   { import = "plugins.navigation" },
   { import = "plugins.neotree" },
+  { import = "plugins.indent" },
   { import = "plugins.lint" },
   { import = "plugins.conform" },
   { import = "plugins.blink" },
